@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generated": "2026-01-09T02:21:04.283Z",
+  "generated": "2026-01-09T02:25:21.843Z",
   "features": [
     {
       "type": "Feature",
@@ -54,7 +54,7 @@
         ],
         "neighborhood": "Kerns",
         "address": "310 SE 28th Ave, Portland, OR 97214",
-        "status": "favorite",
+        "status": "been",
         "goodFor": [
           "dinner",
           "sushi",
@@ -93,7 +93,7 @@
         ],
         "neighborhood": "Richmond",
         "address": "3551 SE Division St, Portland, OR 97202",
-        "status": "favorite",
+        "status": "been",
         "goodFor": [
           "coffee"
         ],
@@ -620,7 +620,7 @@
           "Saturday: 7:00 AM – 4:00 PM",
           "Sunday: 7:00 AM – 4:00 PM"
         ],
-        "notes": "Started by former Stumptown folks"
+        "notes": "Started by former Stumptown folks, tiny"
       }
     },
     {
@@ -712,7 +712,7 @@
         ],
         "neighborhood": "Sunnyside",
         "address": "3356 SE Belmont St, Portland, OR 97214",
-        "status": "favorite",
+        "status": "been",
         "goodFor": [
           "coffee",
           "pourover"
@@ -727,7 +727,7 @@
           "Saturday: 7:00 AM – 5:00 PM",
           "Sunday: 7:00 AM – 5:00 PM"
         ],
-        "notes": "The Belmont outpost"
+        "notes": "The Belmont outpost, grungier than the Division one"
       }
     },
     {
@@ -888,7 +888,7 @@
         "type": [],
         "neighborhood": "Hosford-Abernethy",
         "address": "2510 SE Clinton St, Portland, OR 97202",
-        "status": "favorite",
+        "status": "been",
         "goodFor": [
           "vinyl",
           "stereo gear"
@@ -1100,7 +1100,7 @@
           "Saturday: 12:00 – 6:00 PM",
           "Sunday: 12:00 – 6:00 PM"
         ],
-        "notes": "Cozy Alberta St bookshop"
+        "notes": "Tiny Alberta St bookshop with great curation"
       }
     },
     {
@@ -1202,7 +1202,7 @@
           "Saturday: 11:00 AM – 6:00 PM",
           "Sunday: 12:00 – 5:00 PM"
         ],
-        "notes": "Neighborhood favorite on Division"
+        "notes": "Outstanding literary bookstore run by a nice British guy"
       }
     },
     {
@@ -1222,7 +1222,7 @@
         ],
         "neighborhood": "Richmond",
         "address": "3320 SE Division St, Portland, OR 97202",
-        "status": "been",
+        "status": "favorite",
         "goodFor": [
           "cheese",
           "specialty"
@@ -1391,7 +1391,7 @@
         "type": [],
         "neighborhood": "Kerns",
         "address": "2735 E Burnside St, Portland, OR 97214",
-        "status": "favorite",
+        "status": "been",
         "goodFor": [
           "second-run",
           "beer"
@@ -1454,7 +1454,7 @@
         ],
         "neighborhood": "St. Johns",
         "address": "8417 N Lombard St, Portland, OR 97203",
-        "status": "been",
+        "status": "favorite",
         "goodFor": [
           "film",
           "cameras",
@@ -1532,7 +1532,7 @@
         ],
         "neighborhood": "Northwest Industrial",
         "address": "3065 NW Front Ave, Portland, OR 97210",
-        "status": "been",
+        "status": "favorite",
         "goodFor": [
           "hardwood",
           "lumber",
@@ -1549,7 +1549,7 @@
           "Saturday: 8:00 AM – 4:30 PM",
           "Sunday: Closed"
         ],
-        "notes": "Hardwood lumber supplier — domestic and exotic hardwoods"
+        "notes": "Excellent lumber supplier — domestic and exotic hardwoods"
       }
     },
     {

@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generated": "2026-01-09T01:20:49.699Z",
+  "generated": "2026-01-09T01:58:25.600Z",
   "features": [
     {
       "type": "Feature",
@@ -19,7 +19,7 @@
         ],
         "neighborhood": "Grant Park",
         "address": "2226 NE Broadway, Portland, OR 97232",
-        "status": "tried",
+        "status": "been",
         "goodFor": [
           ""
         ],
@@ -275,7 +275,7 @@
         ],
         "neighborhood": "Hosford-Abernethy",
         "address": "1235 SE Division St, Portland, OR 97202",
-        "status": "tried",
+        "status": "been",
         "goodFor": [
           "drinks"
         ],
@@ -416,7 +416,7 @@
         ],
         "neighborhood": "Richmond",
         "address": "2138 SE Division St, Portland, OR 97202",
-        "status": "tried",
+        "status": "been",
         "goodFor": [
           "dinner",
           "drinks",
@@ -455,7 +455,7 @@
         ],
         "neighborhood": "Buckman",
         "address": "1212 SE Hawthorne Blvd, Portland, OR 97214",
-        "status": "tried",
+        "status": "been",
         "goodFor": [
           "lunch",
           "dinner"
@@ -568,7 +568,7 @@
         ],
         "neighborhood": "Hosford-Abernethy",
         "address": "1126 SE Division St unit 200, Portland, OR 97202",
-        "status": "tried",
+        "status": "been",
         "goodFor": [
           "dinner",
           "lunch"
@@ -674,7 +674,7 @@
         ],
         "neighborhood": "Irvington",
         "address": "2314 NE Broadway, Portland, OR 97232",
-        "status": "tried",
+        "status": "been",
         "goodFor": [
           "patio",
           "beer",
@@ -987,7 +987,7 @@
         "type": [],
         "neighborhood": "Richmond",
         "address": "3561 SE Division St, Portland, OR 97202",
-        "status": "tried",
+        "status": "been",
         "goodFor": [
           "vinyl"
         ],
@@ -1019,7 +1019,7 @@
         "type": [],
         "neighborhood": "Buckman",
         "address": "700 SE Hawthorne Blvd, Portland, OR 97214",
-        "status": "tried",
+        "status": "been",
         "goodFor": [
           "vinyl"
         ],
@@ -1188,7 +1188,7 @@
         ],
         "neighborhood": "Richmond",
         "address": "3320 SE Division St, Portland, OR 97202",
-        "status": "tried",
+        "status": "been",
         "goodFor": [
           "cheese",
           "specialty"
@@ -1390,7 +1390,7 @@
         "type": [],
         "neighborhood": "Richmond",
         "address": "3530 SE Division St, Portland, OR 97202",
-        "status": "tried",
+        "status": "been",
         "goodFor": [
           "indie",
           "art",
@@ -1420,7 +1420,7 @@
         ],
         "neighborhood": "St. Johns",
         "address": "8417 N Lombard St, Portland, OR 97203",
-        "status": "tried",
+        "status": "been",
         "goodFor": [
           "film",
           "cameras",
@@ -1460,7 +1460,7 @@
         ],
         "neighborhood": "Laurelhurst",
         "address": "3070 NE Sandy Blvd, Portland, OR 97232",
-        "status": "tried",
+        "status": "been",
         "goodFor": [
           "film-processing",
           "printing",
@@ -1498,7 +1498,7 @@
         ],
         "neighborhood": "Northwest Industrial",
         "address": "3065 NW Front Ave, Portland, OR 97210",
-        "status": "tried",
+        "status": "been",
         "goodFor": [
           "hardwood",
           "lumber",

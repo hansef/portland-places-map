@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portland Places</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    
+    #map { 
+      position: absolute; 
+      top: 0; 
+      bottom: 0; 
+      left: 0; 
+      right: 0; 
+    }
+    
+    .controls {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 1000;
+      background: white;
+      padding: 12px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+      max-width: 200px;
+    }
+    
+    .controls h3 {
+      font-size: 14px;
+      margin-bottom: 8px;
+      color: #333;
+    }
+    
+    .filter-group {
+      margin-bottom: 12px;
+    }
+    
+    .filter-group label {
+      display: block;
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 4px;
+    }
+    
+    .filter-group select {
+      width: 100%;
+      padding: 6px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+    
+    .legend {
+      font-size: 11px;
+      color: #666;
+    }
+    
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 4px 0;
+    }
+    
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    
+    .dot-favorite { background: #f59e0b; }
+    .dot-tried { background: #10b981; }
+    .dot-want { background: #3b82f6; }
+    
+    .popup-name {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+    
+    .popup-meta {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 6px;
+    }
+    
+    .popup-address {
+      font-size: 11px;
+      color: #888;
+    }
+    
+    .popup-tags {
+      margin-top: 6px;
+    }
+    
+    .popup-tag {
+      display: inline-block;
+      background: #e5e7eb;
+      color: #4b5563;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 3px;
+      margin: 2px 2px 0 0;
+    }
+    
+    .status-badge {
+      display: inline-block;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 3px;
+      margin-left: 6px;
+    }
+    
+    .status-favorite { background: #fef3c7; color: #b45309; }
+    .status-tried { background: #d1fae5; color: #047857; }
+    .status-want-to-try { background: #dbeafe; color: #1d4ed8; }
+    
+    .count {
+      font-size: 11px;
+      color: #888;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid #eee;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  
+  <div class="controls">
+    <h3>Portland Places</h3>
+    
+    <div class="filter-group">
+      <label>Status</label>
+      <select id="status-filter">
+        <option value="all">All</option>
+        <option value="favorite">⭐ Favorites</option>
+        <option value="tried">✓ Tried</option>
+        <option value="want-to-try">📍 Want to Try</option>
+      </select>
+    </div>
+    
+    <div class="filter-group">
+      <label>Category</label>
+      <select id="category-filter">
+        <option value="all">All</option>
+      </select>
+    </div>
+    
+    <div class="legend">
+      <div class="legend-item"><span class="legend-dot dot-favorite"></span> Favorite</div>
+      <div class="legend-item"><span class="legend-dot dot-tried"></span> Tried</div>
+      <div class="legend-item"><span class="legend-dot dot-want"></span> Want to Try</div>
+    </div>
+    
+    <div class="count" id="count"></div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    // Initialize map centered on Portland
+    const map = L.map('map').setView([45.52, -122.67], 12);
+    
+    // Add tile layer (OpenStreetMap)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+    
+    // Marker colors by status
+    const statusColors = {
+      'favorite': '#f59e0b',
+      'tried': '#10b981',
+      'want-to-try': '#3b82f6',
+      'unknown': '#9ca3af'
+    };
+    
+    // Create circle marker icon
+    function createMarker(status) {
+      const color = statusColors[status] || statusColors.unknown;
+      return L.circleMarker([0, 0], {
+        radius: 8,
+        fillColor: color,
+        color: '#fff',
+        weight: 2,
+        opacity: 1,
+        fillOpacity: 0.9
+      });
+    }
+    
+    // Format popup content
+    function formatPopup(props) {
+      const statusClass = `status-${props.status}`;
+      const statusLabel = props.status === 'want-to-try' ? 'Want to Try' : 
+                          props.status.charAt(0).toUpperCase() + props.status.slice(1);
+      
+      let html = `
+        <div class="popup-name">
+          ${props.name}
+          <span class="status-badge ${statusClass}">${statusLabel}</span>
+        </div>
+        <div class="popup-meta">${props.category}</div>
+      `;
+      
+      if (props.neighborhood) {
+        html += `<div class="popup-meta">${props.neighborhood}</div>`;
+      }
+      
+      if (props.address) {
+        html += `<div class="popup-address">${props.address}</div>`;
+      }
+      
+      const tags = [
+        ...(props.type || []),
+        ...(props.cuisine || []),
+        ...(props.goodFor || [])
+      ].filter(Boolean);
+      
+      if (tags.length > 0) {
+        html += '<div class="popup-tags">';
+        tags.forEach(tag => {
+          html += `<span class="popup-tag">${tag}</span>`;
+        });
+        html += '</div>';
+      }
+      
+      return html;
+    }
+    
+    // Store all markers and data
+    let allPlaces = [];
+    let markers = L.layerGroup().addTo(map);
+    
+    // Filter and render markers
+    function renderMarkers() {
+      const statusFilter = document.getElementById('status-filter').value;
+      const categoryFilter = document.getElementById('category-filter').value;
+      
+      markers.clearLayers();
+      
+      let count = 0;
+      allPlaces.forEach(feature => {
+        const props = feature.properties;
+        const coords = feature.geometry.coordinates;
+        
+        // Apply filters
+        if (statusFilter !== 'all' && props.status !== statusFilter) return;
+        if (categoryFilter !== 'all' && props.category !== categoryFilter) return;
+        
+        const marker = L.circleMarker([coords[1], coords[0]], {
+          radius: 8,
+          fillColor: statusColors[props.status] || statusColors.unknown,
+          color: '#fff',
+          weight: 2,
+          opacity: 1,
+          fillOpacity: 0.9
+        });
+        
+        marker.bindPopup(formatPopup(props), { maxWidth: 250 });
+        markers.addLayer(marker);
+        count++;
+      });
+      
+      document.getElementById('count').textContent = `Showing ${count} of ${allPlaces.length}`;
+    }
+    
+    // Load GeoJSON data
+    fetch('places.geojson')
+      .then(res => res.json())
+      .then(data => {
+        allPlaces = data.features;
+        
+        // Populate category filter
+        const categories = [...new Set(allPlaces.map(f => f.properties.category))].sort();
+        const categorySelect = document.getElementById('category-filter');
+        categories.forEach(cat => {
+          const opt = document.createElement('option');
+          opt.value = cat;
+          opt.textContent = cat;
+          categorySelect.appendChild(opt);
+        });
+        
+        // Initial render
+        renderMarkers();
+        
+        // Fit bounds to markers
+        if (allPlaces.length > 0) {
+          const bounds = L.latLngBounds(allPlaces.map(f => [
+            f.geometry.coordinates[1], 
+            f.geometry.coordinates[0]
+          ]));
+          map.fitBounds(bounds, { padding: [50, 50] });
+        }
+      })
+      .catch(err => {
+        console.error('Failed to load places:', err);
+      });
+    
+    // Filter event listeners
+    document.getElementById('status-filter').addEventListener('change', renderMarkers);
+    document.getElementById('category-filter').addEventListener('change', renderMarkers);
+  </script>
+</body>
+</html>

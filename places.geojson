@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generated": "2026-01-09T01:58:25.600Z",
+  "generated": "2026-01-09T02:15:16.451Z",
   "features": [
     {
       "type": "Feature",
@@ -73,7 +73,7 @@
           "Saturday: 12:00 – 9:00 PM",
           "Sunday: 12:00 – 9:00 PM"
         ],
-        "notes": []
+        "notes": "Sustainable sushi"
       }
     },
     {
@@ -107,7 +107,7 @@
           "Saturday: 9:00 AM – 5:00 PM",
           "Sunday: 9:00 AM – 5:00 PM"
         ],
-        "notes": "Local neighborhood spot"
+        "notes": "Local neighborhood coffee spot"
       }
     },
     {
@@ -147,7 +147,7 @@
           "Saturday: 9:00 AM – 3:00 PM",
           "Sunday: 9:00 AM – 3:00 PM"
         ],
-        "notes": "Right next to Clinton Street Records"
+        "notes": "Scandinavian-inspired brunch — browse records next door while you wait"
       }
     },
     {
@@ -182,7 +182,7 @@
           "Saturday: 12:00 PM – 2:00 AM",
           "Sunday: 2:00 PM – 2:00 AM"
         ],
-        "notes": []
+        "notes": "Division neighborhood bar"
       }
     },
     {
@@ -217,7 +217,7 @@
           "Saturday: 7:00 AM – 6:00 PM",
           "Sunday: 7:00 AM – 6:00 PM"
         ],
-        "notes": []
+        "notes": "Beautiful industrial space"
       }
     },
     {
@@ -255,7 +255,7 @@
           "Saturday: 8:00 AM – 12:00 AM",
           "Sunday: 8:00 AM – 12:00 AM"
         ],
-        "notes": []
+        "notes": "Coffee by day, bar by night — a Portland classic"
       }
     },
     {
@@ -357,7 +357,7 @@
           "Saturday: 11:30 AM – 10:00 PM",
           "Sunday: 11:30 AM – 9:00 PM"
         ],
-        "notes": "Powell Mothership location"
+        "notes": "Organic brewpub with solid food"
       }
     },
     {
@@ -395,7 +395,7 @@
           "Saturday: 11:30 AM – 1:00 AM",
           "Sunday: 11:30 AM – 12:00 AM"
         ],
-        "notes": []
+        "notes": "Classic Portland English pub — been around forever"
       }
     },
     {
@@ -472,7 +472,7 @@
           "Saturday: 11:00 AM – 10:00 PM",
           "Sunday: 11:00 AM – 10:00 PM"
         ],
-        "notes": "Better in-person than delivery"
+        "notes": "Great sandwiches — better in-person than delivery"
       }
     },
     {
@@ -509,7 +509,7 @@
           "Saturday: 7:00 AM – 3:00 PM",
           "Sunday: 7:00 AM – 3:00 PM"
         ],
-        "notes": []
+        "notes": "Excellent sandwiches"
       }
     },
     {
@@ -548,7 +548,7 @@
           "Saturday: 10:00 AM – 9:30 PM",
           "Sunday: 10:00 AM – 9:30 PM"
         ],
-        "notes": []
+        "notes": "Neighborhood Vietnamese"
       }
     },
     {
@@ -585,7 +585,7 @@
           "Saturday: 11:30 AM – 9:00 PM",
           "Sunday: 11:30 AM – 9:00 PM"
         ],
-        "notes": "New spot, been twice"
+        "notes": "Good pizza on Division"
       }
     },
     {
@@ -692,7 +692,7 @@
           "Saturday: 3:00 PM – 2:00 AM",
           "Sunday: 3:00 PM – 2:00 AM"
         ],
-        "notes": "Cool patio"
+        "notes": "British pub with a cool patio"
       }
     },
     {
@@ -727,7 +727,7 @@
           "Saturday: 7:00 AM – 5:00 PM",
           "Sunday: 7:00 AM – 5:00 PM"
         ],
-        "notes": []
+        "notes": "Stumptown on Belmont"
       }
     },
     {
@@ -763,7 +763,7 @@
           "Saturday: 11:00 AM – 3:00 PM",
           "Sunday: 11:00 AM – 3:00 PM"
         ],
-        "notes": "Been a bunch of times"
+        "notes": "Great sandwich spot"
       }
     },
     {
@@ -798,7 +798,7 @@
           "Saturday: 8:00 AM – 4:00 PM",
           "Sunday: 8:00 AM – 4:00 PM"
         ],
-        "notes": "Local neighborhood spot"
+        "notes": "Local neighborhood coffee spot"
       }
     },
     {
@@ -836,7 +836,7 @@
           "Saturday: 5:00 – 9:00 PM",
           "Sunday: 5:00 – 9:00 PM"
         ],
-        "notes": "The sushi spot on Milwaukie"
+        "notes": "Solid sushi spot"
       }
     },
     {
@@ -869,7 +869,7 @@
           "Saturday: 1:15 – 7:00 PM",
           "Sunday: 1:15 – 7:00 PM"
         ],
-        "notes": "Neighborhood classic."
+        "notes": "Local SE institution — records and stereo equipment"
       }
     },
     {
@@ -903,7 +903,7 @@
           "Saturday: 12:00 – 7:00 PM",
           "Sunday: 12:00 – 7:00 PM"
         ],
-        "notes": []
+        "notes": "Legendary Portland record shop — weird and wonderful selection"
       }
     },
     {
@@ -937,7 +937,7 @@
           "Saturday: 10:00 AM – 11:00 PM",
           "Sunday: 11:00 AM – 9:00 PM"
         ],
-        "notes": []
+        "notes": "Portland institution — huge selection"
       }
     },
     {
@@ -969,7 +969,7 @@
           "Saturday: 11:00 AM – 6:00 PM",
           "Sunday: 10:00 AM – 4:00 PM"
         ],
-        "notes": []
+        "notes": "NE Portland record shop"
       }
     },
     {
@@ -1001,7 +1001,7 @@
           "Saturday: 1:00 – 7:00 PM",
           "Sunday: 1:00 – 7:00 PM"
         ],
-        "notes": []
+        "notes": "Division corridor record shop"
       }
     },
     {
@@ -1033,7 +1033,7 @@
           "Saturday: 11:00 AM – 7:00 PM",
           "Sunday: 11:00 AM – 7:00 PM"
         ],
-        "notes": []
+        "notes": "Inner Hawthorne record shop"
       }
     },
     {
@@ -1066,7 +1066,7 @@
           "Saturday: 12:00 – 6:00 PM",
           "Sunday: 12:00 – 6:00 PM"
         ],
-        "notes": []
+        "notes": "Cozy Alberta St bookshop"
       }
     },
     {
@@ -1100,7 +1100,7 @@
           "Saturday: 10:00 AM – 9:00 PM",
           "Sunday: 10:00 AM – 9:00 PM"
         ],
-        "notes": []
+        "notes": "SE outpost of Powell's — more manageable than downtown"
       }
     },
     {
@@ -1135,7 +1135,7 @@
           "Saturday: 10:00 AM – 9:00 PM",
           "Sunday: 10:00 AM – 9:00 PM"
         ],
-        "notes": []
+        "notes": "The legendary Portland bookstore — a full city block"
       }
     },
     {
@@ -1168,7 +1168,7 @@
           "Saturday: 11:00 AM – 6:00 PM",
           "Sunday: 12:00 – 5:00 PM"
         ],
-        "notes": "Neighborhood favorite"
+        "notes": "Neighborhood favorite on Division"
       }
     },
     {
@@ -1203,7 +1203,7 @@
           "Saturday: 11:00 AM – 7:00 PM",
           "Sunday: 11:00 AM – 7:00 PM"
         ],
-        "notes": []
+        "notes": "Cheese shop on Division"
       }
     },
     {
@@ -1241,7 +1241,7 @@
           "Saturday: 10:00 AM – 9:30 PM",
           "Sunday: 10:00 AM – 9:00 PM"
         ],
-        "notes": "Also has a restaurant/steakhouse side — good lunch spot"
+        "notes": "Butcher counter + steakhouse"
       }
     },
     {
@@ -1279,7 +1279,7 @@
           "Saturday: 10:00 AM – 7:00 PM",
           "Sunday: 10:00 AM – 7:00 PM"
         ],
-        "notes": []
+        "notes": "Fancy grocery experience — bakery, florist, specialty goods"
       }
     },
     {
@@ -1313,7 +1313,7 @@
           "Saturday: 2:00 PM – 1:00 AM",
           "Sunday: 2:00 – 9:00 PM"
         ],
-        "notes": "Neighborhood institution. Check schedule more often!"
+        "notes": "Neighborhood institution — Rocky Horror Saturdays"
       }
     },
     {
@@ -1339,7 +1339,7 @@
         ],
         "cuisine": [],
         "hours": [],
-        "notes": "Members. Want to go to more stuff."
+        "notes": "Portland's nonprofit cinema — great programming, historic building"
       }
     },
     {
@@ -1372,7 +1372,7 @@
           "Saturday: 12:15 – 11:55 PM",
           "Sunday: 12:15 – 10:00 PM"
         ],
-        "notes": "Good beer, bad pizza"
+        "notes": "Second-run movies, beer, cheap — good beer, bad pizza"
       }
     },
     {
@@ -1398,7 +1398,7 @@
         ],
         "cuisine": [],
         "hours": [],
-        "notes": "Right here on Division"
+        "notes": "Portland Art Museum's cinema on Division"
       }
     },
     {
@@ -1438,7 +1438,7 @@
           "Saturday: 9:00 AM – 5:00 PM",
           "Sunday: Closed"
         ],
-        "notes": []
+        "notes": "Film cameras, darkroom supplies, processing — Portland institution for analog photography"
       }
     },
     {
@@ -1477,7 +1477,7 @@
           "Saturday: Closed",
           "Sunday: Closed"
         ],
-        "notes": []
+        "notes": "Full-service photo lab"
       }
     },
     {
@@ -1515,7 +1515,7 @@
           "Saturday: 8:00 AM – 4:30 PM",
           "Sunday: Closed"
         ],
-        "notes": []
+        "notes": "Hardwood lumber supplier — domestic and exotic hardwoods"
       }
     },
     {
@@ -1555,7 +1555,7 @@
           "Saturday: 10:00 AM – 6:00 PM",
           "Sunday: 10:00 AM – 6:00 PM"
         ],
-        "notes": "Bought all climbing gear here, including ski boots."
+        "notes": "Climbing and hiking gear — Portland mountaineering institution"
       }
     }
   ]

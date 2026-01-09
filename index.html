@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Portland Places</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
@@ -57,6 +58,14 @@
     .legend {
       font-size: 11px;
       color: #666;
+      margin-top: 12px;
+      padding-top: 8px;
+      border-top: 1px solid #eee;
+    }
+    
+    .legend-title {
+      font-weight: 600;
+      margin-bottom: 4px;
     }
     
     .legend-item {
@@ -66,16 +75,43 @@
       margin: 4px 0;
     }
     
-    .legend-dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
+    .legend-icon {
+      width: 20px;
+      text-align: center;
     }
     
-    .dot-favorite { background: #f59e0b; }
-    .dot-tried { background: #10b981; }
-    .dot-want { background: #3b82f6; }
+    .count {
+      font-size: 11px;
+      color: #888;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid #eee;
+    }
     
+    /* Marker styles */
+    .place-marker {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid white;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      font-size: 12px;
+    }
+    
+    .place-marker i {
+      color: white;
+    }
+    
+    /* Status colors */
+    .marker-favorite { background: #f59e0b; }
+    .marker-tried { background: #10b981; }
+    .marker-want-to-try { background: #3b82f6; }
+    .marker-unknown { background: #9ca3af; }
+    
+    /* Popup styles */
     .popup-name {
       font-weight: 600;
       font-size: 14px;
@@ -85,7 +121,7 @@
     .popup-meta {
       font-size: 12px;
       color: #666;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
     
     .popup-address {
@@ -118,14 +154,6 @@
     .status-favorite { background: #fef3c7; color: #b45309; }
     .status-tried { background: #d1fae5; color: #047857; }
     .status-want-to-try { background: #dbeafe; color: #1d4ed8; }
-    
-    .count {
-      font-size: 11px;
-      color: #888;
-      margin-top: 8px;
-      padding-top: 8px;
-      border-top: 1px solid #eee;
-    }
   </style>
 </head>
 <body>
@@ -152,9 +180,20 @@
     </div>
     
     <div class="legend">
-      <div class="legend-item"><span class="legend-dot dot-favorite"></span> Favorite</div>
-      <div class="legend-item"><span class="legend-dot dot-tried"></span> Tried</div>
-      <div class="legend-item"><span class="legend-dot dot-want"></span> Want to Try</div>
+      <div class="legend-title">Status (color)</div>
+      <div class="legend-item"><span class="legend-icon" style="color:#f59e0b">●</span> Favorite</div>
+      <div class="legend-item"><span class="legend-icon" style="color:#10b981">●</span> Tried</div>
+      <div class="legend-item"><span class="legend-icon" style="color:#3b82f6">●</span> Want to Try</div>
+    </div>
+    
+    <div class="legend">
+      <div class="legend-title">Category (icon)</div>
+      <div class="legend-item"><span class="legend-icon"><i class="fa-solid fa-utensils"></i></span> Food & Drink</div>
+      <div class="legend-item"><span class="legend-icon"><i class="fa-solid fa-record-vinyl"></i></span> Record Shop</div>
+      <div class="legend-item"><span class="legend-icon"><i class="fa-solid fa-book"></i></span> Bookstore</div>
+      <div class="legend-item"><span class="legend-icon"><i class="fa-solid fa-film"></i></span> Movie Theater</div>
+      <div class="legend-item"><span class="legend-icon"><i class="fa-solid fa-cheese"></i></span> Provisions</div>
+      <div class="legend-item"><span class="legend-icon"><i class="fa-solid fa-screwdriver-wrench"></i></span> Supplies</div>
     </div>
     
     <div class="count" id="count"></div>
@@ -170,7 +209,7 @@
       attribution: '© OpenStreetMap contributors'
     }).addTo(map);
     
-    // Marker colors by status
+    // Status colors
     const statusColors = {
       'favorite': '#f59e0b',
       'tried': '#10b981',
@@ -178,16 +217,34 @@
       'unknown': '#9ca3af'
     };
     
-    // Create circle marker icon
-    function createMarker(status) {
+    // Category icons (Font Awesome classes)
+    const categoryIcons = {
+      'Food & Drink': 'fa-utensils',
+      'Record Shop': 'fa-record-vinyl',
+      'Record Shops': 'fa-record-vinyl',
+      'Bookstore': 'fa-book',
+      'Bookstores': 'fa-book',
+      'Movie Theaters': 'fa-film',
+      'Movie Theater': 'fa-film',
+      'Provisions': 'fa-cheese',
+      'Supplies': 'fa-screwdriver-wrench',
+      'Arts & Culture': 'fa-palette',
+      'Music Venues': 'fa-music',
+      'Clothing': 'fa-shirt'
+    };
+    
+    // Create custom marker
+    function createMarkerIcon(status, category) {
       const color = statusColors[status] || statusColors.unknown;
-      return L.circleMarker([0, 0], {
-        radius: 8,
-        fillColor: color,
-        color: '#fff',
-        weight: 2,
-        opacity: 1,
-        fillOpacity: 0.9
+      const iconClass = categoryIcons[category] || 'fa-location-dot';
+      const statusClass = `marker-${status || 'unknown'}`;
+      
+      return L.divIcon({
+        className: 'custom-marker',
+        html: `<div class="place-marker ${statusClass}"><i class="fa-solid ${iconClass}"></i></div>`,
+        iconSize: [28, 28],
+        iconAnchor: [14, 14],
+        popupAnchor: [0, -14]
       });
     }
     
@@ -195,12 +252,12 @@
     function formatPopup(props) {
       const statusClass = `status-${props.status}`;
       const statusLabel = props.status === 'want-to-try' ? 'Want to Try' : 
-                          props.status.charAt(0).toUpperCase() + props.status.slice(1);
+                          props.status ? props.status.charAt(0).toUpperCase() + props.status.slice(1) : '';
       
       let html = `
         <div class="popup-name">
           ${props.name}
-          <span class="status-badge ${statusClass}">${statusLabel}</span>
+          ${statusLabel ? `<span class="status-badge ${statusClass}">${statusLabel}</span>` : ''}
         </div>
         <div class="popup-meta">${props.category}</div>
       `;
@@ -250,13 +307,8 @@
         if (statusFilter !== 'all' && props.status !== statusFilter) return;
         if (categoryFilter !== 'all' && props.category !== categoryFilter) return;
         
-        const marker = L.circleMarker([coords[1], coords[0]], {
-          radius: 8,
-          fillColor: statusColors[props.status] || statusColors.unknown,
-          color: '#fff',
-          weight: 2,
-          opacity: 1,
-          fillOpacity: 0.9
+        const marker = L.marker([coords[1], coords[0]], {
+          icon: createMarkerIcon(props.status, props.category)
         });
         
         marker.bindPopup(formatPopup(props), { maxWidth: 250 });

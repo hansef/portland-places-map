@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generated": "2026-01-09T22:13:27.399Z",
+  "generated": "2026-01-09T22:14:53.866Z",
   "features": [
     {
       "type": "Feature",
@@ -261,6 +261,41 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          -122.6394225,
+          45.5036791
+        ]
+      },
+      "properties": {
+        "name": "Daydream",
+        "category": "Food & Drink",
+        "type": [
+          "wine bar"
+        ],
+        "neighborhood": "Clinton",
+        "address": "2615 SE Clinton St, Portland, OR 97202",
+        "status": "favorite",
+        "goodFor": [
+          "drinks",
+          "wine"
+        ],
+        "cuisine": [],
+        "hours": [
+          "Monday: Closed",
+          "Tuesday: Closed",
+          "Wednesday: 4:00 PM – 10:00 PM",
+          "Thursday: 4:00 PM – 11:00 PM",
+          "Friday: 4:00 PM – 12:00 AM",
+          "Saturday: 4:00 PM – 12:00 AM",
+          "Sunday: 2:00 PM – 8:00 PM"
+        ],
+        "notes": "Great wine curation and vibe, interesting wine cocktails."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           -122.6369123,
           45.5290531
         ]
@@ -333,6 +368,41 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          -122.627423,
+          45.5047048
+        ]
+      },
+      "properties": {
+        "name": "Dream Deli",
+        "category": "Food & Drink",
+        "type": [
+          "deli",
+          "restaurant"
+        ],
+        "neighborhood": "Richmond",
+        "address": "3542 SE Division St, Portland, OR 97202",
+        "status": "want-to-try",
+        "goodFor": [
+          "lunch"
+        ],
+        "cuisine": [],
+        "hours": [
+          "Monday: Closed",
+          "Tuesday: 11:00 AM – 3:00 PM",
+          "Wednesday: 11:00 AM – 3:00 PM",
+          "Thursday: 11:00 AM – 3:00 PM",
+          "Friday: 11:00 AM – 3:00 PM",
+          "Saturday: 11:00 AM – 3:00 PM",
+          "Sunday: Closed"
+        ],
+        "notes": "Jewish-Italian deli with PNW soul. Daytime only."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           -122.63464599999998,
           45.562397999999995
         ]
@@ -353,7 +423,15 @@
           "vinyl"
         ],
         "cuisine": [],
-        "hours": [],
+        "hours": [
+          "Monday: 5:00 PM – 12:00 AM",
+          "Tuesday: 5:00 PM – 12:00 AM",
+          "Wednesday: 5:00 PM – 12:00 AM",
+          "Thursday: 5:00 PM – 12:00 AM",
+          "Friday: 5:00 PM – 12:00 AM",
+          "Saturday: 5:00 PM – 12:00 AM",
+          "Sunday: 5:00 PM – 12:00 AM"
+        ],
         "notes": "Vibe-y vietnamese-inspired cocktails + vinyl"
       }
     },

@@ -75,6 +75,19 @@
       align-items: center;
       gap: 6px;
       margin: 4px 0;
+      cursor: pointer;
+      padding: 2px 4px;
+      border-radius: 4px;
+      transition: background 0.15s;
+    }
+    
+    .legend-item:hover {
+      background: #f3f4f6;
+    }
+    
+    .legend-item.active {
+      background: #e5e7eb;
+      font-weight: 500;
     }
     
     .legend-icon {
@@ -224,21 +237,21 @@
       </select>
     </div>
     
-    <div class="legend">
+    <div class="legend" id="status-legend">
       <div class="legend-title">Status (color)</div>
-      <div class="legend-item"><span class="legend-icon" style="color:#f59e0b">●</span> Favorite</div>
-      <div class="legend-item"><span class="legend-icon" style="color:#10b981">●</span> Been</div>
-      <div class="legend-item"><span class="legend-icon" style="color:#3b82f6">●</span> Want to Try</div>
+      <div class="legend-item" data-status="favorite"><span class="legend-icon" style="color:#f59e0b">●</span> Favorite</div>
+      <div class="legend-item" data-status="been"><span class="legend-icon" style="color:#10b981">●</span> Been</div>
+      <div class="legend-item" data-status="want-to-try"><span class="legend-icon" style="color:#3b82f6">●</span> Want to Try</div>
     </div>
     
-    <div class="legend">
+    <div class="legend" id="category-legend">
       <div class="legend-title">Category (icon)</div>
-      <div class="legend-item"><span class="legend-icon"><i class="fa-solid fa-utensils"></i></span> Food & Drink</div>
-      <div class="legend-item"><span class="legend-icon"><i class="fa-solid fa-record-vinyl"></i></span> Record Shop</div>
-      <div class="legend-item"><span class="legend-icon"><i class="fa-solid fa-book"></i></span> Bookstore</div>
-      <div class="legend-item"><span class="legend-icon"><i class="fa-solid fa-film"></i></span> Movie Theater</div>
-      <div class="legend-item"><span class="legend-icon"><i class="fa-solid fa-cheese"></i></span> Provisions</div>
-      <div class="legend-item"><span class="legend-icon"><i class="fa-solid fa-screwdriver-wrench"></i></span> Supplies</div>
+      <div class="legend-item" data-category="Food & Drink"><span class="legend-icon"><i class="fa-solid fa-utensils"></i></span> Food & Drink</div>
+      <div class="legend-item" data-category="Record Shop"><span class="legend-icon"><i class="fa-solid fa-record-vinyl"></i></span> Record Shop</div>
+      <div class="legend-item" data-category="Bookstore"><span class="legend-icon"><i class="fa-solid fa-book"></i></span> Bookstore</div>
+      <div class="legend-item" data-category="Movie Theaters"><span class="legend-icon"><i class="fa-solid fa-film"></i></span> Movie Theater</div>
+      <div class="legend-item" data-category="Provisions"><span class="legend-icon"><i class="fa-solid fa-cheese"></i></span> Provisions</div>
+      <div class="legend-item" data-category="Supplies"><span class="legend-icon"><i class="fa-solid fa-screwdriver-wrench"></i></span> Supplies</div>
     </div>
     
     <div class="count" id="count"></div>
@@ -443,8 +456,55 @@
     });
     
     // Filter event listeners
-    document.getElementById('status-filter').addEventListener('change', renderMarkers);
-    document.getElementById('category-filter').addEventListener('change', renderMarkers);
+    document.getElementById('status-filter').addEventListener('change', () => {
+      updateLegendActive();
+      renderMarkers();
+    });
+    document.getElementById('category-filter').addEventListener('change', () => {
+      updateLegendActive();
+      renderMarkers();
+    });
+    
+    // Update legend active states based on current filter
+    function updateLegendActive() {
+      const statusFilter = document.getElementById('status-filter').value;
+      const categoryFilter = document.getElementById('category-filter').value;
+      
+      // Status legend
+      document.querySelectorAll('#status-legend .legend-item').forEach(item => {
+        const status = item.dataset.status;
+        item.classList.toggle('active', status === statusFilter);
+      });
+      
+      // Category legend
+      document.querySelectorAll('#category-legend .legend-item').forEach(item => {
+        const category = item.dataset.category;
+        item.classList.toggle('active', category === categoryFilter);
+      });
+    }
+    
+    // Legend click handlers
+    document.querySelectorAll('#status-legend .legend-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const status = item.dataset.status;
+        const select = document.getElementById('status-filter');
+        // Toggle: if already selected, reset to 'all'
+        select.value = select.value === status ? 'all' : status;
+        updateLegendActive();
+        renderMarkers();
+      });
+    });
+    
+    document.querySelectorAll('#category-legend .legend-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const category = item.dataset.category;
+        const select = document.getElementById('category-filter');
+        // Toggle: if already selected, reset to 'all'
+        select.value = select.value === category ? 'all' : category;
+        updateLegendActive();
+        renderMarkers();
+      });
+    });
   </script>
 </body>
 </html>

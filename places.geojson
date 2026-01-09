@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generated": "2026-01-09T22:14:53.866Z",
+  "generated": "2026-01-09T22:52:23.315Z",
   "features": [
     {
       "type": "Feature",
@@ -14,9 +14,8 @@
       "properties": {
         "name": "After Ours",
         "category": "Food & Drink",
-        "type": [
-          "bar"
-        ],
+        "primary": "bar",
+        "type": [],
         "neighborhood": "Grant Park",
         "address": "2226 NE Broadway, Portland, OR 97232",
         "status": "been",
@@ -33,7 +32,9 @@
           "Saturday: 10:00 AM – 2:00 AM",
           "Sunday: 10:00 AM – 10:00 PM"
         ],
-        "notes": []
+        "notes": [
+          ""
+        ]
       }
     },
     {
@@ -48,16 +49,13 @@
       "properties": {
         "name": "Bamboo Sushi (28th)",
         "category": "Food & Drink",
-        "type": [
-          "restaurant",
-          "bar"
-        ],
+        "primary": "restaurant",
+        "type": [],
         "neighborhood": "Kerns",
         "address": "310 SE 28th Ave, Portland, OR 97214",
         "status": "been",
         "goodFor": [
           "dinner",
-          "sushi",
           "date-night"
         ],
         "cuisine": [
@@ -88,14 +86,13 @@
       "properties": {
         "name": "Better Days Cafe",
         "category": "Food & Drink",
-        "type": [
-          "coffee"
-        ],
+        "primary": "coffee",
+        "type": [],
         "neighborhood": "Richmond",
         "address": "3551 SE Division St, Portland, OR 97202",
         "status": "been",
         "goodFor": [
-          "coffee"
+          ""
         ],
         "cuisine": [],
         "hours": [
@@ -122,17 +119,15 @@
       "properties": {
         "name": "Broder Café",
         "category": "Food & Drink",
+        "primary": "restaurant",
         "type": [
-          "restaurant",
           "brunch"
         ],
         "neighborhood": "Hosford-Abernethy",
         "address": "2508 SE Clinton St, Portland, OR 97202",
         "status": "favorite",
         "goodFor": [
-          "brunch",
-          "breakfast",
-          "weekend"
+          "breakfast"
         ],
         "cuisine": [
           "scandinavian",
@@ -162,15 +157,13 @@
       "properties": {
         "name": "Cat's Paw Saloon",
         "category": "Food & Drink",
-        "type": [
-          "bar",
-          "pub"
-        ],
+        "primary": "bar",
+        "type": [],
         "neighborhood": "Richmond",
         "address": "3565 SE Division St, Portland, OR 97202",
         "status": "favorite",
         "goodFor": [
-          "drinks"
+          ""
         ],
         "cuisine": [],
         "hours": [
@@ -197,15 +190,13 @@
       "properties": {
         "name": "Coava Coffee Roasters (Grand)",
         "category": "Food & Drink",
-        "type": [
-          "coffee"
-        ],
+        "primary": "coffee",
+        "type": [],
         "neighborhood": "Buckman",
         "address": "1300 SE Grand Ave, Portland, OR 97214",
         "status": "favorite",
         "goodFor": [
-          "coffee",
-          "pourover"
+          ""
         ],
         "cuisine": [],
         "hours": [
@@ -232,16 +223,15 @@
       "properties": {
         "name": "Company Wine Bar",
         "category": "Food & Drink",
+        "primary": "bar",
         "type": [
-          "wine bar",
-          "bottle shop"
+          "wine-bar"
         ],
         "neighborhood": "Sunnyside",
         "address": "916 SE 34th Ave, Portland, OR 97214",
         "status": "favorite",
         "goodFor": [
-          "drinks",
-          "wine"
+          ""
         ],
         "cuisine": [],
         "hours": [
@@ -268,15 +258,15 @@
       "properties": {
         "name": "Daydream",
         "category": "Food & Drink",
+        "primary": "bar",
         "type": [
-          "wine bar"
+          "wine-bar"
         ],
         "neighborhood": "Clinton",
         "address": "2615 SE Clinton St, Portland, OR 97202",
         "status": "favorite",
         "goodFor": [
-          "drinks",
-          "wine"
+          ""
         ],
         "cuisine": [],
         "hours": [
@@ -303,18 +293,14 @@
       "properties": {
         "name": "Dear Sandy",
         "category": "Food & Drink",
-        "type": [
-          "coffee",
-          "bar"
-        ],
+        "primary": "coffee",
+        "type": [],
         "neighborhood": "Kerns",
         "address": "2800 NE Sandy Blvd, Portland, OR 97232",
         "status": "favorite",
         "goodFor": [
-          "coffee",
-          "drinks",
-          "morning",
-          "evening"
+          "breakfast",
+          "dinner"
         ],
         "cuisine": [],
         "hours": [
@@ -341,14 +327,13 @@
       "properties": {
         "name": "Double Dragon",
         "category": "Food & Drink",
-        "type": [
-          "bar"
-        ],
+        "primary": "bar",
+        "type": [],
         "neighborhood": "Hosford-Abernethy",
         "address": "1235 SE Division St, Portland, OR 97202",
         "status": "been",
         "goodFor": [
-          "drinks"
+          ""
         ],
         "cuisine": [],
         "hours": [
@@ -375,9 +360,9 @@
       "properties": {
         "name": "Dream Deli",
         "category": "Food & Drink",
+        "primary": "restaurant",
         "type": [
-          "deli",
-          "restaurant"
+          "deli"
         ],
         "neighborhood": "Richmond",
         "address": "3542 SE Division St, Portland, OR 97202",
@@ -410,15 +395,14 @@
       "properties": {
         "name": "Expatriate",
         "category": "Food & Drink",
+        "primary": "bar",
         "type": [
-          "bar",
           "cocktails"
         ],
         "neighborhood": "Concordia",
         "address": "5424 NE 30th Ave, Portland, OR 97211",
         "status": "favorite",
         "goodFor": [
-          "drinks",
           "date-night",
           "vinyl"
         ],
@@ -447,18 +431,15 @@
       "properties": {
         "name": "Harney Street Cafe",
         "category": "Food & Drink",
+        "primary": "restaurant",
         "type": [
-          "restaurant",
-          "brunch",
-          "breakfast"
+          "brunch"
         ],
         "neighborhood": "Sellwood",
         "address": "8337 SE 17th Ave, Portland, OR 97202",
         "status": "been",
         "goodFor": [
-          "brunch",
-          "breakfast",
-          "weekend"
+          "breakfast"
         ],
         "cuisine": [
           "american",
@@ -488,15 +469,15 @@
       "properties": {
         "name": "Hopworks Brewery",
         "category": "Food & Drink",
+        "primary": "bar",
         "type": [
-          "brewpub"
+          "brewery"
         ],
         "neighborhood": "Creston-Kenilworth",
         "address": "2944 SE Powell Blvd, Portland, OR 97202",
         "status": "favorite",
         "goodFor": [
           "lunch",
-          "beer",
           "groups"
         ],
         "cuisine": [
@@ -527,16 +508,13 @@
       "properties": {
         "name": "Horse Brass Pub",
         "category": "Food & Drink",
-        "type": [
-          "pub"
-        ],
+        "primary": "bar",
+        "type": [],
         "neighborhood": "Belmont",
         "address": "4534 SE Belmont St, Portland, OR 97215",
         "status": "favorite",
         "goodFor": [
-          "beer",
-          "lunch",
-          "pub-grub"
+          "lunch"
         ],
         "cuisine": [
           "british"
@@ -565,17 +543,13 @@
       "properties": {
         "name": "La Bonita",
         "category": "Food & Drink",
-        "type": [
-          "restaurant",
-          "bar"
-        ],
+        "primary": "restaurant",
+        "type": [],
         "neighborhood": "Richmond",
         "address": "2138 SE Division St, Portland, OR 97202",
         "status": "been",
         "goodFor": [
-          "dinner",
-          "drinks",
-          "margaritas"
+          "dinner"
         ],
         "cuisine": [
           "mexican"
@@ -604,10 +578,8 @@
       "properties": {
         "name": "Lardo",
         "category": "Food & Drink",
-        "type": [
-          "restaurant",
-          "bar"
-        ],
+        "primary": "restaurant",
+        "type": [],
         "neighborhood": "Buckman",
         "address": "1212 SE Hawthorne Blvd, Portland, OR 97214",
         "status": "been",
@@ -642,9 +614,8 @@
       "properties": {
         "name": "Meat Cheese Bread",
         "category": "Food & Drink",
-        "type": [
-          "restaurant"
-        ],
+        "primary": "restaurant",
+        "type": [],
         "neighborhood": "Buckman",
         "address": "1406 SE Stark St, Portland, OR 97214",
         "status": "favorite",
@@ -679,16 +650,13 @@
       "properties": {
         "name": "Pho Hathanh",
         "category": "Food & Drink",
-        "type": [
-          "restaurant"
-        ],
+        "primary": "restaurant",
+        "type": [],
         "neighborhood": "Richmond",
         "address": "2625 SE 21st Ave B, Portland, OR 97202",
         "status": "want-to-try",
         "goodFor": [
-          "lunch",
-          "soup",
-          "quick-meal"
+          "lunch"
         ],
         "cuisine": [
           "vietnamese",
@@ -718,9 +686,8 @@
       "properties": {
         "name": "Pizza Thief",
         "category": "Food & Drink",
-        "type": [
-          "restaurant"
-        ],
+        "primary": "restaurant",
+        "type": [],
         "neighborhood": "Hosford-Abernethy",
         "address": "1126 SE Division St unit 200, Portland, OR 97202",
         "status": "been",
@@ -755,15 +722,13 @@
       "properties": {
         "name": "Puff Coffee",
         "category": "Food & Drink",
-        "type": [
-          "coffee"
-        ],
+        "primary": "coffee",
+        "type": [],
         "neighborhood": "Kerns",
         "address": "2816 SE Stark St, Portland, OR 97214",
         "status": "favorite",
         "goodFor": [
-          "coffee",
-          "pourover"
+          ""
         ],
         "cuisine": [],
         "hours": [
@@ -790,14 +755,13 @@
       "properties": {
         "name": "Push Pull",
         "category": "Food & Drink",
-        "type": [
-          "coffee"
-        ],
+        "primary": "coffee",
+        "type": [],
         "neighborhood": "Buckman",
         "address": "821 SE Stark St, Portland, OR 97214",
         "status": "want-to-try",
         "goodFor": [
-          "coffee"
+          ""
         ],
         "cuisine": [],
         "hours": [
@@ -809,7 +773,9 @@
           "Saturday: 7:00 AM – 6:00 PM",
           "Sunday: 7:00 AM – 6:00 PM"
         ],
-        "notes": []
+        "notes": [
+          ""
+        ]
       }
     },
     {
@@ -824,16 +790,13 @@
       "properties": {
         "name": "Rose & Thistle Public House",
         "category": "Food & Drink",
-        "type": [
-          "pub"
-        ],
+        "primary": "bar",
+        "type": [],
         "neighborhood": "Irvington",
         "address": "2314 NE Broadway, Portland, OR 97232",
         "status": "been",
         "goodFor": [
-          "patio",
-          "beer",
-          "british-food"
+          "patio"
         ],
         "cuisine": [
           "british"
@@ -862,15 +825,13 @@
       "properties": {
         "name": "Stumptown Coffee Roasters (Belmont)",
         "category": "Food & Drink",
-        "type": [
-          "coffee"
-        ],
+        "primary": "coffee",
+        "type": [],
         "neighborhood": "Sunnyside",
         "address": "3356 SE Belmont St, Portland, OR 97214",
         "status": "been",
         "goodFor": [
-          "coffee",
-          "pourover"
+          ""
         ],
         "cuisine": [],
         "hours": [
@@ -897,14 +858,13 @@
       "properties": {
         "name": "Stumptown Coffee Roasters (Division)",
         "category": "Food & Drink",
-        "type": [
-          "coffee"
-        ],
+        "primary": "coffee",
+        "type": [],
         "neighborhood": "Richmond",
         "address": "4525 SE Division St, Portland, OR 97206",
         "status": "favorite",
         "goodFor": [
-          "coffee"
+          ""
         ],
         "cuisine": [],
         "hours": [
@@ -931,9 +891,8 @@
       "properties": {
         "name": "The Baker's Mark",
         "category": "Food & Drink",
-        "type": [
-          "restaurant"
-        ],
+        "primary": "restaurant",
+        "type": [],
         "neighborhood": "Hosford-Abernethy",
         "address": "1126 SE Division St, Portland, OR 97202",
         "status": "favorite",
@@ -967,15 +926,13 @@
       "properties": {
         "name": "Wallflower Coffee Company",
         "category": "Food & Drink",
-        "type": [
-          "coffee"
-        ],
+        "primary": "coffee",
+        "type": [],
         "neighborhood": "Richmond",
         "address": "3158 SE Division St, Portland, OR 97202",
         "status": "favorite",
         "goodFor": [
-          "coffee",
-          "pourover"
+          ""
         ],
         "cuisine": [],
         "hours": [
@@ -1002,15 +959,14 @@
       "properties": {
         "name": "Wayfinder Beer",
         "category": "Food & Drink",
+        "primary": "bar",
         "type": [
-          "brewery",
-          "brewpub"
+          "brewery"
         ],
         "neighborhood": "Central Eastside",
         "address": "304 SE 2nd Ave, Portland, OR 97214",
         "status": "favorite",
         "goodFor": [
-          "beer",
           "dinner",
           "groups"
         ],
@@ -1042,15 +998,13 @@
       "properties": {
         "name": "Yoko's Japanese Restaurant and Sushi Bar",
         "category": "Food & Drink",
-        "type": [
-          "restaurant"
-        ],
+        "primary": "restaurant",
+        "type": [],
         "neighborhood": "Creston-Kenilworth",
         "address": "2878 SE Gladstone St, Portland, OR 97202",
         "status": "favorite",
         "goodFor": [
-          "dinner",
-          "sushi"
+          "dinner"
         ],
         "cuisine": [
           "japanese",
@@ -1080,6 +1034,7 @@
       "properties": {
         "name": "Clinton Street Record & Stereo",
         "category": "Record Shops",
+        "primary": null,
         "type": [],
         "neighborhood": "Hosford-Abernethy",
         "address": "2510 SE Clinton St, Portland, OR 97202",
@@ -1113,6 +1068,7 @@
       "properties": {
         "name": "Mississippi Records",
         "category": "Record Shops",
+        "primary": null,
         "type": [],
         "neighborhood": "Mississippi",
         "address": "5202 N Albina Ave, Portland, OR 97217",
@@ -1147,6 +1103,7 @@
       "properties": {
         "name": "Music Millennium",
         "category": "Record Shops",
+        "primary": null,
         "type": [],
         "neighborhood": "Burnside",
         "address": "3158 E Burnside St, Portland, OR 97214",
@@ -1181,6 +1138,7 @@
       "properties": {
         "name": "Passenger Seat Records",
         "category": "Record Shops",
+        "primary": null,
         "type": [],
         "neighborhood": "Beaumont-Wilshire",
         "address": "4922 NE 20th Ave, Portland, OR 97211",
@@ -1213,6 +1171,7 @@
       "properties": {
         "name": "Prospector Records",
         "category": "Record Shops",
+        "primary": null,
         "type": [],
         "neighborhood": "Richmond",
         "address": "3561 SE Division St, Portland, OR 97202",
@@ -1245,6 +1204,7 @@
       "properties": {
         "name": "Tomorrow Records",
         "category": "Record Shops",
+        "primary": null,
         "type": [],
         "neighborhood": "Buckman",
         "address": "700 SE Hawthorne Blvd, Portland, OR 97214",
@@ -1277,6 +1237,7 @@
       "properties": {
         "name": "Melville Books",
         "category": "Bookstores",
+        "primary": null,
         "type": [],
         "neighborhood": "Alberta Arts District",
         "address": "2827 NE Alberta St, Portland, OR 97211",
@@ -1310,6 +1271,7 @@
       "properties": {
         "name": "Powell's Books on Hawthorne",
         "category": "Bookstores",
+        "primary": null,
         "type": [],
         "neighborhood": "Sunnyside",
         "address": "3723 SE Hawthorne Blvd, Portland, OR 97214",
@@ -1344,6 +1306,7 @@
       "properties": {
         "name": "Powell's City of Books",
         "category": "Bookstores",
+        "primary": null,
         "type": [],
         "neighborhood": "Pearl District",
         "address": "1005 W Burnside St, Portland, OR 97209",
@@ -1379,6 +1342,7 @@
       "properties": {
         "name": "Selected Stories",
         "category": "Bookstores",
+        "primary": null,
         "type": [],
         "neighborhood": "Richmond",
         "address": "3360 SE Division St, Portland, OR 97202",
@@ -1412,6 +1376,7 @@
       "properties": {
         "name": "Caseus Diem",
         "category": "Provisions",
+        "primary": null,
         "type": [
           "cheese"
         ],
@@ -1447,6 +1412,7 @@
       "properties": {
         "name": "Laurelhurst Market",
         "category": "Provisions",
+        "primary": null,
         "type": [
           "butcher",
           "meat"
@@ -1485,6 +1451,7 @@
       "properties": {
         "name": "Providore Fine Foods",
         "category": "Provisions",
+        "primary": null,
         "type": [
           "grocery",
           "specialty"
@@ -1523,6 +1490,7 @@
       "properties": {
         "name": "Clinton Street Theater",
         "category": "Movie Theaters",
+        "primary": null,
         "type": [],
         "neighborhood": "Hosford-Abernethy",
         "address": "2522 SE Clinton St, Portland, OR 97202",
@@ -1557,6 +1525,7 @@
       "properties": {
         "name": "Hollywood Theatre",
         "category": "Movie Theaters",
+        "primary": null,
         "type": [],
         "neighborhood": "Hollywood",
         "address": "4122 NE Sandy Blvd, Portland, OR 97212",
@@ -1583,6 +1552,7 @@
       "properties": {
         "name": "Laurelhurst Theater",
         "category": "Movie Theaters",
+        "primary": null,
         "type": [],
         "neighborhood": "Kerns",
         "address": "2735 E Burnside St, Portland, OR 97214",
@@ -1616,6 +1586,7 @@
       "properties": {
         "name": "PAM CUT's Tomorrow Theater",
         "category": "Movie Theaters",
+        "primary": null,
         "type": [],
         "neighborhood": "Richmond",
         "address": "3530 SE Division St, Portland, OR 97202",
@@ -1642,6 +1613,7 @@
       "properties": {
         "name": "Blue Moon Camera & Machine",
         "category": "Supplies",
+        "primary": null,
         "type": [
           "photography",
           "film",
@@ -1682,6 +1654,7 @@
       "properties": {
         "name": "Citizens Photo",
         "category": "Supplies",
+        "primary": null,
         "type": [
           "photography",
           "film",
@@ -1721,6 +1694,7 @@
       "properties": {
         "name": "Crosscut Hardwoods",
         "category": "Supplies",
+        "primary": null,
         "type": [
           "lumber",
           "woodworking"
@@ -1759,6 +1733,7 @@
       "properties": {
         "name": "Mountain Shop",
         "category": "Supplies",
+        "primary": null,
         "type": [
           "outdoor",
           "climbing",

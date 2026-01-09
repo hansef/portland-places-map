@@ -191,6 +191,7 @@ async function main() {
       properties: {
         name: place.name,
         category: place.category,
+        primary: place.primary || null,  // coffee, bar, restaurant (Food & Drink only)
         type: Array.isArray(place.type) ? place.type : [place.type].filter(Boolean),
         neighborhood: place.neighborhood || null,
         address: place.address || null,

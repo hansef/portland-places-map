@@ -239,6 +239,16 @@
       </select>
     </div>
     
+    <div class="filter-group" id="primary-filter-group" style="display:none;">
+      <label>Food & Drink Type</label>
+      <select id="primary-filter">
+        <option value="all">All</option>
+        <option value="coffee">☕ Coffee</option>
+        <option value="bar">🍸 Bar</option>
+        <option value="restaurant">🍴 Restaurant</option>
+      </select>
+    </div>
+    
     <div class="legend" id="status-legend">
       <div class="legend-title">Status (color)</div>
       <div class="legend-item" data-status="favorite"><span class="legend-icon" style="color:#f59e0b">●</span> Favorite</div>
@@ -254,6 +264,13 @@
       <div class="legend-item" data-category="Movie Theaters"><span class="legend-icon"><i class="fa-solid fa-film"></i></span> Movie Theaters</div>
       <div class="legend-item" data-category="Provisions"><span class="legend-icon"><i class="fa-solid fa-cheese"></i></span> Provisions</div>
       <div class="legend-item" data-category="Supplies"><span class="legend-icon"><i class="fa-solid fa-screwdriver-wrench"></i></span> Supplies</div>
+    </div>
+    
+    <div class="legend" id="primary-legend" style="display:none;">
+      <div class="legend-title">Food & Drink Type</div>
+      <div class="legend-item" data-primary="coffee"><span class="legend-icon"><i class="fa-solid fa-mug-hot"></i></span> Coffee</div>
+      <div class="legend-item" data-primary="bar"><span class="legend-icon"><i class="fa-solid fa-martini-glass"></i></span> Bar</div>
+      <div class="legend-item" data-primary="restaurant"><span class="legend-icon"><i class="fa-solid fa-utensils"></i></span> Restaurant</div>
     </div>
     
     <div class="count" id="count"></div>
@@ -293,11 +310,25 @@
       'Clothing': 'fa-shirt'
     };
     
+    // Primary icons for Food & Drink subcategories
+    const primaryIcons = {
+      'coffee': 'fa-mug-hot',
+      'bar': 'fa-martini-glass',
+      'restaurant': 'fa-utensils'
+    };
+    
     // Create custom marker
-    function createMarkerIcon(status, category) {
+    function createMarkerIcon(status, category, primary) {
       const color = statusColors[status] || statusColors.unknown;
-      const iconClass = categoryIcons[category] || 'fa-location-dot';
       const statusClass = `marker-${status || 'unknown'}`;
+      
+      // Use primary icon for Food & Drink, otherwise use category icon
+      let iconClass;
+      if (category === 'Food & Drink' && primary && primaryIcons[primary]) {
+        iconClass = primaryIcons[primary];
+      } else {
+        iconClass = categoryIcons[category] || 'fa-location-dot';
+      }
       
       return L.divIcon({
         className: 'custom-marker',
@@ -359,6 +390,14 @@
     function renderMarkers() {
       const statusFilter = document.getElementById('status-filter').value;
       const categoryFilter = document.getElementById('category-filter').value;
+      const primaryFilter = document.getElementById('primary-filter').value;
+      
+      // Show/hide primary filter based on category selection
+      const primaryFilterGroup = document.getElementById('primary-filter-group');
+      const primaryLegend = document.getElementById('primary-legend');
+      const showPrimary = categoryFilter === 'Food & Drink' || categoryFilter === 'all';
+      primaryFilterGroup.style.display = showPrimary ? 'block' : 'none';
+      primaryLegend.style.display = (categoryFilter === 'Food & Drink') ? 'block' : 'none';
       
       markers.clearLayers();
       
@@ -371,8 +410,13 @@
         if (statusFilter !== 'all' && props.status !== statusFilter) return;
         if (categoryFilter !== 'all' && props.category !== categoryFilter) return;
         
+        // Apply primary filter (only for Food & Drink)
+        if (primaryFilter !== 'all' && props.category === 'Food & Drink') {
+          if (props.primary !== primaryFilter) return;
+        }
+        
         const marker = L.marker([coords[1], coords[0]], {
-          icon: createMarkerIcon(props.status, props.category)
+          icon: createMarkerIcon(props.status, props.category, props.primary)
         });
         
         marker.bindPopup(formatPopup(props), { maxWidth: 250 });
@@ -463,6 +507,12 @@
       renderMarkers();
     });
     document.getElementById('category-filter').addEventListener('change', () => {
+      // Reset primary filter when category changes
+      document.getElementById('primary-filter').value = 'all';
+      updateLegendActive();
+      renderMarkers();
+    });
+    document.getElementById('primary-filter').addEventListener('change', () => {
       updateLegendActive();
       renderMarkers();
     });
@@ -471,6 +521,7 @@
     function updateLegendActive() {
       const statusFilter = document.getElementById('status-filter').value;
       const categoryFilter = document.getElementById('category-filter').value;
+      const primaryFilter = document.getElementById('primary-filter').value;
       
       // Status legend
       document.querySelectorAll('#status-legend .legend-item').forEach(item => {
@@ -482,6 +533,12 @@
       document.querySelectorAll('#category-legend .legend-item').forEach(item => {
         const category = item.dataset.category;
         item.classList.toggle('active', category === categoryFilter);
+      });
+      
+      // Primary legend
+      document.querySelectorAll('#primary-legend .legend-item').forEach(item => {
+        const primary = item.dataset.primary;
+        item.classList.toggle('active', primary === primaryFilter);
       });
     }
     
@@ -503,6 +560,19 @@
         const select = document.getElementById('category-filter');
         // Toggle: if already selected, reset to 'all'
         select.value = select.value === category ? 'all' : category;
+        // Reset primary filter when category changes
+        document.getElementById('primary-filter').value = 'all';
+        updateLegendActive();
+        renderMarkers();
+      });
+    });
+    
+    document.querySelectorAll('#primary-legend .legend-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const primary = item.dataset.primary;
+        const select = document.getElementById('primary-filter');
+        // Toggle: if already selected, reset to 'all'
+        select.value = select.value === primary ? 'all' : primary;
         updateLegendActive();
         renderMarkers();
       });

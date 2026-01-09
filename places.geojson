@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generated": "2026-01-09T18:33:32.527Z",
+  "generated": "2026-01-09T18:33:53.506Z",
   "features": [
     {
       "type": "Feature",
@@ -319,6 +319,47 @@
         "cuisine": [],
         "hours": [],
         "notes": "Vibe-y vietnamese-inspired cocktails + vinyl"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.64731800000001,
+          45.4622865
+        ]
+      },
+      "properties": {
+        "name": "Harney Street Cafe",
+        "category": "Food & Drink",
+        "type": [
+          "restaurant",
+          "brunch",
+          "breakfast"
+        ],
+        "neighborhood": "Sellwood",
+        "address": "8337 SE 17th Ave, Portland, OR 97202",
+        "status": "been",
+        "goodFor": [
+          "brunch",
+          "breakfast",
+          "weekend"
+        ],
+        "cuisine": [
+          "american",
+          "breakfast"
+        ],
+        "hours": [
+          "Monday: 8:00 AM – 2:30 PM",
+          "Tuesday: 8:00 AM – 2:30 PM",
+          "Wednesday: 8:00 AM – 2:30 PM",
+          "Thursday: 8:00 AM – 2:30 PM",
+          "Friday: 8:00 AM – 2:30 PM",
+          "Saturday: 8:00 AM – 2:30 PM",
+          "Sunday: 8:00 AM – 2:30 PM"
+        ],
+        "notes": "Cute neighborhood spot with cozy mom-vibes. Great salmon Benedict. Waffles are popular."
       }
     },
     {

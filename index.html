@@ -10,286 +10,580 @@
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
+    :root {
+      /* Warm, earthy palette */
+      --color-paper: #f7f5f0;
+      --color-paper-dark: #ebe8e0;
+      --color-ink: #2d3a3a;
+      --color-ink-light: #5a6868;
+      --color-ink-muted: #8a9696;
+
+      /* Status colors - warmer versions */
+      --color-haunt: #4a7c59;
+      --color-haunt-light: #e8f0ea;
+      --color-queue: #6b8cae;
+      --color-queue-light: #e8eff5;
+      --color-unknown: #9ca3a3;
+
+      /* Accents */
+      --color-accent: #c4a574;
+      --color-accent-dark: #a68b5b;
+
+      /* Shadows */
+      --shadow-sm: 0 1px 3px rgba(45, 58, 58, 0.08);
+      --shadow-md: 0 4px 12px rgba(45, 58, 58, 0.1);
+      --shadow-lg: 0 8px 24px rgba(45, 58, 58, 0.12);
+
+      /* Transitions */
+      --transition-fast: 150ms ease;
+      --transition-smooth: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-    
-    #map { 
-      position: absolute; 
-      top: 0; 
-      bottom: 0; 
-      left: 0; 
-      right: 0; 
+
+    body {
+      font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--color-ink);
+      background: var(--color-paper);
     }
-    
-    .controls {
+
+    #map {
       position: absolute;
-      top: 10px;
-      right: 10px;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+
+    /* Override Leaflet controls styling */
+    .leaflet-control-zoom {
+      border: none !important;
+      box-shadow: var(--shadow-md) !important;
+    }
+
+    .leaflet-control-zoom a {
+      background: var(--color-paper) !important;
+      color: var(--color-ink) !important;
+      border: none !important;
+      width: 36px !important;
+      height: 36px !important;
+      line-height: 36px !important;
+      font-size: 16px !important;
+    }
+
+    .leaflet-control-zoom a:hover {
+      background: var(--color-paper-dark) !important;
+    }
+
+    .leaflet-control-zoom-in {
+      border-radius: 8px 8px 0 0 !important;
+    }
+
+    .leaflet-control-zoom-out {
+      border-radius: 0 0 8px 8px !important;
+    }
+
+    /* ===== FILTER BAR ===== */
+    .filter-bar {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      right: 12px;
       z-index: 1000;
-      background: white;
-      padding: 12px;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-      max-width: 200px;
-    }
-    
-    .controls h3 {
-      font-size: 14px;
-      margin-bottom: 8px;
-      color: #333;
-    }
-    
-    .filter-group {
-      margin-bottom: 12px;
-    }
-    
-    .filter-group label {
-      display: block;
-      font-size: 12px;
-      color: #666;
-      margin-bottom: 4px;
-    }
-    
-    .filter-group select {
-      width: 100%;
-      padding: 6px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 13px;
-    }
-    
-    .legend {
-      font-size: 11px;
-      color: #666;
-      margin-top: 12px;
-      padding-top: 8px;
-      border-top: 1px solid #eee;
-    }
-    
-    .legend-title {
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-    
-    .legend-item {
       display: flex;
       align-items: center;
-      gap: 6px;
-      margin: 4px 0;
+      gap: 8px;
+      background: var(--color-paper);
+      padding: 10px 14px;
+      border-radius: 12px;
+      box-shadow: var(--shadow-md);
       cursor: pointer;
-      padding: 2px 4px;
-      border-radius: 4px;
-      transition: background 0.15s;
+      transition: var(--transition-smooth);
+      max-width: 600px;
     }
-    
-    .legend-item:hover {
-      background: #f3f4f6;
+
+    .filter-bar:hover {
+      box-shadow: var(--shadow-lg);
     }
-    
-    .legend-item.active {
-      background: #e5e7eb;
-      font-weight: 500;
+
+    .filter-bar.expanded {
+      cursor: default;
     }
-    
-    .legend-icon {
-      width: 20px;
-      text-align: center;
-    }
-    
-    .count {
-      font-size: 11px;
-      color: #888;
-      margin-top: 8px;
-      padding-top: 8px;
-      border-top: 1px solid #eee;
-    }
-    
-    .locate-btn {
-      width: 100%;
-      padding: 8px 12px;
-      background: #3b82f6;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 13px;
-      cursor: pointer;
+
+    .filter-bar-toggle {
       display: flex;
       align-items: center;
       justify-content: center;
+      width: 32px;
+      height: 32px;
+      background: var(--color-paper-dark);
+      border-radius: 8px;
+      color: var(--color-ink-light);
+      flex-shrink: 0;
+      transition: var(--transition-fast);
+    }
+
+    .filter-bar.expanded .filter-bar-toggle {
+      background: var(--color-ink);
+      color: var(--color-paper);
+    }
+
+    .filter-bar-chips {
+      display: flex;
+      align-items: center;
       gap: 6px;
-      margin-bottom: 12px;
+      flex: 1;
+      overflow: hidden;
     }
-    
-    .locate-btn:hover {
-      background: #2563eb;
+
+    .filter-bar-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 10px;
+      background: var(--color-paper-dark);
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--color-ink);
+      white-space: nowrap;
     }
-    
-    .locate-btn:disabled {
-      background: #9ca3af;
-      cursor: not-allowed;
+
+    .filter-bar-chip.status-haunts {
+      background: var(--color-haunt-light);
+      color: var(--color-haunt);
     }
-    
-    .locate-btn i {
+
+    .filter-bar-chip.status-queue {
+      background: var(--color-queue-light);
+      color: var(--color-queue);
+    }
+
+    .filter-bar-chip i {
+      font-size: 11px;
+      opacity: 0.8;
+    }
+
+    .filter-bar-count {
+      font-size: 12px;
+      color: var(--color-ink-muted);
+      white-space: nowrap;
+      padding-left: 8px;
+      border-left: 1px solid var(--color-paper-dark);
+    }
+
+    /* ===== EXPANDED FILTER PANEL ===== */
+    .filter-panel {
+      display: none;
+      flex-direction: column;
+      gap: 16px;
+      padding-top: 12px;
+      margin-top: 12px;
+      border-top: 1px solid var(--color-paper-dark);
+      width: 100%;
+    }
+
+    .filter-bar.expanded .filter-panel {
+      display: flex;
+    }
+
+    .filter-bar.expanded .filter-bar-chips,
+    .filter-bar.expanded .filter-bar-count {
+      display: none;
+    }
+
+    .filter-bar.expanded {
+      flex-wrap: wrap;
+      max-width: 420px;
+    }
+
+    .filter-section {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .filter-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .filter-section-title {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-ink-muted);
+    }
+
+    .filter-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .filter-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 12px;
+      background: transparent;
+      border: 1.5px solid var(--color-paper-dark);
+      border-radius: 20px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--color-ink-light);
+      cursor: pointer;
+      transition: var(--transition-fast);
+      white-space: nowrap;
+    }
+
+    .filter-pill:hover {
+      border-color: var(--color-ink-muted);
+      color: var(--color-ink);
+    }
+
+    .filter-pill.active {
+      background: var(--color-ink);
+      border-color: var(--color-ink);
+      color: var(--color-paper);
+    }
+
+    .filter-pill i {
       font-size: 12px;
     }
-    
-    /* Marker styles */
+
+    /* Status pill special colors when active */
+    .filter-pill[data-status="haunts"].active {
+      background: var(--color-haunt);
+      border-color: var(--color-haunt);
+    }
+
+    .filter-pill[data-status="queue"].active {
+      background: var(--color-queue);
+      border-color: var(--color-queue);
+    }
+
+    /* Primary pills (Food & Drink subcategories) */
+    .filter-section.primary-section {
+      display: none;
+    }
+
+    .filter-section.primary-section.visible {
+      display: flex;
+    }
+
+    /* ===== LOCATE BUTTON ===== */
+    .locate-btn {
+      position: absolute;
+      bottom: 24px;
+      right: 12px;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      background: var(--color-paper);
+      border: none;
+      border-radius: 50%;
+      box-shadow: var(--shadow-md);
+      color: var(--color-ink);
+      font-size: 18px;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .locate-btn:hover {
+      background: var(--color-paper-dark);
+      box-shadow: var(--shadow-lg);
+      transform: scale(1.05);
+    }
+
+    .locate-btn:disabled {
+      color: var(--color-ink-muted);
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ===== MAP MARKERS ===== */
     .place-marker {
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 28px;
-      height: 28px;
+      width: 30px;
+      height: 30px;
       border-radius: 50%;
-      border: 2px solid white;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      border: 2.5px solid var(--color-paper);
+      box-shadow: var(--shadow-md);
       font-size: 12px;
+      transition: transform var(--transition-fast);
     }
-    
+
+    .place-marker:hover {
+      transform: scale(1.15);
+    }
+
     .place-marker i {
       color: white;
     }
-    
-    /* Status colors */
-    .marker-haunts { background: #10b981; }
-    .marker-queue { background: #3b82f6; }
-    .marker-unknown { background: #9ca3af; }
-    
-    /* Popup styles */
+
+    .marker-haunts { background: var(--color-haunt); }
+    .marker-queue { background: var(--color-queue); }
+    .marker-unknown { background: var(--color-unknown); }
+
+    /* User location marker */
+    .user-location {
+      background: transparent !important;
+      border: none !important;
+    }
+
+    /* ===== POPUP STYLES ===== */
+    .leaflet-popup-content-wrapper {
+      background: var(--color-paper);
+      border-radius: 10px;
+      box-shadow: none;
+    }
+
+    .leaflet-popup {
+      margin-bottom: 14px;
+    }
+
+    .leaflet-popup-content {
+      margin: 14px 16px;
+      font-family: 'Source Sans 3', -apple-system, sans-serif;
+    }
+
+    .leaflet-popup-tip-container {
+      margin-top: -1px;
+    }
+
+    .leaflet-popup-tip {
+      background: var(--color-paper);
+      box-shadow: none;
+    }
+
+    /* Combined shadow on the popup container */
+    .leaflet-popup {
+      filter: drop-shadow(0 4px 12px rgba(45, 58, 58, 0.15));
+    }
+
     .popup-name {
-      font-weight: 600;
-      font-size: 14px;
-      margin-bottom: 4px;
+      font-family: 'Fraunces', Georgia, serif;
+      font-weight: 500;
+      font-size: 16px;
+      color: var(--color-ink);
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-    
+
     .popup-meta {
-      font-size: 12px;
-      color: #666;
-      margin-bottom: 4px;
+      font-size: 13px;
+      color: var(--color-ink-light);
+      margin-bottom: 2px;
     }
-    
+
     .popup-address {
-      font-size: 11px;
-      color: #888;
-    }
-    
-    .popup-notes {
       font-size: 12px;
-      color: #374151;
-      margin-top: 8px;
-      padding-top: 8px;
-      border-top: 1px solid #e5e7eb;
+      color: var(--color-ink-muted);
+    }
+
+    .popup-notes {
+      font-size: 13px;
+      color: var(--color-ink);
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--color-paper-dark);
       font-style: italic;
+      line-height: 1.4;
     }
-    
+
     .popup-tags {
-      margin-top: 6px;
+      margin-top: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
     }
-    
+
     .popup-tag {
       display: inline-block;
-      background: #e5e7eb;
-      color: #4b5563;
-      font-size: 10px;
-      padding: 2px 6px;
-      border-radius: 3px;
-      margin: 2px 2px 0 0;
+      background: var(--color-paper-dark);
+      color: var(--color-ink-light);
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 4px;
     }
-    
+
     .status-badge {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-family: 'Source Sans 3', sans-serif;
       font-size: 10px;
-      padding: 2px 6px;
-      border-radius: 3px;
-      margin-left: 6px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 3px 8px;
+      border-radius: 4px;
     }
-    
-    .status-haunts { background: #d1fae5; color: #047857; }
-    .status-queue { background: #dbeafe; color: #1d4ed8; }
+
+    .status-haunts {
+      background: var(--color-haunt-light);
+      color: var(--color-haunt);
+    }
+
+    .status-queue {
+      background: var(--color-queue-light);
+      color: var(--color-queue);
+    }
+
+    /* ===== MOBILE ADJUSTMENTS ===== */
+    @media (max-width: 480px) {
+      .filter-bar {
+        left: 8px;
+        right: 8px;
+        top: 8px;
+        padding: 8px 12px;
+      }
+
+      .filter-bar.expanded {
+        max-width: none;
+      }
+
+      .filter-bar-toggle {
+        width: 28px;
+        height: 28px;
+      }
+
+      .filter-bar-chip {
+        padding: 4px 8px;
+        font-size: 12px;
+      }
+
+      .filter-pill {
+        padding: 6px 10px;
+        font-size: 12px;
+      }
+
+      .locate-btn {
+        width: 44px;
+        height: 44px;
+        bottom: 20px;
+        right: 8px;
+      }
+    }
+
+    /* ===== OVERLAY FOR MOBILE ===== */
+    .filter-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(45, 58, 58, 0.3);
+      z-index: 999;
+      opacity: 0;
+      transition: opacity var(--transition-smooth);
+    }
+
+    .filter-overlay.visible {
+      display: block;
+      opacity: 1;
+    }
   </style>
 </head>
 <body>
   <div id="map"></div>
-  
-  <div class="controls">
-    <h3>Portland Places</h3>
-    
-    <button class="locate-btn" id="locate-btn">
-      <i class="fa-solid fa-location-crosshairs"></i>
-      Find Me
-    </button>
-    
-    <div class="filter-group">
-      <label>Status</label>
-      <select id="status-filter">
-        <option value="all">All</option>
-        <option value="haunts">Haunts</option>
-        <option value="queue">Queue</option>
-      </select>
+
+  <div class="filter-overlay" id="filter-overlay"></div>
+
+  <div class="filter-bar" id="filter-bar">
+    <div class="filter-bar-toggle">
+      <i class="fa-solid fa-sliders"></i>
     </div>
-    
-    <div class="filter-group">
-      <label>Category</label>
-      <select id="category-filter">
-        <option value="all">All</option>
-      </select>
+
+    <div class="filter-bar-chips" id="filter-bar-chips">
+      <!-- Active filter chips rendered here -->
     </div>
-    
-    <div class="filter-group" id="primary-filter-group" style="display:none;">
-      <label>Food & Drink Type</label>
-      <select id="primary-filter">
-        <option value="all">All</option>
-        <option value="coffee">☕ Coffee</option>
-        <option value="bar">🍸 Bar</option>
-        <option value="restaurant">🍴 Restaurant</option>
-      </select>
+
+    <div class="filter-bar-count" id="filter-bar-count"></div>
+
+    <div class="filter-panel" id="filter-panel">
+      <div class="filter-section">
+        <div class="filter-section-header">
+          <span class="filter-section-title">Status</span>
+        </div>
+        <div class="filter-pills" id="status-pills">
+          <button class="filter-pill active" data-status="all">All</button>
+          <button class="filter-pill" data-status="haunts">
+            <i class="fa-solid fa-heart"></i> Haunts
+          </button>
+          <button class="filter-pill" data-status="queue">
+            <i class="fa-solid fa-bookmark"></i> Queue
+          </button>
+        </div>
+      </div>
+
+      <div class="filter-section">
+        <div class="filter-section-header">
+          <span class="filter-section-title">Category</span>
+        </div>
+        <div class="filter-pills" id="category-pills">
+          <button class="filter-pill active" data-category="all">All</button>
+          <!-- Categories populated dynamically -->
+        </div>
+      </div>
+
+      <div class="filter-section primary-section" id="primary-section">
+        <div class="filter-section-header">
+          <span class="filter-section-title">Type</span>
+        </div>
+        <div class="filter-pills" id="primary-pills">
+          <button class="filter-pill active" data-primary="all">All</button>
+          <button class="filter-pill" data-primary="coffee">
+            <i class="fa-solid fa-mug-hot"></i> Coffee
+          </button>
+          <button class="filter-pill" data-primary="bar">
+            <i class="fa-solid fa-martini-glass"></i> Bar
+          </button>
+          <button class="filter-pill" data-primary="restaurant">
+            <i class="fa-solid fa-utensils"></i> Restaurant
+          </button>
+        </div>
+      </div>
     </div>
-    
-    <div class="legend" id="status-legend">
-      <div class="legend-title">Status (color)</div>
-      <div class="legend-item" data-status="haunts"><span class="legend-icon" style="color:#10b981">●</span> Haunts</div>
-      <div class="legend-item" data-status="queue"><span class="legend-icon" style="color:#3b82f6">●</span> Queue</div>
-    </div>
-    
-    <div class="legend" id="category-legend">
-      <div class="legend-title">Category (icon)</div>
-      <div class="legend-item" data-category="Food & Drink"><span class="legend-icon"><i class="fa-solid fa-utensils"></i></span> Food & Drink</div>
-      <div class="legend-item" data-category="Record Shops"><span class="legend-icon"><i class="fa-solid fa-record-vinyl"></i></span> Record Shops</div>
-      <div class="legend-item" data-category="Bookstores"><span class="legend-icon"><i class="fa-solid fa-book"></i></span> Bookstores</div>
-      <div class="legend-item" data-category="Movie Theaters"><span class="legend-icon"><i class="fa-solid fa-film"></i></span> Movie Theaters</div>
-      <div class="legend-item" data-category="Provisions"><span class="legend-icon"><i class="fa-solid fa-cheese"></i></span> Provisions</div>
-      <div class="legend-item" data-category="Supplies"><span class="legend-icon"><i class="fa-solid fa-screwdriver-wrench"></i></span> Supplies</div>
-    </div>
-    
-    <div class="legend" id="primary-legend" style="display:none;">
-      <div class="legend-title">Food & Drink Type</div>
-      <div class="legend-item" data-primary="coffee"><span class="legend-icon"><i class="fa-solid fa-mug-hot"></i></span> Coffee</div>
-      <div class="legend-item" data-primary="bar"><span class="legend-icon"><i class="fa-solid fa-martini-glass"></i></span> Bar</div>
-      <div class="legend-item" data-primary="restaurant"><span class="legend-icon"><i class="fa-solid fa-utensils"></i></span> Restaurant</div>
-    </div>
-    
-    <div class="count" id="count"></div>
   </div>
+
+  <button class="locate-btn" id="locate-btn" title="Find my location">
+    <i class="fa-solid fa-location-crosshairs"></i>
+  </button>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-    // Initialize map centered on Portland
+    // Initialize map centered on Portland with CartoDB Positron tiles
     const map = L.map('map').setView([45.52, -122.67], 12);
-    
-    // Add tile layer (OpenStreetMap)
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors'
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+      subdomains: 'abcd',
+      maxZoom: 19
     }).addTo(map);
-    
-    // Status colors
+
+    // Status colors (warm palette)
     const statusColors = {
-      'haunts': '#10b981',
-      'queue': '#3b82f6',
-      'unknown': '#9ca3af'
+      'haunts': '#4a7c59',
+      'queue': '#6b8cae',
+      'unknown': '#9ca3a3'
     };
-    
-    // Category icons (Font Awesome classes)
+
+    // Category icons
     const categoryIcons = {
       'Food & Drink': 'fa-utensils',
       'Record Shop': 'fa-record-vinyl',
@@ -304,42 +598,47 @@
       'Music Venues': 'fa-music',
       'Clothing': 'fa-shirt'
     };
-    
+
     // Primary icons for Food & Drink subcategories
     const primaryIcons = {
       'coffee': 'fa-mug-hot',
       'bar': 'fa-martini-glass',
       'restaurant': 'fa-utensils'
     };
-    
+
+    // Current filter state
+    const filterState = {
+      status: 'all',
+      category: 'all',
+      primary: 'all'
+    };
+
     // Create custom marker
     function createMarkerIcon(status, category, primary) {
-      const color = statusColors[status] || statusColors.unknown;
       const statusClass = `marker-${status || 'unknown'}`;
-      
-      // Use primary icon for Food & Drink, otherwise use category icon
+
       let iconClass;
       if (category === 'Food & Drink' && primary && primaryIcons[primary]) {
         iconClass = primaryIcons[primary];
       } else {
         iconClass = categoryIcons[category] || 'fa-location-dot';
       }
-      
+
       return L.divIcon({
         className: 'custom-marker',
         html: `<div class="place-marker ${statusClass}"><i class="fa-solid ${iconClass}"></i></div>`,
-        iconSize: [28, 28],
-        iconAnchor: [14, 14],
-        popupAnchor: [0, -14]
+        iconSize: [30, 30],
+        iconAnchor: [15, 15],
+        popupAnchor: [0, -15]
       });
     }
-    
+
     // Format popup content
     function formatPopup(props) {
       const statusClass = `status-${props.status}`;
       const statusLabels = { 'haunts': 'Haunt', 'queue': 'Queue' };
       const statusLabel = statusLabels[props.status] || '';
-      
+
       let html = `
         <div class="popup-name">
           ${props.name}
@@ -347,21 +646,21 @@
         </div>
         <div class="popup-meta">${props.category}</div>
       `;
-      
+
       if (props.neighborhood) {
         html += `<div class="popup-meta">${props.neighborhood}</div>`;
       }
-      
+
       if (props.address) {
         html += `<div class="popup-address">${props.address}</div>`;
       }
-      
+
       const tags = [
         ...(props.type || []),
         ...(props.cuisine || []),
         ...(props.goodFor || [])
       ].filter(Boolean);
-      
+
       if (tags.length > 0) {
         html += '<div class="popup-tags">';
         tags.forEach(tag => {
@@ -369,82 +668,140 @@
         });
         html += '</div>';
       }
-      
+
       if (props.notes && typeof props.notes === 'string' && props.notes.trim()) {
         html += `<div class="popup-notes">${props.notes}</div>`;
       }
-      
+
       return html;
     }
-    
+
     // Store all markers and data
     let allPlaces = [];
     let markers = L.layerGroup().addTo(map);
-    
+
+    // Update the compact filter bar chips
+    function updateFilterBarChips() {
+      const chipsContainer = document.getElementById('filter-bar-chips');
+      const chips = [];
+
+      if (filterState.status !== 'all') {
+        const statusClass = filterState.status === 'haunts' ? 'status-haunts' : 'status-queue';
+        const icon = filterState.status === 'haunts' ? 'fa-heart' : 'fa-bookmark';
+        const label = filterState.status.charAt(0).toUpperCase() + filterState.status.slice(1);
+        chips.push(`<span class="filter-bar-chip ${statusClass}"><i class="fa-solid ${icon}"></i> ${label}</span>`);
+      }
+
+      if (filterState.category !== 'all') {
+        const icon = categoryIcons[filterState.category] || 'fa-location-dot';
+        chips.push(`<span class="filter-bar-chip"><i class="fa-solid ${icon}"></i> ${filterState.category}</span>`);
+      }
+
+      if (filterState.primary !== 'all' && filterState.category === 'Food & Drink') {
+        const icon = primaryIcons[filterState.primary] || 'fa-utensils';
+        const label = filterState.primary.charAt(0).toUpperCase() + filterState.primary.slice(1);
+        chips.push(`<span class="filter-bar-chip"><i class="fa-solid ${icon}"></i> ${label}</span>`);
+      }
+
+      if (chips.length === 0) {
+        chips.push('<span class="filter-bar-chip">All Places</span>');
+      }
+
+      chipsContainer.innerHTML = chips.join('');
+    }
+
     // Filter and render markers
     function renderMarkers() {
-      const statusFilter = document.getElementById('status-filter').value;
-      const categoryFilter = document.getElementById('category-filter').value;
-      const primaryFilter = document.getElementById('primary-filter').value;
-      
-      // Show/hide primary filter based on category selection
-      const primaryFilterGroup = document.getElementById('primary-filter-group');
-      const primaryLegend = document.getElementById('primary-legend');
-      const showPrimary = categoryFilter === 'Food & Drink' || categoryFilter === 'all';
-      primaryFilterGroup.style.display = showPrimary ? 'block' : 'none';
-      primaryLegend.style.display = (categoryFilter === 'Food & Drink') ? 'block' : 'none';
-      
+      // Show/hide primary section
+      const primarySection = document.getElementById('primary-section');
+      const showPrimary = filterState.category === 'Food & Drink' || filterState.category === 'all';
+      primarySection.classList.toggle('visible', filterState.category === 'Food & Drink');
+
       markers.clearLayers();
-      
+
       let count = 0;
       allPlaces.forEach(feature => {
         const props = feature.properties;
         const coords = feature.geometry.coordinates;
-        
+
         // Apply filters
-        if (statusFilter !== 'all' && props.status !== statusFilter) return;
-        if (categoryFilter !== 'all' && props.category !== categoryFilter) return;
-        
+        if (filterState.status !== 'all' && props.status !== filterState.status) return;
+        if (filterState.category !== 'all' && props.category !== filterState.category) return;
+
         // Apply primary filter (only for Food & Drink)
-        if (primaryFilter !== 'all' && props.category === 'Food & Drink') {
-          if (props.primary !== primaryFilter) return;
+        if (filterState.primary !== 'all' && props.category === 'Food & Drink') {
+          if (props.primary !== filterState.primary) return;
         }
-        
+
         const marker = L.marker([coords[1], coords[0]], {
           icon: createMarkerIcon(props.status, props.category, props.primary)
         });
-        
-        marker.bindPopup(formatPopup(props), { maxWidth: 250 });
+
+        marker.bindPopup(formatPopup(props), { maxWidth: 280 });
         markers.addLayer(marker);
         count++;
       });
-      
-      document.getElementById('count').textContent = `Showing ${count} of ${allPlaces.length}`;
+
+      document.getElementById('filter-bar-count').textContent = `${count} places`;
+      updateFilterBarChips();
     }
-    
+
+    // Update pill active states
+    function updatePillStates() {
+      // Status pills
+      document.querySelectorAll('#status-pills .filter-pill').forEach(pill => {
+        pill.classList.toggle('active', pill.dataset.status === filterState.status);
+      });
+
+      // Category pills
+      document.querySelectorAll('#category-pills .filter-pill').forEach(pill => {
+        pill.classList.toggle('active', pill.dataset.category === filterState.category);
+      });
+
+      // Primary pills
+      document.querySelectorAll('#primary-pills .filter-pill').forEach(pill => {
+        pill.classList.toggle('active', pill.dataset.primary === filterState.primary);
+      });
+    }
+
     // Load GeoJSON data
     fetch('places.geojson')
       .then(res => res.json())
       .then(data => {
         allPlaces = data.features;
-        
-        // Populate category filter
+
+        // Populate category pills
         const categories = [...new Set(allPlaces.map(f => f.properties.category))].sort();
-        const categorySelect = document.getElementById('category-filter');
+        const categoryPills = document.getElementById('category-pills');
         categories.forEach(cat => {
-          const opt = document.createElement('option');
-          opt.value = cat;
-          opt.textContent = cat;
-          categorySelect.appendChild(opt);
+          const icon = categoryIcons[cat] || 'fa-location-dot';
+          const pill = document.createElement('button');
+          pill.className = 'filter-pill';
+          pill.dataset.category = cat;
+          pill.innerHTML = `<i class="fa-solid ${icon}"></i> ${cat}`;
+          categoryPills.appendChild(pill);
         });
-        
+
+        // Add category pill click handlers
+        document.querySelectorAll('#category-pills .filter-pill').forEach(pill => {
+          pill.addEventListener('click', () => {
+            filterState.category = pill.dataset.category;
+            // Reset primary when category changes
+            if (filterState.category !== 'Food & Drink') {
+              filterState.primary = 'all';
+            }
+            updatePillStates();
+            renderMarkers();
+          });
+        });
+
         // Initial render
         renderMarkers();
-        
+
         // Fit bounds to markers
         if (allPlaces.length > 0) {
           const bounds = L.latLngBounds(allPlaces.map(f => [
-            f.geometry.coordinates[1], 
+            f.geometry.coordinates[1],
             f.geometry.coordinates[0]
           ]));
           map.fitBounds(bounds, { padding: [50, 50] });
@@ -453,124 +810,107 @@
       .catch(err => {
         console.error('Failed to load places:', err);
       });
-    
+
+    // Status pill click handlers
+    document.querySelectorAll('#status-pills .filter-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        filterState.status = pill.dataset.status;
+        updatePillStates();
+        renderMarkers();
+      });
+    });
+
+    // Primary pill click handlers
+    document.querySelectorAll('#primary-pills .filter-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        filterState.primary = pill.dataset.primary;
+        updatePillStates();
+        renderMarkers();
+      });
+    });
+
+    // Filter bar expand/collapse
+    const filterBar = document.getElementById('filter-bar');
+    const filterOverlay = document.getElementById('filter-overlay');
+
+    function toggleFilterPanel(expand) {
+      const isExpanded = filterBar.classList.contains('expanded');
+
+      if (expand === undefined) {
+        expand = !isExpanded;
+      }
+
+      filterBar.classList.toggle('expanded', expand);
+      filterOverlay.classList.toggle('visible', expand);
+    }
+
+    filterBar.addEventListener('click', (e) => {
+      if (!filterBar.classList.contains('expanded')) {
+        toggleFilterPanel(true);
+      }
+    });
+
+    // Prevent clicks inside panel from closing it, but let pills work
+    document.getElementById('filter-panel').addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+
+    // Close panel when clicking overlay
+    filterOverlay.addEventListener('click', () => {
+      toggleFilterPanel(false);
+    });
+
+    // Close panel with escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && filterBar.classList.contains('expanded')) {
+        toggleFilterPanel(false);
+      }
+    });
+
     // Location tracking
     let userMarker = null;
     let userCircle = null;
-    
+
     const locateBtn = document.getElementById('locate-btn');
-    
+
     locateBtn.addEventListener('click', () => {
       locateBtn.disabled = true;
-      locateBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Locating...';
-      
+      locateBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+
       map.locate({ setView: true, maxZoom: 15, enableHighAccuracy: true });
     });
-    
+
     map.on('locationfound', (e) => {
       const radius = e.accuracy / 2;
-      
-      // Remove old markers
+
       if (userMarker) map.removeLayer(userMarker);
       if (userCircle) map.removeLayer(userCircle);
-      
-      // Add new markers
+
       userMarker = L.marker(e.latlng, {
         icon: L.divIcon({
           className: 'user-location',
-          html: '<div style="width:16px;height:16px;background:#3b82f6;border:3px solid white;border-radius:50%;box-shadow:0 2px 5px rgba(0,0,0,0.3);"></div>',
-          iconSize: [16, 16],
-          iconAnchor: [8, 8]
+          html: '<div style="width:14px;height:14px;background:#6b8cae;border:3px solid #f7f5f0;border-radius:50%;box-shadow:0 2px 8px rgba(107,140,174,0.4);"></div>',
+          iconSize: [14, 14],
+          iconAnchor: [7, 7]
         })
       }).addTo(map).bindPopup("You are here").openPopup();
-      
-      userCircle = L.circle(e.latlng, { radius, color: '#3b82f6', fillColor: '#3b82f6', fillOpacity: 0.15, weight: 1 }).addTo(map);
-      
+
+      userCircle = L.circle(e.latlng, {
+        radius,
+        color: '#6b8cae',
+        fillColor: '#6b8cae',
+        fillOpacity: 0.1,
+        weight: 1.5
+      }).addTo(map);
+
       locateBtn.disabled = false;
-      locateBtn.innerHTML = '<i class="fa-solid fa-location-crosshairs"></i> Find Me';
+      locateBtn.innerHTML = '<i class="fa-solid fa-location-crosshairs"></i>';
     });
-    
+
     map.on('locationerror', (e) => {
       alert('Could not get location: ' + e.message);
       locateBtn.disabled = false;
-      locateBtn.innerHTML = '<i class="fa-solid fa-location-crosshairs"></i> Find Me';
-    });
-    
-    // Filter event listeners
-    document.getElementById('status-filter').addEventListener('change', () => {
-      updateLegendActive();
-      renderMarkers();
-    });
-    document.getElementById('category-filter').addEventListener('change', () => {
-      // Reset primary filter when category changes
-      document.getElementById('primary-filter').value = 'all';
-      updateLegendActive();
-      renderMarkers();
-    });
-    document.getElementById('primary-filter').addEventListener('change', () => {
-      updateLegendActive();
-      renderMarkers();
-    });
-    
-    // Update legend active states based on current filter
-    function updateLegendActive() {
-      const statusFilter = document.getElementById('status-filter').value;
-      const categoryFilter = document.getElementById('category-filter').value;
-      const primaryFilter = document.getElementById('primary-filter').value;
-      
-      // Status legend
-      document.querySelectorAll('#status-legend .legend-item').forEach(item => {
-        const status = item.dataset.status;
-        item.classList.toggle('active', status === statusFilter);
-      });
-      
-      // Category legend
-      document.querySelectorAll('#category-legend .legend-item').forEach(item => {
-        const category = item.dataset.category;
-        item.classList.toggle('active', category === categoryFilter);
-      });
-      
-      // Primary legend
-      document.querySelectorAll('#primary-legend .legend-item').forEach(item => {
-        const primary = item.dataset.primary;
-        item.classList.toggle('active', primary === primaryFilter);
-      });
-    }
-    
-    // Legend click handlers
-    document.querySelectorAll('#status-legend .legend-item').forEach(item => {
-      item.addEventListener('click', () => {
-        const status = item.dataset.status;
-        const select = document.getElementById('status-filter');
-        // Toggle: if already selected, reset to 'all'
-        select.value = select.value === status ? 'all' : status;
-        updateLegendActive();
-        renderMarkers();
-      });
-    });
-    
-    document.querySelectorAll('#category-legend .legend-item').forEach(item => {
-      item.addEventListener('click', () => {
-        const category = item.dataset.category;
-        const select = document.getElementById('category-filter');
-        // Toggle: if already selected, reset to 'all'
-        select.value = select.value === category ? 'all' : category;
-        // Reset primary filter when category changes
-        document.getElementById('primary-filter').value = 'all';
-        updateLegendActive();
-        renderMarkers();
-      });
-    });
-    
-    document.querySelectorAll('#primary-legend .legend-item').forEach(item => {
-      item.addEventListener('click', () => {
-        const primary = item.dataset.primary;
-        const select = document.getElementById('primary-filter');
-        // Toggle: if already selected, reset to 'all'
-        select.value = select.value === primary ? 'all' : primary;
-        updateLegendActive();
-        renderMarkers();
-      });
+      locateBtn.innerHTML = '<i class="fa-solid fa-location-crosshairs"></i>';
     });
   </script>
 </body>

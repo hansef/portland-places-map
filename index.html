@@ -416,6 +416,77 @@
       color: var(--color-ink-muted);
     }
 
+    .popup-hours {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--color-paper-dark);
+    }
+
+    .popup-hours-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-ink-light);
+      margin-bottom: 6px;
+    }
+
+    .popup-hours-header i {
+      font-size: 11px;
+      opacity: 0.7;
+    }
+
+    .popup-hours-today {
+      font-size: 13px;
+      color: var(--color-ink);
+      font-weight: 500;
+    }
+
+    .popup-hours-list {
+      display: none;
+      flex-direction: column;
+      gap: 2px;
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--color-ink-light);
+    }
+
+    .popup-hours-list.expanded {
+      display: flex;
+    }
+
+    .popup-hours-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .popup-hours-row.today {
+      color: var(--color-ink);
+      font-weight: 500;
+    }
+
+    .popup-hours-day {
+      flex-shrink: 0;
+    }
+
+    .popup-hours-toggle {
+      background: none;
+      border: none;
+      padding: 0;
+      margin-top: 4px;
+      font-size: 11px;
+      color: var(--color-ink-muted);
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .popup-hours-toggle:hover {
+      color: var(--color-ink-light);
+    }
+
     .popup-notes {
       font-size: 13px;
       color: var(--color-ink);
@@ -465,76 +536,7 @@
       color: var(--color-queue);
     }
 
-    /* ===== MOBILE ADJUSTMENTS ===== */
-    @media (max-width: 480px) {
-      .leaflet-control-zoom {
-        margin-left: 8px !important;
-        margin-top: 60px !important;
-      }
-
-      .list-toggle-btn {
-        width: 44px;
-        height: 44px;
-        top: 8px;
-        left: 8px;
-      }
-
-      .filter-bar {
-        left: 60px;
-        right: 8px;
-        top: 8px;
-      }
-
-      .filter-bar.expanded {
-        max-width: none;
-      }
-
-      .filter-bar-header {
-        padding: 6px 12px;
-        min-height: 44px;
-      }
-
-      .filter-bar-toggle {
-        width: 28px;
-        height: 28px;
-      }
-
-      .filter-bar-title {
-        font-size: 15px;
-      }
-
-      .filter-bar-chip {
-        padding: 4px 8px;
-        font-size: 12px;
-      }
-
-      .filter-pill {
-        padding: 6px 10px;
-        font-size: 12px;
-      }
-
-      .locate-btn {
-        width: 44px;
-        height: 44px;
-        bottom: 20px;
-        right: 8px;
-      }
-
-      .list-sidebar {
-        width: 100vw;
-      }
-
-      .list-sidebar-header {
-        padding: 16px;
-      }
-
-      .list-sidebar-title {
-        font-size: 18px;
-      }
-
-    }
-
-    /* ===== OVERLAY FOR MOBILE ===== */
+    /* ===== OVERLAY ===== */
     .filter-overlay {
       display: none;
       position: fixed;
@@ -777,6 +779,79 @@
     .list-item .status-badge {
       flex-shrink: 0;
     }
+
+    /* ===== MOBILE ADJUSTMENTS ===== */
+    @media (max-width: 600px) {
+      .leaflet-control-zoom {
+        margin-left: 8px !important;
+        margin-top: 58px !important;
+      }
+
+      .list-toggle-btn {
+        width: 40px;
+        height: 40px;
+        top: 8px;
+        left: 8px;
+        font-size: 16px;
+        border-radius: 10px;
+      }
+
+      .filter-bar {
+        left: 56px;
+        right: 8px;
+        top: 8px;
+      }
+
+      .filter-bar.expanded {
+        max-width: none;
+      }
+
+      .filter-bar-header {
+        padding: 6px 10px;
+        min-height: 40px;
+        gap: 8px;
+      }
+
+      .filter-bar-toggle {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+      }
+
+      .filter-bar-title {
+        font-size: 15px;
+      }
+
+      .filter-bar-chip {
+        padding: 4px 8px;
+        font-size: 12px;
+      }
+
+      .filter-pill {
+        padding: 6px 10px;
+        font-size: 12px;
+      }
+
+      .locate-btn {
+        width: 44px;
+        height: 44px;
+        bottom: 20px;
+        right: 8px;
+      }
+
+      .list-sidebar {
+        width: 100vw;
+      }
+
+      .list-sidebar-header {
+        padding: 16px;
+      }
+
+      .list-sidebar-title {
+        font-size: 18px;
+      }
+
+    }
   </style>
 </head>
 <body>
@@ -950,6 +1025,51 @@
 
       if (props.address) {
         html += `<div class="popup-address">${props.address}</div>`;
+      }
+
+      // Hours section
+      if (props.hours && Array.isArray(props.hours) && props.hours.length > 0) {
+        const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const today = dayNames[new Date().getDay()];
+        const popupId = `hours-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+        // Find today's hours
+        const todayHours = props.hours.find(h => h.startsWith(today));
+        const todayTime = todayHours ? todayHours.replace(`${today}: `, '') : 'Hours not listed';
+
+        html += `
+          <div class="popup-hours">
+            <div class="popup-hours-header">
+              <i class="fa-regular fa-clock"></i>
+              <span>${today}</span>
+            </div>
+            <div class="popup-hours-today">${todayTime}</div>
+            <div class="popup-hours-list" id="${popupId}">
+        `;
+
+        // Reorder to start from today
+        const todayIndex = dayNames.indexOf(today);
+        const orderedDays = [...dayNames.slice(todayIndex), ...dayNames.slice(0, todayIndex)];
+
+        orderedDays.forEach(day => {
+          const dayHours = props.hours.find(h => h.startsWith(day));
+          if (dayHours) {
+            const time = dayHours.replace(`${day}: `, '');
+            const isToday = day === today;
+            html += `
+              <div class="popup-hours-row ${isToday ? 'today' : ''}">
+                <span class="popup-hours-day">${day.slice(0, 3)}</span>
+                <span>${time}</span>
+              </div>
+            `;
+          }
+        });
+
+        html += `
+            </div>
+            <button class="popup-hours-toggle" onclick="document.getElementById('${popupId}').classList.toggle('expanded'); this.textContent = this.textContent === 'Show all hours' ? 'Hide hours' : 'Show all hours';">Show all hours</button>
+          </div>
+        `;
       }
 
       const tags = [

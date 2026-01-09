@@ -3,6 +3,12 @@ set -e
 
 cd "$(dirname "$0")"
 
+echo "$(date): Pulling latest changes..."
+git pull --rebase --autostash || {
+  echo "$(date): Pull failed, aborting"
+  exit 1
+}
+
 echo "$(date): Regenerating GeoJSON..."
 node generate-geojson.mjs
 

@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generated": "2026-01-09T22:00:12.597Z",
+  "generated": "2026-01-09T22:13:27.399Z",
   "features": [
     {
       "type": "Feature",
@@ -218,6 +218,42 @@
           "Sunday: 7:00 AM – 6:00 PM"
         ],
         "notes": "Beautiful industrial space, good coffee"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.62925709999999,
+          45.516041099999995
+        ]
+      },
+      "properties": {
+        "name": "Company Wine Bar",
+        "category": "Food & Drink",
+        "type": [
+          "wine bar",
+          "bottle shop"
+        ],
+        "neighborhood": "Sunnyside",
+        "address": "916 SE 34th Ave, Portland, OR 97214",
+        "status": "favorite",
+        "goodFor": [
+          "drinks",
+          "wine"
+        ],
+        "cuisine": [],
+        "hours": [
+          "Monday: 4:00 PM – 10:00 PM",
+          "Tuesday: 4:00 PM – 10:00 PM",
+          "Wednesday: 4:00 PM – 10:00 PM",
+          "Thursday: 4:00 PM – 10:00 PM",
+          "Friday: 4:00 PM – 10:00 PM",
+          "Saturday: 12:00 PM – 10:00 PM",
+          "Sunday: 12:00 PM – 10:00 PM"
+        ],
+        "notes": "Great natural wine selection and wine club. Converted garage space off Belmont."
       }
     },
     {

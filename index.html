@@ -88,6 +88,35 @@
       border-top: 1px solid #eee;
     }
     
+    .locate-btn {
+      width: 100%;
+      padding: 8px 12px;
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    
+    .locate-btn:hover {
+      background: #2563eb;
+    }
+    
+    .locate-btn:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+    
+    .locate-btn i {
+      font-size: 12px;
+    }
+    
     /* Marker styles */
     .place-marker {
       display: flex;
@@ -170,6 +199,11 @@
   
   <div class="controls">
     <h3>Portland Places</h3>
+    
+    <button class="locate-btn" id="locate-btn">
+      <i class="fa-solid fa-location-crosshairs"></i>
+      Find Me
+    </button>
     
     <div class="filter-group">
       <label>Status</label>
@@ -363,6 +397,48 @@
       .catch(err => {
         console.error('Failed to load places:', err);
       });
+    
+    // Location tracking
+    let userMarker = null;
+    let userCircle = null;
+    
+    const locateBtn = document.getElementById('locate-btn');
+    
+    locateBtn.addEventListener('click', () => {
+      locateBtn.disabled = true;
+      locateBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Locating...';
+      
+      map.locate({ setView: true, maxZoom: 15, enableHighAccuracy: true });
+    });
+    
+    map.on('locationfound', (e) => {
+      const radius = e.accuracy / 2;
+      
+      // Remove old markers
+      if (userMarker) map.removeLayer(userMarker);
+      if (userCircle) map.removeLayer(userCircle);
+      
+      // Add new markers
+      userMarker = L.marker(e.latlng, {
+        icon: L.divIcon({
+          className: 'user-location',
+          html: '<div style="width:16px;height:16px;background:#3b82f6;border:3px solid white;border-radius:50%;box-shadow:0 2px 5px rgba(0,0,0,0.3);"></div>',
+          iconSize: [16, 16],
+          iconAnchor: [8, 8]
+        })
+      }).addTo(map).bindPopup("You are here").openPopup();
+      
+      userCircle = L.circle(e.latlng, { radius, color: '#3b82f6', fillColor: '#3b82f6', fillOpacity: 0.15, weight: 1 }).addTo(map);
+      
+      locateBtn.disabled = false;
+      locateBtn.innerHTML = '<i class="fa-solid fa-location-crosshairs"></i> Find Me';
+    });
+    
+    map.on('locationerror', (e) => {
+      alert('Could not get location: ' + e.message);
+      locateBtn.disabled = false;
+      locateBtn.innerHTML = '<i class="fa-solid fa-location-crosshairs"></i> Find Me';
+    });
     
     // Filter event listeners
     document.getElementById('status-filter').addEventListener('change', renderMarkers);

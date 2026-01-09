@@ -152,9 +152,8 @@
     }
     
     /* Status colors */
-    .marker-favorite { background: #f59e0b; }
-    .marker-been { background: #10b981; }
-    .marker-want-to-try { background: #3b82f6; }
+    .marker-haunts { background: #10b981; }
+    .marker-queue { background: #3b82f6; }
     .marker-unknown { background: #9ca3af; }
     
     /* Popup styles */
@@ -206,9 +205,8 @@
       margin-left: 6px;
     }
     
-    .status-favorite { background: #fef3c7; color: #b45309; }
-    .status-been { background: #d1fae5; color: #047857; }
-    .status-want-to-try { background: #dbeafe; color: #1d4ed8; }
+    .status-haunts { background: #d1fae5; color: #047857; }
+    .status-queue { background: #dbeafe; color: #1d4ed8; }
   </style>
 </head>
 <body>
@@ -226,9 +224,8 @@
       <label>Status</label>
       <select id="status-filter">
         <option value="all">All</option>
-        <option value="favorite">⭐ Favorites</option>
-        <option value="been">✓ Been</option>
-        <option value="want-to-try">📍 Want to Try</option>
+        <option value="haunts">👻 Haunts</option>
+        <option value="queue">📍 Queue</option>
       </select>
     </div>
     
@@ -251,9 +248,8 @@
     
     <div class="legend" id="status-legend">
       <div class="legend-title">Status (color)</div>
-      <div class="legend-item" data-status="favorite"><span class="legend-icon" style="color:#f59e0b">●</span> Favorite</div>
-      <div class="legend-item" data-status="been"><span class="legend-icon" style="color:#10b981">●</span> Been</div>
-      <div class="legend-item" data-status="want-to-try"><span class="legend-icon" style="color:#3b82f6">●</span> Want to Try</div>
+      <div class="legend-item" data-status="haunts"><span class="legend-icon" style="color:#10b981">●</span> Haunts</div>
+      <div class="legend-item" data-status="queue"><span class="legend-icon" style="color:#3b82f6">●</span> Queue</div>
     </div>
     
     <div class="legend" id="category-legend">
@@ -288,9 +284,8 @@
     
     // Status colors
     const statusColors = {
-      'favorite': '#f59e0b',
-      'been': '#10b981',
-      'want-to-try': '#3b82f6',
+      'haunts': '#10b981',
+      'queue': '#3b82f6',
       'unknown': '#9ca3af'
     };
     
@@ -342,8 +337,8 @@
     // Format popup content
     function formatPopup(props) {
       const statusClass = `status-${props.status}`;
-      const statusLabel = props.status === 'want-to-try' ? 'Want to Try' : 
-                          props.status ? props.status.charAt(0).toUpperCase() + props.status.slice(1) : '';
+      const statusLabels = { 'haunts': 'Haunt', 'queue': 'Queue' };
+      const statusLabel = statusLabels[props.status] || '';
       
       let html = `
         <div class="popup-name">

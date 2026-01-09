@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generated": "2026-01-09T05:45:19.023Z",
+  "generated": "2026-01-09T05:45:32.473Z",
   "features": [
     {
       "type": "Feature",
@@ -833,6 +833,46 @@
           "Sunday: 8:00 AM – 4:00 PM"
         ],
         "notes": "Local neighborhood coffee spot"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.66363690000001,
+          45.520580300000006
+        ]
+      },
+      "properties": {
+        "name": "Wayfinder Beer",
+        "category": "Food & Drink",
+        "type": [
+          "brewery",
+          "brewpub"
+        ],
+        "neighborhood": "Central Eastside",
+        "address": "304 SE 2nd Ave, Portland, OR 97214",
+        "status": "favorite",
+        "goodFor": [
+          "beer",
+          "dinner",
+          "groups"
+        ],
+        "cuisine": [
+          "american",
+          "german"
+        ],
+        "hours": [
+          "Monday: Closed",
+          "Tuesday: Closed",
+          "Wednesday: 12:00 PM – 9:00 PM",
+          "Thursday: 12:00 PM – 9:00 PM",
+          "Friday: 12:00 PM – 10:00 PM",
+          "Saturday: 12:00 PM – 10:00 PM",
+          "Sunday: 12:00 PM – 9:00 PM"
+        ],
+        "notes": "Award-winning lager-centric brewery in historic warehouse, large dining hall and patio. Cool classic horror-themed label art."
       }
     },
     {

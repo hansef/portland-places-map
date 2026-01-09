@@ -14,6 +14,13 @@ https://hansef.github.io/portland-places-map/
 4. `places.geojson` is committed and served via GitHub Pages
 5. `index.html` renders the map with Leaflet
 
+## Local Development
+
+```bash
+node serve.mjs
+# Opens at http://localhost:4747
+```
+
 ## Regenerating
 
 ```bash
@@ -43,6 +50,5 @@ Add to crontab for automatic daily sync:
 
 ## Status Colors
 
-- 🟡 Gold = Favorite
-- 🟢 Green = Tried  
-- 🔵 Blue = Want to Try
+- 🟢 Green = Haunts (favorites)
+- 🔵 Blue = Queue (want to try)

@@ -4,7 +4,7 @@ Interactive map of Portland places synced from Obsidian vault.
 
 ## Live Map
 
-https://hansfriederich.github.io/portland-places-map/
+https://hansef.github.io/portland-places-map/
 
 ## How It Works
 

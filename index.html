@@ -63,6 +63,7 @@
     .leaflet-control-zoom {
       border: none !important;
       box-shadow: var(--shadow-md) !important;
+      margin: 70px 0 0 12px !important;
     }
 
     .leaflet-control-zoom a {
@@ -91,19 +92,16 @@
     .filter-bar {
       position: absolute;
       top: 12px;
-      left: 12px;
+      left: 72px;
       right: 12px;
       z-index: 1000;
-      display: flex;
-      align-items: center;
-      gap: 8px;
       background: var(--color-paper);
-      padding: 10px 14px;
       border-radius: 12px;
       box-shadow: var(--shadow-md);
       cursor: pointer;
-      transition: var(--transition-smooth);
+      transition: box-shadow var(--transition-smooth), max-width var(--transition-smooth);
       max-width: 600px;
+      overflow: hidden;
     }
 
     .filter-bar:hover {
@@ -112,6 +110,15 @@
 
     .filter-bar.expanded {
       cursor: default;
+      max-width: 420px;
+    }
+
+    .filter-bar-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      min-height: 48px;
     }
 
     .filter-bar-toggle {
@@ -130,6 +137,19 @@
     .filter-bar.expanded .filter-bar-toggle {
       background: var(--color-ink);
       color: var(--color-paper);
+    }
+
+    .filter-bar-title {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--color-ink);
+      display: none;
+      flex: 1;
+    }
+
+    .filter-bar.expanded .filter-bar-title {
+      display: block;
     }
 
     .filter-bar-chips {
@@ -172,23 +192,7 @@
       font-size: 12px;
       color: var(--color-ink-muted);
       white-space: nowrap;
-      padding-left: 8px;
-      border-left: 1px solid var(--color-paper-dark);
-    }
-
-    /* ===== EXPANDED FILTER PANEL ===== */
-    .filter-panel {
-      display: none;
-      flex-direction: column;
-      gap: 16px;
-      padding-top: 12px;
-      margin-top: 12px;
-      border-top: 1px solid var(--color-paper-dark);
-      width: 100%;
-    }
-
-    .filter-bar.expanded .filter-panel {
-      display: flex;
+      flex-shrink: 0;
     }
 
     .filter-bar.expanded .filter-bar-chips,
@@ -196,9 +200,24 @@
       display: none;
     }
 
-    .filter-bar.expanded {
-      flex-wrap: wrap;
-      max-width: 420px;
+    /* ===== EXPANDED FILTER PANEL ===== */
+    .filter-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 0 14px;
+      border-top: 1px solid transparent;
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: max-height var(--transition-smooth), opacity var(--transition-smooth), padding var(--transition-smooth), border-color var(--transition-smooth);
+    }
+
+    .filter-bar.expanded .filter-panel {
+      max-height: 400px;
+      opacity: 1;
+      padding: 14px;
+      border-top-color: var(--color-paper-dark);
     }
 
     .filter-section {
@@ -448,20 +467,40 @@
 
     /* ===== MOBILE ADJUSTMENTS ===== */
     @media (max-width: 480px) {
-      .filter-bar {
+      .leaflet-control-zoom {
+        margin-left: 8px !important;
+        margin-top: 60px !important;
+      }
+
+      .list-toggle-btn {
+        width: 44px;
+        height: 44px;
+        top: 8px;
         left: 8px;
+      }
+
+      .filter-bar {
+        left: 60px;
         right: 8px;
         top: 8px;
-        padding: 8px 12px;
       }
 
       .filter-bar.expanded {
         max-width: none;
       }
 
+      .filter-bar-header {
+        padding: 6px 12px;
+        min-height: 44px;
+      }
+
       .filter-bar-toggle {
         width: 28px;
         height: 28px;
+      }
+
+      .filter-bar-title {
+        font-size: 15px;
       }
 
       .filter-bar-chip {
@@ -480,6 +519,19 @@
         bottom: 20px;
         right: 8px;
       }
+
+      .list-sidebar {
+        width: 100vw;
+      }
+
+      .list-sidebar-header {
+        padding: 16px;
+      }
+
+      .list-sidebar-title {
+        font-size: 18px;
+      }
+
     }
 
     /* ===== OVERLAY FOR MOBILE ===== */
@@ -497,6 +549,234 @@
       display: block;
       opacity: 1;
     }
+
+    /* ===== LIST TOGGLE BUTTON ===== */
+    .list-toggle-btn {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      background: var(--color-paper);
+      border: none;
+      border-radius: 12px;
+      box-shadow: var(--shadow-md);
+      color: var(--color-ink);
+      font-size: 18px;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .list-toggle-btn:hover {
+      background: var(--color-paper-dark);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .list-toggle-btn.active {
+      background: var(--color-ink);
+      color: var(--color-paper);
+    }
+
+    /* ===== LIST SIDEBAR ===== */
+    .list-sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 340px;
+      max-width: 100vw;
+      background: var(--color-paper);
+      box-shadow: var(--shadow-lg);
+      z-index: 1001;
+      transform: translateX(-100%);
+      transition: transform var(--transition-smooth);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .list-sidebar.expanded {
+      transform: translateX(0);
+    }
+
+    .list-sidebar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 20px 16px 20px;
+      border-bottom: 1px solid var(--color-paper-dark);
+      flex-shrink: 0;
+    }
+
+    .list-sidebar-title {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--color-ink);
+      margin: 0;
+    }
+
+    .list-sidebar-close {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      background: transparent;
+      border: none;
+      border-radius: 6px;
+      color: var(--color-ink-light);
+      font-size: 18px;
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+
+    .list-sidebar-close:hover {
+      background: var(--color-paper-dark);
+      color: var(--color-ink);
+    }
+
+    .list-sidebar-content {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 8px 0;
+    }
+
+    /* ===== CATEGORY GROUPS ===== */
+    .list-category {
+      border-bottom: 1px solid var(--color-paper-dark);
+    }
+
+    .list-category:last-child {
+      border-bottom: none;
+    }
+
+    .list-category-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 14px 20px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      text-align: left;
+    }
+
+    .list-category-header:hover {
+      background: var(--color-paper-dark);
+    }
+
+    .list-category-header > i:first-child {
+      font-size: 16px;
+      color: var(--color-ink-light);
+      width: 20px;
+      text-align: center;
+    }
+
+    .list-category-title {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--color-ink);
+      flex: 1;
+    }
+
+    .list-category-count {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-ink-muted);
+      background: var(--color-paper-dark);
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+
+    .list-category-chevron {
+      font-size: 12px;
+      color: var(--color-ink-muted);
+      transition: transform var(--transition-smooth);
+    }
+
+    .list-category.expanded .list-category-chevron {
+      transform: rotate(180deg);
+    }
+
+    .list-category-items {
+      display: none;
+      flex-direction: column;
+    }
+
+    .list-category.expanded .list-category-items {
+      display: flex;
+    }
+
+    /* ===== PLACE LIST ITEMS ===== */
+    .list-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 8px 16px 8px 20px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      text-align: left;
+    }
+
+    .list-item:hover {
+      background: var(--color-paper-dark);
+    }
+
+    .list-item-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--color-paper-dark);
+      color: var(--color-ink-light);
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    .list-item-icon.haunts {
+      background: var(--color-haunt-light);
+      color: var(--color-haunt);
+    }
+
+    .list-item-icon.queue {
+      background: var(--color-queue-light);
+      color: var(--color-queue);
+    }
+
+    .list-item-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .list-item-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--color-ink);
+      line-height: 1.3;
+    }
+
+    .list-item-meta {
+      font-size: 12px;
+      color: var(--color-ink-light);
+      margin-top: 1px;
+    }
+
+    .list-item .status-badge {
+      flex-shrink: 0;
+    }
   </style>
 </head>
 <body>
@@ -504,16 +784,33 @@
 
   <div class="filter-overlay" id="filter-overlay"></div>
 
+  <button class="list-toggle-btn" id="list-toggle-btn" title="View all places">
+    <i class="fa-solid fa-list"></i>
+  </button>
+
+  <div class="list-sidebar" id="list-sidebar">
+    <div class="list-sidebar-header">
+      <h2 class="list-sidebar-title">All Places</h2>
+      <button class="list-sidebar-close" id="list-sidebar-close">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div class="list-sidebar-content" id="list-sidebar-content">
+      <!-- Category groups rendered dynamically -->
+    </div>
+  </div>
+
   <div class="filter-bar" id="filter-bar">
-    <div class="filter-bar-toggle">
-      <i class="fa-solid fa-sliders"></i>
+    <div class="filter-bar-header">
+      <div class="filter-bar-toggle">
+        <i class="fa-solid fa-sliders"></i>
+      </div>
+      <span class="filter-bar-title">Filters</span>
+      <div class="filter-bar-chips" id="filter-bar-chips">
+        <!-- Active filter chips rendered here -->
+      </div>
+      <div class="filter-bar-count" id="filter-bar-count"></div>
     </div>
-
-    <div class="filter-bar-chips" id="filter-bar-chips">
-      <!-- Active filter chips rendered here -->
-    </div>
-
-    <div class="filter-bar-count" id="filter-bar-count"></div>
 
     <div class="filter-panel" id="filter-panel">
       <div class="filter-section">
@@ -720,7 +1017,7 @@
       markers.clearLayers();
 
       let count = 0;
-      allPlaces.forEach(feature => {
+      allPlaces.forEach((feature, index) => {
         const props = feature.properties;
         const coords = feature.geometry.coordinates;
 
@@ -736,6 +1033,7 @@
         const marker = L.marker([coords[1], coords[0]], {
           icon: createMarkerIcon(props.status, props.category, props.primary)
         });
+        marker.placeIndex = index; // Store index for list sidebar lookup
 
         marker.bindPopup(formatPopup(props), { maxWidth: 280 });
         markers.addLayer(marker);
@@ -797,6 +1095,7 @@
 
         // Initial render
         renderMarkers();
+        renderListSidebar();
 
         // Fit bounds to markers
         if (allPlaces.length > 0) {
@@ -829,10 +1128,160 @@
       });
     });
 
-    // Filter bar expand/collapse
+    // ===== PANEL ELEMENTS =====
     const filterBar = document.getElementById('filter-bar');
     const filterOverlay = document.getElementById('filter-overlay');
+    const listSidebar = document.getElementById('list-sidebar');
+    const listToggleBtn = document.getElementById('list-toggle-btn');
 
+    // Render list sidebar content
+    function renderListSidebar() {
+      const listContent = document.getElementById('list-sidebar-content');
+
+      // Group places by category
+      const placesByCategory = {};
+      allPlaces.forEach((feature, index) => {
+        const category = feature.properties.category;
+        if (!placesByCategory[category]) {
+          placesByCategory[category] = [];
+        }
+        placesByCategory[category].push({ feature, index });
+      });
+
+      // Sort categories alphabetically
+      const sortedCategories = Object.keys(placesByCategory).sort();
+
+      // Build HTML
+      let html = '';
+      sortedCategories.forEach(category => {
+        const places = placesByCategory[category];
+        const icon = categoryIcons[category] || 'fa-location-dot';
+
+        html += `
+          <div class="list-category" data-category="${category}">
+            <button class="list-category-header">
+              <i class="fa-solid ${icon}"></i>
+              <span class="list-category-title">${category}</span>
+              <span class="list-category-count">${places.length}</span>
+              <i class="fa-solid fa-chevron-down list-category-chevron"></i>
+            </button>
+            <div class="list-category-items">
+        `;
+
+        // Sort places by name within category
+        places.sort((a, b) =>
+          a.feature.properties.name.localeCompare(b.feature.properties.name)
+        );
+
+        places.forEach(({ feature, index }) => {
+          const props = feature.properties;
+
+          // Determine icon to show
+          let itemIcon;
+          if (props.category === 'Food & Drink' && props.primary && primaryIcons[props.primary]) {
+            itemIcon = primaryIcons[props.primary];
+          } else {
+            itemIcon = categoryIcons[props.category] || 'fa-location-dot';
+          }
+
+          // Status classes
+          const statusClass = props.status === 'haunts' || props.status === 'queue'
+            ? `status-${props.status}`
+            : '';
+          const statusLabel = props.status === 'haunts' ? 'Haunt'
+            : props.status === 'queue' ? 'Queue'
+            : '';
+          const iconStatusClass = props.status === 'haunts' || props.status === 'queue'
+            ? props.status
+            : '';
+
+          html += `
+            <button class="list-item" data-place-index="${index}">
+              <div class="list-item-icon ${iconStatusClass}">
+                <i class="fa-solid ${itemIcon}"></i>
+              </div>
+              <div class="list-item-content">
+                <div class="list-item-name">${props.name}</div>
+                <div class="list-item-meta">${props.neighborhood || props.category}</div>
+              </div>
+              ${statusLabel ? `<span class="status-badge ${statusClass}">${statusLabel}</span>` : ''}
+            </button>
+          `;
+        });
+
+        html += `
+            </div>
+          </div>
+        `;
+      });
+
+      listContent.innerHTML = html;
+
+      // Add category toggle handlers
+      document.querySelectorAll('.list-category-header').forEach(header => {
+        header.addEventListener('click', () => {
+          header.parentElement.classList.toggle('expanded');
+        });
+      });
+
+      // Add place click handlers
+      document.querySelectorAll('.list-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const placeIndex = parseInt(item.dataset.placeIndex);
+          jumpToPlace(placeIndex);
+        });
+      });
+    }
+
+    // Jump to a specific place on the map
+    function jumpToPlace(placeIndex) {
+      const feature = allPlaces[placeIndex];
+      if (!feature) return;
+
+      const coords = feature.geometry.coordinates;
+      const latLng = [coords[1], coords[0]];
+
+      // Reset all filters to show all places
+      filterState.status = 'all';
+      filterState.category = 'all';
+      filterState.primary = 'all';
+      updatePillStates();
+      renderMarkers();
+
+      // Close both panels
+      toggleListSidebar(false);
+      toggleFilterPanel(false);
+
+      // Pan to the marker and zoom in
+      map.setView(latLng, 16, { animate: true });
+
+      // Open popup when map animation completes
+      map.once('moveend', () => {
+        markers.eachLayer(marker => {
+          if (marker.placeIndex === placeIndex) {
+            marker.openPopup();
+          }
+        });
+      });
+    }
+
+    // Toggle list sidebar
+    function toggleListSidebar(show) {
+      if (show === undefined) {
+        show = !listSidebar.classList.contains('expanded');
+      }
+
+      // Close filter panel if opening list
+      if (show && filterBar.classList.contains('expanded')) {
+        toggleFilterPanel(false);
+      }
+
+      listSidebar.classList.toggle('expanded', show);
+      listToggleBtn.classList.toggle('active', show);
+      filterOverlay.classList.toggle('visible', show);
+    }
+
+    // Filter bar expand/collapse
     function toggleFilterPanel(expand) {
       const isExpanded = filterBar.classList.contains('expanded');
 
@@ -844,27 +1293,44 @@
       filterOverlay.classList.toggle('visible', expand);
     }
 
-    filterBar.addEventListener('click', (e) => {
-      if (!filterBar.classList.contains('expanded')) {
-        toggleFilterPanel(true);
-      }
+    // Click header to toggle filter panel
+    document.querySelector('.filter-bar-header').addEventListener('click', (e) => {
+      toggleFilterPanel();
     });
 
-    // Prevent clicks inside panel from closing it, but let pills work
+    // Prevent clicks inside panel from bubbling
     document.getElementById('filter-panel').addEventListener('click', (e) => {
       e.stopPropagation();
     });
 
-    // Close panel when clicking overlay
+    // Close panels when clicking overlay
     filterOverlay.addEventListener('click', () => {
-      toggleFilterPanel(false);
+      if (filterBar.classList.contains('expanded')) {
+        toggleFilterPanel(false);
+      } else if (listSidebar.classList.contains('expanded')) {
+        toggleListSidebar(false);
+      }
     });
 
-    // Close panel with escape key
+    // Close panels with escape key
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && filterBar.classList.contains('expanded')) {
-        toggleFilterPanel(false);
+      if (e.key === 'Escape') {
+        if (filterBar.classList.contains('expanded')) {
+          toggleFilterPanel(false);
+        } else if (listSidebar.classList.contains('expanded')) {
+          toggleListSidebar(false);
+        }
       }
+    });
+
+    // List toggle button handler
+    listToggleBtn.addEventListener('click', () => {
+      toggleListSidebar();
+    });
+
+    // List close button handler
+    document.getElementById('list-sidebar-close').addEventListener('click', () => {
+      toggleListSidebar(false);
     });
 
     // Location tracking
@@ -893,7 +1359,7 @@
           iconSize: [14, 14],
           iconAnchor: [7, 7]
         })
-      }).addTo(map).bindPopup("You are here").openPopup();
+      }).addTo(map).bindPopup("It's a me!").openPopup();
 
       userCircle = L.circle(e.latlng, {
         radius,

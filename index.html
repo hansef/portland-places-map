@@ -197,8 +197,35 @@
     }
 
     .filter-bar.expanded .filter-bar-chips,
-    .filter-bar.expanded .filter-bar-count {
+    .filter-bar.expanded .filter-bar-count,
+    .filter-bar.expanded .filter-bar-clear {
       display: none;
+    }
+
+    .filter-bar-clear {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      margin-top: 1px;
+      background: transparent;
+      border: none;
+      border-radius: 50%;
+      color: var(--color-ink-muted);
+      font-size: 12px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: var(--transition-fast);
+    }
+
+    .filter-bar-clear:hover {
+      background: var(--color-paper-dark);
+      color: var(--color-ink);
+    }
+
+    .filter-bar-clear.visible {
+      display: flex;
     }
 
     /* ===== EXPANDED FILTER PANEL ===== */
@@ -923,6 +950,9 @@
         <!-- Active filter chips rendered here -->
       </div>
       <div class="filter-bar-count" id="filter-bar-count"></div>
+      <button class="filter-bar-clear" id="filter-bar-clear" title="Clear filters">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
     </div>
 
     <div class="filter-panel" id="filter-panel">
@@ -1178,6 +1208,7 @@
     // Update the compact filter bar chips
     function updateFilterBarChips() {
       const chipsContainer = document.getElementById('filter-bar-chips');
+      const clearBtn = document.getElementById('filter-bar-clear');
       const chips = [];
 
       if (filterState.status !== 'all') {
@@ -1197,6 +1228,12 @@
         const label = filterState.primary.charAt(0).toUpperCase() + filterState.primary.slice(1);
         chips.push(`<span class="filter-bar-chip"><i class="fa-solid ${icon}"></i> ${label}</span>`);
       }
+
+      // Show clear button only when filters are active
+      const hasActiveFilters = filterState.status !== 'all' ||
+                               filterState.category !== 'all' ||
+                               filterState.primary !== 'all';
+      clearBtn.classList.toggle('visible', hasActiveFilters);
 
       if (chips.length === 0) {
         chips.push('<span class="filter-bar-chip">All Places</span>');
@@ -1330,6 +1367,16 @@
         updatePillStates();
         renderMarkers();
       });
+    });
+
+    // Clear filters button
+    document.getElementById('filter-bar-clear').addEventListener('click', (e) => {
+      e.stopPropagation(); // Don't open filter panel
+      filterState.status = 'all';
+      filterState.category = 'all';
+      filterState.primary = 'all';
+      updatePillStates();
+      renderMarkers();
     });
 
     // ===== PANEL ELEMENTS =====

@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generated": "2026-01-10T07:34:26.788Z",
+  "generated": "2026-01-10T07:42:30.156Z",
   "features": [
     {
       "type": "Feature",
@@ -18,7 +18,7 @@
         "type": [],
         "neighborhood": "Buckman",
         "address": "1000 SE 12th Ave, Portland, OR 97214",
-        "website": null,
+        "website": "https://www.instagram.com/roadsidepdx/",
         "status": "queue",
         "goodFor": [
           "late-night"
@@ -1253,7 +1253,7 @@
         "type": [],
         "neighborhood": "Richmond",
         "address": "3158 SE Division St, Portland, OR 97202",
-        "website": null,
+        "website": "https://www.wallflowercoffeecompany.com/",
         "status": "haunts",
         "goodFor": [
           ""

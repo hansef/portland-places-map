@@ -27,8 +27,17 @@ const {
   filterPlaces,
   groupPlacesByCategory,
   formatWebsiteDisplay,
-  getPlaceIcon
+  getPlaceIcon,
+  getOpenStatus
 } = await import('../app.js');
+
+// Also get hours parsing functions from PlacesConfig
+const {
+  parseTime,
+  parseTimeRange,
+  getTodayHours,
+  formatMinutesAsTime
+} = globalThis.PlacesConfig;
 
 // Simple test runner
 let passed = 0;
@@ -164,42 +173,56 @@ console.log('\n--- decodeFilterHash ---');
 test('returns defaults for empty hash', () => {
   assertDeepEqual(
     decodeFilterHash('', mockPlaces),
-    { status: 'all', category: 'all', primary: 'all' }
+    { status: 'all', category: 'all', primary: 'all', openNow: false }
   );
 });
 
 test('returns defaults for # only', () => {
   assertDeepEqual(
     decodeFilterHash('#', mockPlaces),
-    { status: 'all', category: 'all', primary: 'all' }
+    { status: 'all', category: 'all', primary: 'all', openNow: false }
   );
 });
 
 test('decodes status only', () => {
   assertDeepEqual(
     decodeFilterHash('#haunts', mockPlaces),
-    { status: 'haunts', category: 'all', primary: 'all' }
+    { status: 'haunts', category: 'all', primary: 'all', openNow: false }
   );
 });
 
 test('decodes status and category', () => {
   assertDeepEqual(
     decodeFilterHash('#queue/food-drink', mockPlaces),
-    { status: 'queue', category: 'Food & Drink', primary: 'all' }
+    { status: 'queue', category: 'Food & Drink', primary: 'all', openNow: false }
   );
 });
 
 test('decodes full filter with primary', () => {
   assertDeepEqual(
     decodeFilterHash('#haunts/food-drink/coffee', mockPlaces),
-    { status: 'haunts', category: 'Food & Drink', primary: 'coffee' }
+    { status: 'haunts', category: 'Food & Drink', primary: 'coffee', openNow: false }
   );
 });
 
 test('ignores primary for non-Food & Drink', () => {
   assertDeepEqual(
     decodeFilterHash('#haunts/bookstores/coffee', mockPlaces),
-    { status: 'haunts', category: 'Bookstores', primary: 'all' }
+    { status: 'haunts', category: 'Bookstores', primary: 'all', openNow: false }
+  );
+});
+
+test('decodes open-now prefix', () => {
+  assertDeepEqual(
+    decodeFilterHash('#open-now', mockPlaces),
+    { status: 'all', category: 'all', primary: 'all', openNow: true }
+  );
+});
+
+test('decodes open-now with filters', () => {
+  assertDeepEqual(
+    decodeFilterHash('#open-now/haunts/food-drink', mockPlaces),
+    { status: 'haunts', category: 'Food & Drink', primary: 'all', openNow: true }
   );
 });
 
@@ -232,6 +255,20 @@ test('encodes full filter', () => {
   assertEqual(
     encodeFilterHash({ status: 'queue', category: 'Food & Drink', primary: 'bar' }),
     '#queue/food-drink/bar'
+  );
+});
+
+test('encodes openNow only', () => {
+  assertEqual(
+    encodeFilterHash({ status: 'all', category: 'all', primary: 'all', openNow: true }),
+    '#open-now'
+  );
+});
+
+test('encodes openNow with filters', () => {
+  assertEqual(
+    encodeFilterHash({ status: 'haunts', category: 'Food & Drink', primary: 'all', openNow: true }),
+    '#open-now/haunts/food-drink'
   );
 });
 
@@ -324,6 +361,91 @@ test('returns category icon when no primary', () => {
 
 test('returns default icon for unknown category', () => {
   assertEqual(getPlaceIcon('Unknown', null), 'fa-location-dot');
+});
+
+// ===== HOURS PARSING TESTS =====
+
+console.log('\n--- parseTime ---');
+
+test('parses time with AM', () => {
+  assertEqual(parseTime('9:00 AM'), 540); // 9 * 60 = 540
+});
+
+test('parses time with PM', () => {
+  assertEqual(parseTime('3:00 PM'), 900); // 15 * 60 = 900
+});
+
+test('parses 12:00 PM as noon', () => {
+  assertEqual(parseTime('12:00 PM'), 720); // 12 * 60 = 720
+});
+
+test('parses 12:00 AM as midnight', () => {
+  assertEqual(parseTime('12:00 AM'), 0);
+});
+
+test('infers PM for end time when start is PM', () => {
+  // "9:00" as end time when start is 720 (noon) should be 9 PM = 21:00 = 1260
+  assertEqual(parseTime('9:00', true, 720), 1260);
+});
+
+console.log('\n--- parseTimeRange ---');
+
+test('parses standard time range', () => {
+  const result = parseTimeRange('9:00 AM – 5:00 PM');
+  assertEqual(result.length, 1);
+  assertEqual(result[0].start, 540);
+  assertEqual(result[0].end, 1020);
+});
+
+test('returns null for Closed', () => {
+  assertEqual(parseTimeRange('Closed'), null);
+});
+
+test('parses 24 hours', () => {
+  const result = parseTimeRange('Open 24 hours');
+  assertEqual(result.length, 1);
+  assertEqual(result[0].is24h, true);
+});
+
+test('parses split shifts', () => {
+  const result = parseTimeRange('11:00 AM – 3:00 PM, 5:00 – 10:00 PM');
+  assertEqual(result.length, 2);
+  assertEqual(result[0].start, 660); // 11 AM
+  assertEqual(result[0].end, 900);   // 3 PM
+  assertEqual(result[1].start, 1020); // 5 PM
+  assertEqual(result[1].end, 1320);   // 10 PM
+});
+
+console.log('\n--- formatMinutesAsTime ---');
+
+test('formats morning time', () => {
+  assertEqual(formatMinutesAsTime(540), '9:00 AM');
+});
+
+test('formats afternoon time', () => {
+  assertEqual(formatMinutesAsTime(900), '3:00 PM');
+});
+
+test('formats midnight', () => {
+  assertEqual(formatMinutesAsTime(0), '12:00 AM');
+});
+
+test('formats noon', () => {
+  assertEqual(formatMinutesAsTime(720), '12:00 PM');
+});
+
+console.log('\n--- getOpenStatus ---');
+
+test('returns unknown for empty hours', () => {
+  const result = getOpenStatus([]);
+  assertEqual(result.status, 'unknown');
+  assertEqual(result.isOpen, false);
+});
+
+test('returns unknown for null hours', () => {
+  const result = getOpenStatus(null);
+  assertEqual(result.status, 'unknown');
+  assertEqual(result.isOpen, false);
 });
 
 // ===== SUMMARY =====

@@ -1,2 +1,18 @@
-.coord-cache.json
+# Dependencies
 node_modules/
+
+# Cache files
+.coord-cache.json
+
+# Editor/IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# MCP tools
+.playwright-mcp/
+
+# Test artifacts
+coverage/

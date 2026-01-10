@@ -24,7 +24,7 @@
   <script src="shared.js"></script>
   <script>
     // Access shared config from window.PlacesConfig (loaded by shared.js)
-    const { categoryIcons, primaryIcons, getPlaceIcon, slugify, encodeFilterHash, formatWebsiteDisplay } = window.PlacesConfig;
+    const { categoryIcons, primaryIcons, getPlaceIcon, slugify, encodeFilterHash, formatWebsiteDisplay, getOpenStatus } = window.PlacesConfig;
 
     // Register Alpine store BEFORE Alpine initializes
     document.addEventListener('alpine:init', () => {
@@ -38,7 +38,8 @@
         filter: {
           status: 'all',
           category: 'all',
-          primary: 'all'
+          primary: 'all',
+          openNow: false
         },
 
         // UI state
@@ -54,7 +55,8 @@
         get hasActiveFilters() {
           return this.filter.status !== 'all' ||
                  this.filter.category !== 'all' ||
-                 this.filter.primary !== 'all';
+                 this.filter.primary !== 'all' ||
+                 this.filter.openNow;
         },
 
         get showPrimaryFilter() {
@@ -63,6 +65,16 @@
 
         get filterChips() {
           const chips = [];
+          if (this.filter.openNow) {
+            chips.push({
+              type: 'openNow',
+              value: true,
+              label: 'Open Now',
+              icon: 'fa-clock',
+              class: 'open-now-chip',
+              hasDot: true
+            });
+          }
           if (this.filter.status !== 'all') {
             chips.push({
               type: 'status',
@@ -135,10 +147,16 @@
           this.applyFilter();
         },
 
+        toggleOpenNow() {
+          this.filter.openNow = !this.filter.openNow;
+          this.applyFilter();
+        },
+
         resetFilters() {
           this.filter.status = 'all';
           this.filter.category = 'all';
           this.filter.primary = 'all';
+          this.filter.openNow = false;
         },
 
         clearFilters() {
@@ -280,7 +298,8 @@
         </template>
         <template x-for="chip in filterChips" :key="chip.type + chip.value">
           <span class="filter-bar-chip" :class="chip.class">
-            <i class="fa-solid" :class="chip.icon"></i>
+            <span x-show="chip.hasDot" class="chip-dot"></span>
+            <i x-show="!chip.hasDot" class="fa-solid" :class="chip.icon"></i>
             <span x-text="chip.label"></span>
           </span>
         </template>
@@ -298,6 +317,22 @@
 
     <!-- Expanded filter panel -->
     <div class="filter-panel" @click.stop>
+      <!-- Open Now toggle -->
+      <div class="open-now-section"
+           :class="{ 'active': filter.openNow }"
+           @click="toggleOpenNow()">
+        <div class="open-now-label">
+          <div class="open-now-icon">
+            <i class="fa-solid fa-clock"></i>
+          </div>
+          <div class="open-now-text">
+            <span class="open-now-title">Open Now</span>
+            <span class="open-now-subtitle">Show only places currently open</span>
+          </div>
+        </div>
+        <div class="open-toggle" :class="{ 'active': filter.openNow }"></div>
+      </div>
+
       <!-- Status filter -->
       <div class="filter-section">
         <div class="filter-section-header">
@@ -374,17 +409,32 @@
   <!-- Popup Template (cloned by app.js for Leaflet marker popups) -->
   <template id="popup-template">
     <div class="popup-content" x-data="{ hoursExpanded: false }">
-      <div class="popup-name">
-        <span x-text="$store.app.currentPlace?.name"></span>
+      <div class="popup-name" x-text="$store.app.currentPlace?.name"></div>
+
+      <!-- Badge row: Haunt/Queue + Open Status -->
+      <div class="popup-badges">
         <span x-show="$store.app.currentPlace?.status === 'haunts' || $store.app.currentPlace?.status === 'queue'"
               class="status-badge"
               :class="'status-' + $store.app.currentPlace?.status"
               x-text="$store.app.currentPlace?.status === 'haunts' ? 'Haunt' : 'Queue'"></span>
+        <span x-show="$store.app.currentPlace?.openStatus === 'open'"
+              class="open-status is-open">
+          <span class="status-dot"></span>
+          Open
+        </span>
+        <span x-show="$store.app.currentPlace?.openStatus === 'closing-soon'"
+              class="open-status closing-soon">
+          <span class="status-dot"></span>
+          Closing Soon
+        </span>
+        <span x-show="$store.app.currentPlace?.openStatus === 'closed'"
+              class="open-status is-closed">
+          Closed
+        </span>
       </div>
-      <div class="popup-meta" x-text="$store.app.currentPlace?.category"></div>
+
       <div class="popup-meta"
-           x-show="$store.app.currentPlace?.neighborhood"
-           x-text="$store.app.currentPlace?.neighborhood"></div>
+           x-text="[$store.app.currentPlace?.category, $store.app.currentPlace?.neighborhood].filter(Boolean).join(' · ')"></div>
       <div class="popup-address"
            x-show="$store.app.currentPlace?.address"
            x-text="$store.app.currentPlace?.address"></div>
@@ -399,11 +449,17 @@
 
       <!-- Hours section -->
       <div class="popup-hours" x-show="$store.app.currentPlace?.hours?.length > 0">
-        <div class="popup-hours-header">
-          <i class="fa-regular fa-clock"></i>
-          <span x-text="$store.app.currentPlace?.todayName"></span>
+        <div class="popup-hours-row">
+          <span class="popup-hours-day" x-text="$store.app.currentPlace?.todayName"></span>
+          <span class="popup-hours-time" x-text="$store.app.currentPlace?.todayHours"></span>
         </div>
-        <div class="popup-hours-today" x-text="$store.app.currentPlace?.todayHours"></div>
+        <!-- Closing soon / Opens at note -->
+        <div class="popup-hours-note"
+             x-show="$store.app.currentPlace?.isClosingSoon"
+             x-text="'Closes in ' + $store.app.currentPlace?.minutesUntilClose + ' min'"></div>
+        <div class="popup-hours-note"
+             x-show="$store.app.currentPlace?.openStatus === 'closed' && $store.app.currentPlace?.opensAt"
+             x-text="'Opens ' + $store.app.currentPlace?.opensAt"></div>
 
         <!-- All hours (collapsible) -->
         <div class="popup-hours-list" :class="{ 'expanded': hoursExpanded }">

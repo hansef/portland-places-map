@@ -9,11 +9,12 @@ const {
   slugify,
   getPlaceIcon,
   formatWebsiteDisplay,
-  encodeFilterHash
+  encodeFilterHash,
+  getOpenStatus
 } = globalThis.PlacesConfig || window.PlacesConfig;
 
 // Re-export for backwards compatibility (tests import from app.js)
-export { statusColors, categoryIcons, primaryIcons, slugify, getPlaceIcon, formatWebsiteDisplay, encodeFilterHash };
+export { statusColors, categoryIcons, primaryIcons, slugify, getPlaceIcon, formatWebsiteDisplay, encodeFilterHash, getOpenStatus };
 
 /**
  * Find category name from slug, given list of places
@@ -28,11 +29,18 @@ export function findCategoryBySlug(slug, places) {
  * Decode URL hash to filter state object
  */
 export function decodeFilterHash(hash, places = []) {
-  const result = { status: 'all', category: 'all', primary: 'all' };
+  const result = { status: 'all', category: 'all', primary: 'all', openNow: false };
 
   if (!hash || hash === '#') return result;
 
-  const parts = hash.replace(/^#/, '').split('/').filter(Boolean);
+  // Check for open-now prefix
+  let hashContent = hash.replace(/^#/, '');
+  if (hashContent.startsWith('open-now')) {
+    result.openNow = true;
+    hashContent = hashContent.replace(/^open-now\/?/, '');
+  }
+
+  const parts = hashContent.split('/').filter(Boolean);
   if (parts.length === 0) return result;
 
   const validStatuses = ['all', 'haunts', 'queue'];
@@ -73,6 +81,11 @@ export function filterPlaces(places, filterState) {
     if (filterState.primary !== 'all' && props.category === 'Food & Drink') {
       if (props.primary !== filterState.primary) return false;
     }
+    // Open Now filter - exclude places without hours or that are closed
+    if (filterState.openNow) {
+      const openStatus = getOpenStatus(props.hours);
+      if (!openStatus.isOpen) return false;
+    }
     return true;
   });
 }
@@ -112,7 +125,7 @@ function createMarkerIcon(status, category, primary) {
 const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 /**
- * Process hours array into display-ready format
+ * Process hours array into display-ready format, including open status
  */
 function processHours(hours) {
   if (!Array.isArray(hours) || hours.length === 0) return null;
@@ -126,12 +139,21 @@ function processHours(hours) {
     return entry ? entry.replace(`${day}: `, '') : '';
   };
 
+  // Get open status
+  const openStatus = getOpenStatus(hours);
+
   return {
     todayName: today,
     todayHours: findHoursForDay(today) || 'Hours not listed',
     orderedHours: orderedDays
       .map(day => ({ name: day, time: findHoursForDay(day), isToday: day === today }))
-      .filter(d => d.time)
+      .filter(d => d.time),
+    // Open status fields
+    openStatus: openStatus.status, // 'open' | 'closing-soon' | 'closed' | 'unknown'
+    isOpen: openStatus.isOpen,
+    isClosingSoon: openStatus.isClosingSoon,
+    minutesUntilClose: openStatus.minutesUntilClose,
+    opensAt: openStatus.opensAt
   };
 }
 
@@ -270,6 +292,11 @@ class MapApp {
       if (filter.status !== 'all' && props.status !== filter.status) return;
       if (filter.category !== 'all' && props.category !== filter.category) return;
       if (filter.primary !== 'all' && props.category === 'Food & Drink' && props.primary !== filter.primary) return;
+      // Open Now filter
+      if (filter.openNow) {
+        const openStatus = getOpenStatus(props.hours);
+        if (!openStatus.isOpen) return;
+      }
 
       const coords = feature.geometry.coordinates;
       const marker = L.marker([coords[1], coords[0]], {
@@ -374,6 +401,7 @@ class MapApp {
     this.store.filter.status = decoded.status;
     this.store.filter.category = decoded.category;
     this.store.filter.primary = decoded.primary;
+    this.store.filter.openNow = decoded.openNow;
     this.renderMarkers();
   }
 

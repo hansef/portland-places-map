@@ -978,6 +978,22 @@
       'restaurant': 'fa-utensils'
     };
 
+    // Convert place name to URL-safe slug
+    function slugify(name) {
+      return name
+        .toLowerCase()
+        .replace(/['']/g, '')           // Remove apostrophes
+        .replace(/[^a-z0-9]+/g, '-')    // Replace non-alphanumeric with hyphens
+        .replace(/^-+|-+$/g, '');       // Trim leading/trailing hyphens
+    }
+
+    // Find place index by slug
+    function findPlaceBySlug(slug) {
+      return allPlaces.findIndex(feature =>
+        slugify(feature.properties.name) === slug
+      );
+    }
+
     // Current filter state
     const filterState = {
       status: 'all',
@@ -1217,8 +1233,11 @@
         renderMarkers();
         renderListSidebar();
 
-        // Fit bounds to markers
-        if (allPlaces.length > 0) {
+        // Check for place in URL hash
+        if (window.location.hash.startsWith('#place/')) {
+          handleInitialHash();
+        } else if (allPlaces.length > 0) {
+          // Fit bounds to markers (only if no specific place requested)
           const bounds = L.latLngBounds(allPlaces.map(f => [
             f.geometry.coordinates[1],
             f.geometry.coordinates[0]
@@ -1354,7 +1373,7 @@
     }
 
     // Jump to a specific place on the map
-    function jumpToPlace(placeIndex) {
+    function jumpToPlace(placeIndex, options = {}) {
       const feature = allPlaces[placeIndex];
       if (!feature) return;
 
@@ -1384,6 +1403,44 @@
         });
       });
     }
+
+    // Update URL hash when popup opens
+    function updateUrlHash(placeIndex) {
+      const feature = allPlaces[placeIndex];
+      if (!feature) return;
+      const slug = slugify(feature.properties.name);
+      history.replaceState(null, '', `#place/${slug}`);
+    }
+
+    // Clear URL hash when popup closes
+    function clearUrlHash() {
+      history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
+
+    // Handle initial URL hash on page load
+    function handleInitialHash() {
+      const hash = window.location.hash;
+      if (!hash.startsWith('#place/')) return;
+
+      const slug = decodeURIComponent(hash.replace('#place/', ''));
+      const placeIndex = findPlaceBySlug(slug);
+
+      if (placeIndex >= 0) {
+        jumpToPlace(placeIndex);
+      }
+    }
+
+    // Handle browser back/forward navigation
+    window.addEventListener('hashchange', () => {
+      const hash = window.location.hash;
+      if (hash.startsWith('#place/')) {
+        const slug = decodeURIComponent(hash.replace('#place/', ''));
+        const placeIndex = findPlaceBySlug(slug);
+        if (placeIndex >= 0) {
+          jumpToPlace(placeIndex);
+        }
+      }
+    });
 
     // Toggle list sidebar
     function toggleListSidebar(show) {
@@ -1497,6 +1554,19 @@
       alert('Could not get location: ' + e.message);
       locateBtn.disabled = false;
       locateBtn.innerHTML = '<i class="fa-solid fa-location-crosshairs"></i>';
+    });
+
+    // Update URL hash when any popup opens
+    map.on('popupopen', (e) => {
+      const marker = e.popup._source;
+      if (marker && typeof marker.placeIndex === 'number') {
+        updateUrlHash(marker.placeIndex);
+      }
+    });
+
+    // Clear URL hash when popup closes
+    map.on('popupclose', () => {
+      clearUrlHash();
     });
   </script>
 </body>

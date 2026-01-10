@@ -51,19 +51,36 @@ npm run generate
 | `generate-geojson.mjs` | Node.js data pipeline |
 | `serve.mjs` | Zero-dependency local dev server |
 | `sync.sh` | Automated sync script |
-| `tests/app.test.js` | Unit tests for pure functions (37 tests) |
+| `tests/app.test.js` | Unit tests for pure functions |
+| `tests/integration.test.js` | Static analysis tests for HTML/CSS/JS integration |
 | `.github/workflows/ci.yml` | CI: runs tests, deploys to GitHub Pages |
 
 ## Testing
 
-Tests cover pure functions in `app.js`:
+Two test suites run with `npm test`:
+
+### Unit Tests (`tests/app.test.js`)
+Tests pure functions in `app.js`:
 - `slugify` - URL slug generation
 - `filterPlaces` - Place filtering logic
 - `encodeFilterHash` / `decodeFilterHash` - URL hash serialization
 - `formatWebsiteDisplay` - Social media URL formatting
 - `getPlaceIcon` - Icon selection logic
 
-Run with: `npm test` or `node tests/app.test.js`
+### Integration Tests (`tests/integration.test.js`)
+Static analysis to catch common issues without a browser:
+- **HTML structure** - Required elements, duplicate IDs, accessibility
+- **Assets & dependencies** - File references, HTTPS, trusted CDNs
+- **Alpine.js integration** - Plugin order, store registration, directive usage
+- **CSS/Alpine conflicts** - Detects `display:none` on `x-show` elements
+- **JavaScript quality** - No console.log, debugger, loose equality, deprecated APIs
+- **Data validation** - GeoJSON structure and required properties
+
+```bash
+npm test              # Run all tests (unit + integration)
+npm run test:unit     # Run only unit tests
+npm run test:integration  # Run only integration tests
+```
 
 ## Place Frontmatter Schema
 

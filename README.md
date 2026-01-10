@@ -34,7 +34,8 @@ https://hansef.github.io/portland-places-map/
 ├── serve.mjs           # Local dev server
 ├── sync.sh             # Automated sync script
 ├── tests/
-│   └── app.test.js     # Unit tests for pure functions
+│   ├── app.test.js         # Unit tests for pure functions
+│   └── integration.test.js # Static analysis for HTML/CSS/JS
 └── .github/
     └── workflows/
         └── ci.yml      # CI: tests + GitHub Pages deploy
@@ -51,7 +52,6 @@ npm run serve
 
 # Run tests
 npm test
-# or: node tests/app.test.js
 ```
 
 ## Regenerating Places

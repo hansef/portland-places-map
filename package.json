@@ -4,7 +4,9 @@
   "type": "module",
   "description": "Interactive map of Portland places synced from Obsidian",
   "scripts": {
-    "test": "node tests/app.test.js",
+    "test": "node tests/app.test.js && node tests/integration.test.js",
+    "test:unit": "node tests/app.test.js",
+    "test:integration": "node tests/integration.test.js",
     "serve": "node serve.mjs",
     "generate": "node generate-geojson.mjs"
   },

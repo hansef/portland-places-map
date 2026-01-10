@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generated": "2026-01-10T19:45:14.261Z",
+  "generated": "2026-01-10T19:57:04.073Z",
   "features": [
     {
       "type": "Feature",
@@ -2136,6 +2136,73 @@
           "Sunday: Open 24 hours"
         ],
         "notes": "Historic 1914 lodge turned concert venue — ornate details, balcony seating, and reliably good sound for a room this size."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.6782951,
+          45.5241687
+        ]
+      },
+      "properties": {
+        "name": "Blue Sky Gallery",
+        "category": "Arts & Culture",
+        "primary": null,
+        "type": [],
+        "neighborhood": "Old Town",
+        "address": "122 NW 8th Ave, Portland, OR 97209, USA",
+        "website": "http://www.blueskygallery.org/",
+        "status": "queue",
+        "goodFor": [],
+        "cuisine": [],
+        "hours": [
+          "Monday: Closed",
+          "Tuesday: Closed",
+          "Wednesday: 12:00 – 5:00 PM",
+          "Thursday: 12:00 – 5:00 PM",
+          "Friday: 12:00 – 5:00 PM",
+          "Saturday: 12:00 – 5:00 PM",
+          "Sunday: Closed"
+        ],
+        "notes": "Nonprofit photography gallery — rotating exhibitions, darkroom-adjacent interest."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.6355177,
+          45.4799247
+        ]
+      },
+      "properties": {
+        "name": "Crystal Springs Rhododendron Garden",
+        "category": "Arts & Culture",
+        "primary": null,
+        "type": [],
+        "neighborhood": "Eastmoreland",
+        "address": "5801 SE 28th Ave, Portland, OR 97202, USA",
+        "website": "https://www.crystalspringsgardenpdx.org/",
+        "status": "queue",
+        "goodFor": [
+          "solo",
+          "date-night"
+        ],
+        "cuisine": [],
+        "hours": [
+          "Monday: 9:00 AM – 4:00 PM",
+          "Tuesday: 9:00 AM – 4:00 PM",
+          "Wednesday: 1:00 – 4:00 PM",
+          "Thursday: 9:00 AM – 4:00 PM",
+          "Friday: 9:00 AM – 4:00 PM",
+          "Saturday: 9:00 AM – 4:00 PM",
+          "Sunday: 9:00 AM – 4:00 PM"
+        ],
+        "notes": "Peaceful garden close to home — free most of the year, best in spring bloom."
       }
     },
     {

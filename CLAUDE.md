@@ -11,33 +11,82 @@ Portland Places Map is a static web application that displays an interactive map
 ## Commands
 
 ```bash
+# Run tests
+npm test
+
 # Run local dev server (port 4747)
-node serve.mjs
+npm run serve
 
 # Regenerate GeoJSON from Obsidian vault
-node generate-geojson.mjs
+npm run generate
 
 # Full sync (pull, regenerate, commit, push)
 ./sync.sh
 ```
 
-No build tools, linters, or test frameworks are configured.
-
 ## Architecture
 
-**Data Flow:**
+### Data Flow
 1. Markdown files with YAML frontmatter in `~/Brain/Portland Places/{Category}/` subdirectories
 2. `generate-geojson.mjs` parses frontmatter and fetches coordinates via `goplaces` CLI
 3. Coordinates cached in `.coord-cache.json` to avoid repeated API calls
 4. Output written to `places.geojson`
-5. `index.html` renders the map using Leaflet.js (loaded via CDN)
+5. Web app loads GeoJSON and renders with Leaflet.js + Alpine.js
 
-**Key Files:**
-- `index.html` - Single-file web app (vanilla JS + Leaflet.js)
-- `generate-geojson.mjs` - Node.js ES module data pipeline
-- `serve.mjs` - Zero-dependency local dev server (port 4747)
-- `sync.sh` - Bash script for automated syncing
-- `places.geojson` - Generated GeoJSON FeatureCollection
+### Frontend Architecture
+- **shared.js** - Single source of truth for config objects and utility functions
+  - Loaded as classic `<script>` before Alpine (sets `window.PlacesConfig`)
+  - Config objects: `categoryIcons`, `primaryIcons`, `statusColors`
+  - Utility functions: `slugify`, `getPlaceIcon`, `formatWebsiteDisplay`, `encodeFilterHash`
+- **Alpine.js Store** (`index.html`) - Centralized reactive state for filters, UI, and places data
+  - Includes `<template id="popup-template">` for Leaflet popup content with Alpine directives
+- **app.js** - ES module containing:
+  - Pure, exported functions (testable): `filterPlaces`, `decodeFilterHash`, `groupPlacesByCategory`, etc.
+  - `MapApp` class for Leaflet map initialization and marker management
+  - `createPopupElement()` - Clones popup template and initializes Alpine for reactive popups
+- **styles.css** - All CSS with CSS custom properties for theming
+
+### Key Files
+| File | Purpose |
+|------|---------|
+| `index.html` | HTML structure + Alpine.js store + popup template |
+| `shared.js` | Shared config & utilities (single source of truth) |
+| `app.js` | Map logic, popup creation, MapApp class |
+| `styles.css` | All styles with CSS variables |
+| `places.geojson` | Generated GeoJSON FeatureCollection |
+| `generate-geojson.mjs` | Node.js data pipeline |
+| `serve.mjs` | Zero-dependency local dev server |
+| `sync.sh` | Automated sync script |
+| `tests/app.test.js` | Unit tests for pure functions |
+| `tests/integration.test.js` | Static analysis tests for HTML/CSS/JS integration |
+| `.github/workflows/ci.yml` | CI: runs tests, deploys to GitHub Pages |
+
+## Testing
+
+Two test suites run with `npm test`:
+
+### Unit Tests (`tests/app.test.js`)
+Tests pure functions in `app.js`:
+- `slugify` - URL slug generation
+- `filterPlaces` - Place filtering logic
+- `encodeFilterHash` / `decodeFilterHash` - URL hash serialization
+- `formatWebsiteDisplay` - Social media URL formatting
+- `getPlaceIcon` - Icon selection logic
+
+### Integration Tests (`tests/integration.test.js`)
+Static analysis to catch common issues without a browser:
+- **HTML structure** - Required elements, duplicate IDs, accessibility
+- **Assets & dependencies** - File references, HTTPS, trusted CDNs
+- **Alpine.js integration** - Plugin order, store registration, directive usage
+- **CSS/Alpine conflicts** - Detects `display:none` on `x-show` elements
+- **JavaScript quality** - No console.log, debugger, loose equality, deprecated APIs
+- **Data validation** - GeoJSON structure and required properties
+
+```bash
+npm test              # Run all tests (unit + integration)
+npm run test:unit     # Run only unit tests
+npm run test:integration  # Run only integration tests
+```
 
 ## Place Frontmatter Schema
 
@@ -47,29 +96,56 @@ name: "Place Name"
 place_id: "google_place_id"      # Used by goplaces CLI for coordinates
 status: "haunts" | "queue"       # haunts=favorite, queue=want to try
 category: "Category Name"
-primary: "coffee" | "bar" | "restaurant"  # Food & Drink subcategory
+primary: "coffee" | "bar" | "restaurant"  # Food & Drink subcategory only
 neighborhood: "Neighborhood Name"
 address: "Street Address"
+website: "https://..."
 type: [array]
 cuisine: [array]
 good-for: [array]
-hours: [array]
+hours: [array]                   # e.g., ["Monday: 9am-5pm", ...]
 notes: "Any notes"
 ---
 ```
 
-## Status Colors
+## URL Hash Routing
 
-- Green (#10b981) = "haunts" (favorite places)
-- Blue (#3b82f6) = "queue" (want to try)
-- Gray (#9ca3af) = "unknown"
+The app supports deep-linking via URL hash:
+- `#place/powells-books` - Direct link to a place
+- `#haunts` - Filter by status
+- `#all/food-drink` - Filter by category
+- `#haunts/food-drink/coffee` - Combined filters
+
+## Status Colors (Warm Palette)
+
+| Status | Color | Hex |
+|--------|-------|-----|
+| Haunts (favorites) | Green | `#4a7c59` |
+| Queue (want to try) | Blue | `#6b8cae` |
+| Unknown | Gray | `#9ca3a3` |
 
 ## Categories
 
 Food & Drink, Record Shops, Bookstores, Provisions, Clothing, Movie Theaters, Music Venues, Arts & Culture, Supplies
 
-## External Dependencies
+## External Dependencies (CDN)
 
-- **Leaflet.js** (v1.9.4) - Map library, loaded via CDN
-- **Font Awesome** (v6.5.1) - Category icons, loaded via CDN
-- **goplaces CLI** - External tool for fetching coordinates from Google Places API
+- **Leaflet.js** (v1.9.4) - Map library
+- **Leaflet.markercluster** (v1.5.3) - Marker clustering
+- **Alpine.js** (v3.14.3) - Reactive state management
+- **Alpine Collapse** (v3.14.3) - Collapse animations
+- **Font Awesome** (v6.5.1) - Category icons
+- **Google Fonts** - Fraunces + Source Sans 3
+
+## CI/CD
+
+GitHub Actions workflow (`.github/workflows/ci.yml`):
+1. Runs tests on push/PR to main
+2. On main branch push: deploys to GitHub Pages after tests pass
+
+## Code Style Notes
+
+- No build step - all JS/CSS loaded directly
+- ES modules used throughout (`type: "module"` in package.json)
+- Alpine.js for declarative UI bindings, vanilla JS for map logic
+- CSS custom properties for consistent theming

@@ -149,76 +149,78 @@ async function readCategory(category) {
   return places;
 }
 
+// Create GeoJSON feature from place data
+function createFeature(place, coords) {
+  return {
+    type: 'Feature',
+    geometry: {
+      type: 'Point',
+      coordinates: [coords.lng, coords.lat]
+    },
+    properties: {
+      name: place.name,
+      category: place.category,
+      primary: place.primary || null,
+      type: Array.isArray(place.type) ? place.type : [place.type].filter(Boolean),
+      neighborhood: place.neighborhood || null,
+      address: place.address || null,
+      website: place.website || null,
+      status: place.status || 'unknown',
+      goodFor: place['good-for'] || [],
+      cuisine: place.cuisine || [],
+      hours: place.hours || [],
+      notes: place.notes || null
+    }
+  };
+}
+
 // Main
 async function main() {
   console.log('Loading coordinate cache...');
   const cache = await loadCache();
-  
+
   console.log('Reading places...');
-  const allPlaces = [];
-  
-  for (const category of CATEGORIES) {
-    const places = await readCategory(category);
-    console.log(`  ${category}: ${places.length} places`);
-    allPlaces.push(...places);
-  }
-  
+  const categoryResults = await Promise.all(CATEGORIES.map(readCategory));
+  const allPlaces = categoryResults.flat();
+
+  CATEGORIES.forEach((category, i) => {
+    console.log(`  ${category}: ${categoryResults[i].length} places`);
+  });
+
   console.log(`\nTotal: ${allPlaces.length} places`);
   console.log('Fetching coordinates...');
-  
+
   const features = [];
   let fetched = 0;
   let cached = 0;
-  
+
   for (const place of allPlaces) {
     const wasCached = !!cache[place.place_id];
     const coords = getCoordinates(place.place_id, cache);
-    
+
     if (!coords) {
-      console.log(`  ⚠️  No coords for: ${place.name}`);
+      console.log(`  Warning: No coords for: ${place.name}`);
       continue;
     }
-    
+
     if (wasCached) cached++;
     else fetched++;
-    
-    features.push({
-      type: 'Feature',
-      geometry: {
-        type: 'Point',
-        coordinates: [coords.lng, coords.lat]
-      },
-      properties: {
-        name: place.name,
-        category: place.category,
-        primary: place.primary || null,  // coffee, bar, restaurant (Food & Drink only)
-        type: Array.isArray(place.type) ? place.type : [place.type].filter(Boolean),
-        neighborhood: place.neighborhood || null,
-        address: place.address || null,
-        website: place.website || null,
-        status: place.status || 'unknown',
-        goodFor: place['good-for'] || [],
-        cuisine: place.cuisine || [],
-        hours: place.hours || [],
-        notes: place.notes || null
-      }
-    });
+
+    features.push(createFeature(place, coords));
   }
-  
+
   console.log(`  Cached: ${cached}, Fetched: ${fetched}`);
-  
-  // Save updated cache
+
   await saveCache(cache);
-  
-  // Generate GeoJSON
+
   const geojson = {
     type: 'FeatureCollection',
     generated: new Date().toISOString(),
     features
   };
-  
+
   await writeFile(OUTPUT_FILE, JSON.stringify(geojson, null, 2));
-  console.log(`\n✅ Wrote ${features.length} places to ${OUTPUT_FILE}`);
+  console.log(`\nWrote ${features.length} places to ${OUTPUT_FILE}`);
 }
 
 main().catch(console.error);

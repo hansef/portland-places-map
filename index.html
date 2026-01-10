@@ -1063,6 +1063,134 @@
       );
     }
 
+    // ===== FILTER URL STATE =====
+
+    // Encode filter state to URL hash (e.g., #haunts/food-drink/coffee)
+    function encodeFilterHash() {
+      const parts = [];
+
+      // Status (include even if 'all' when we need category/primary)
+      const hasCategory = filterState.category !== 'all';
+      const hasPrimary = filterState.primary !== 'all' && filterState.category === 'Food & Drink';
+
+      if (filterState.status !== 'all') {
+        parts.push(filterState.status);
+      } else if (hasCategory || hasPrimary) {
+        parts.push('all');
+      }
+
+      // Category
+      if (hasCategory) {
+        parts.push(slugify(filterState.category));
+      } else if (hasPrimary) {
+        parts.push(slugify('Food & Drink'));
+      }
+
+      // Primary (only for Food & Drink)
+      if (hasPrimary) {
+        parts.push(filterState.primary);
+      }
+
+      return parts.length > 0 ? '#' + parts.join('/') : '';
+    }
+
+    // Find category name from slug
+    function findCategoryBySlug(slug) {
+      if (!slug || slug === 'all') return 'all';
+      const feature = allPlaces.find(f => slugify(f.properties.category) === slug);
+      return feature ? feature.properties.category : null;
+    }
+
+    // Decode URL hash to filter state
+    function decodeFilterHash(hash) {
+      const result = { status: 'all', category: 'all', primary: 'all' };
+
+      if (!hash || hash === '#') return result;
+
+      const parts = hash.replace(/^#/, '').split('/').filter(Boolean);
+      if (parts.length === 0) return result;
+
+      // Valid values for quick lookup
+      const validStatuses = ['all', 'haunts', 'queue'];
+      const validPrimaries = ['coffee', 'bar', 'restaurant'];
+
+      // Parse positionally: [status]/[category]/[primary]
+      let idx = 0;
+
+      // First part: status or category
+      if (validStatuses.includes(parts[0])) {
+        result.status = parts[0] === 'all' ? 'all' : parts[0];
+        idx = 1;
+      }
+
+      // Second part (or first if no status): category
+      if (parts[idx]) {
+        const category = findCategoryBySlug(parts[idx]);
+        if (category) {
+          result.category = category;
+          idx++;
+        }
+      }
+
+      // Third part: primary (only valid for Food & Drink)
+      if (parts[idx] && result.category === 'Food & Drink') {
+        if (validPrimaries.includes(parts[idx])) {
+          result.primary = parts[idx];
+        }
+      }
+
+      return result;
+    }
+
+    // Update URL with current filter state
+    function updateFilterHash() {
+      const hash = encodeFilterHash();
+      history.replaceState(null, '', window.location.pathname + window.location.search + hash);
+    }
+
+    // Apply filter state from URL hash
+    function applyFilterFromHash(hash) {
+      const decoded = decodeFilterHash(hash);
+      filterState.status = decoded.status;
+      filterState.category = decoded.category;
+      filterState.primary = decoded.primary;
+
+      updatePillStates();
+      renderMarkers();
+
+      // Fit bounds to filtered places
+      const hasFilters = decoded.status !== 'all' ||
+                         decoded.category !== 'all' ||
+                         decoded.primary !== 'all';
+      if (hasFilters) {
+        fitBoundsToFilteredPlaces();
+      }
+    }
+
+    // Zoom map to show all filtered places
+    function fitBoundsToFilteredPlaces() {
+      const visiblePlaces = allPlaces.filter(feature => {
+        const props = feature.properties;
+        if (filterState.status !== 'all' && props.status !== filterState.status) return false;
+        if (filterState.category !== 'all' && props.category !== filterState.category) return false;
+        if (filterState.primary !== 'all' && props.category === 'Food & Drink') {
+          if (props.primary !== filterState.primary) return false;
+        }
+        return true;
+      });
+
+      if (visiblePlaces.length > 0) {
+        const bounds = L.latLngBounds(visiblePlaces.map(f => [
+          f.geometry.coordinates[1],
+          f.geometry.coordinates[0]
+        ]));
+        map.fitBounds(bounds, {
+          paddingTopLeft: [80, 70],
+          paddingBottomRight: [60, 80]
+        });
+      }
+    }
+
     // Current filter state
     const filterState = {
       status: 'all',
@@ -1325,6 +1453,7 @@
             }
             updatePillStates();
             renderMarkers();
+            updateFilterHash();
           });
         });
 
@@ -1332,11 +1461,11 @@
         renderMarkers();
         renderListSidebar();
 
-        // Check for place in URL hash
-        if (window.location.hash.startsWith('#place/')) {
+        // Check for URL hash on load
+        if (window.location.hash) {
           handleInitialHash();
         } else if (allPlaces.length > 0) {
-          // Fit bounds to markers (only if no specific place requested)
+          // Fit bounds to markers (only if no hash)
           const bounds = L.latLngBounds(allPlaces.map(f => [
             f.geometry.coordinates[1],
             f.geometry.coordinates[0]
@@ -1357,6 +1486,7 @@
         filterState.status = pill.dataset.status;
         updatePillStates();
         renderMarkers();
+        updateFilterHash();
       });
     });
 
@@ -1366,6 +1496,7 @@
         filterState.primary = pill.dataset.primary;
         updatePillStates();
         renderMarkers();
+        updateFilterHash();
       });
     });
 
@@ -1377,6 +1508,7 @@
       filterState.primary = 'all';
       updatePillStates();
       renderMarkers();
+      clearUrlHash();
     });
 
     // ===== PANEL ELEMENTS =====
@@ -1532,25 +1664,42 @@
     // Handle initial URL hash on page load
     function handleInitialHash() {
       const hash = window.location.hash;
-      if (!hash.startsWith('#place/')) return;
+      if (!hash || hash === '#') return;
 
-      const slug = decodeURIComponent(hash.replace('#place/', ''));
-      const placeIndex = findPlaceBySlug(slug);
-
-      if (placeIndex >= 0) {
-        jumpToPlace(placeIndex);
+      if (hash.startsWith('#place/')) {
+        // Place detail view
+        const slug = decodeURIComponent(hash.replace('#place/', ''));
+        const placeIndex = findPlaceBySlug(slug);
+        if (placeIndex >= 0) {
+          jumpToPlace(placeIndex);
+        }
+      } else {
+        // Filter view
+        applyFilterFromHash(hash);
       }
     }
 
     // Handle browser back/forward navigation
     window.addEventListener('hashchange', () => {
       const hash = window.location.hash;
+
       if (hash.startsWith('#place/')) {
+        // Place detail view
         const slug = decodeURIComponent(hash.replace('#place/', ''));
         const placeIndex = findPlaceBySlug(slug);
         if (placeIndex >= 0) {
           jumpToPlace(placeIndex);
         }
+      } else if (hash && hash !== '#') {
+        // Filter view
+        applyFilterFromHash(hash);
+      } else {
+        // No hash - reset to all
+        filterState.status = 'all';
+        filterState.category = 'all';
+        filterState.primary = 'all';
+        updatePillStates();
+        renderMarkers();
       }
     });
 
@@ -1676,9 +1825,16 @@
       }
     });
 
-    // Clear URL hash when popup closes
+    // Restore filter hash when popup closes (or clear if no filters)
     map.on('popupclose', () => {
-      clearUrlHash();
+      const hasActiveFilters = filterState.status !== 'all' ||
+                               filterState.category !== 'all' ||
+                               filterState.primary !== 'all';
+      if (hasActiveFilters) {
+        updateFilterHash();
+      } else {
+        clearUrlHash();
+      }
     });
   </script>
 </body>

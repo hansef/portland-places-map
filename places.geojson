@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generated": "2026-01-10T20:10:58.399Z",
+  "generated": "2026-01-10T20:13:03.813Z",
   "features": [
     {
       "type": "Feature",
@@ -618,6 +618,45 @@
           "Sunday: 11:30 AM – 12:00 AM"
         ],
         "notes": "Classic Portland English pub — been around forever"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.6598969,
+          45.521617
+        ]
+      },
+      "properties": {
+        "name": "J & M Cafe",
+        "category": "Food & Drink",
+        "primary": "restaurant",
+        "type": [
+          "brunch"
+        ],
+        "neighborhood": "Buckman",
+        "address": "537 SE Ash St, Portland, OR 97214, USA",
+        "website": "https://jandmcafeportland.com/",
+        "status": "haunts",
+        "goodFor": [
+          "breakfast",
+          "lunch"
+        ],
+        "cuisine": [
+          "american"
+        ],
+        "hours": [
+          "Monday: 8:00 AM – 2:00 PM",
+          "Tuesday: 8:00 AM – 2:00 PM",
+          "Wednesday: 8:00 AM – 2:00 PM",
+          "Thursday: 8:00 AM – 2:00 PM",
+          "Friday: 8:00 AM – 2:00 PM",
+          "Saturday: 8:00 AM – 2:00 PM",
+          "Sunday: 8:00 AM – 2:00 PM"
+        ],
+        "notes": "Old-Portland feel, elevated diner."
       }
     },
     {

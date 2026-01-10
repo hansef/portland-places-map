@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generated": "2026-01-10T01:00:17.185Z",
+  "generated": "2026-01-10T01:03:07.204Z",
   "features": [
     {
       "type": "Feature",
@@ -912,6 +912,43 @@
           "Sunday: 11:00 AM – 3:00 PM"
         ],
         "notes": "Great sandwich spot, lunch only"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.6572853,
+          45.5195024
+        ]
+      },
+      "properties": {
+        "name": "Toya Ramen & Bar",
+        "category": "Food & Drink",
+        "primary": "restaurant",
+        "type": [],
+        "neighborhood": "Buckman",
+        "address": "803 SE Stark St, Portland, OR 97214, USA",
+        "status": "haunts",
+        "goodFor": [
+          "dinner",
+          "lunch"
+        ],
+        "cuisine": [
+          "japanese",
+          "ramen"
+        ],
+        "hours": [
+          "Monday: 5:00 – 9:30 PM",
+          "Tuesday: 5:00 – 9:30 PM",
+          "Wednesday: 5:00 – 9:30 PM",
+          "Thursday: 5:00 – 9:30 PM",
+          "Friday: 11:00 AM – 3:00 PM, 4:30 PM – 12:00 AM",
+          "Saturday: 11:00 AM – 3:00 PM, 4:30 PM – 12:00 AM",
+          "Sunday: 11:00 AM – 3:00 PM, 4:30 – 9:30 PM"
+        ],
+        "notes": "Outstanding spicy miso ramen"
       }
     },
     {

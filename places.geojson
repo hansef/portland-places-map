@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generated": "2026-01-10T05:00:14.592Z",
+  "generated": "2026-01-10T05:11:39.886Z",
   "features": [
     {
       "type": "Feature",
@@ -1616,6 +1616,41 @@
           "Sunday: 11:00 AM – 7:00 PM"
         ],
         "notes": "Cheese shop on Division"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.6270271,
+          45.4964386
+        ]
+      },
+      "properties": {
+        "name": "John's Marketplace",
+        "category": "Provisions",
+        "primary": null,
+        "type": [
+          "bottle-shop"
+        ],
+        "neighborhood": "Hosford-Abernethy",
+        "address": "3560 SE Powell Blvd, Portland, OR 97202, USA",
+        "status": "haunts",
+        "goodFor": [
+          "beer"
+        ],
+        "cuisine": [],
+        "hours": [
+          "Monday: 11:00 AM – 9:00 PM",
+          "Tuesday: 11:00 AM – 9:00 PM",
+          "Wednesday: 11:00 AM – 9:00 PM",
+          "Thursday: 11:00 AM – 9:00 PM",
+          "Friday: 11:00 AM – 9:00 PM",
+          "Saturday: 11:00 AM – 9:00 PM",
+          "Sunday: 11:00 AM – 9:00 PM"
+        ],
+        "notes": "Massive beer selection — Portland institution"
       }
     },
     {

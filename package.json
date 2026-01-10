@@ -1,0 +1,12 @@
+{
+  "name": "portland-places-map",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Interactive map of Portland places synced from Obsidian",
+  "scripts": {
+    "test": "node tests/app.test.js",
+    "serve": "node serve.mjs",
+    "generate": "node generate-geojson.mjs"
+  },
+  "private": true
+}

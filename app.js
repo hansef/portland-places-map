@@ -336,6 +336,9 @@ class MapApp {
   async loadPlaces() {
     try {
       const res = await fetch('places.geojson');
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+      }
       const data = await res.json();
 
       if (this.store) {
@@ -359,6 +362,9 @@ class MapApp {
       }
     } catch (err) {
       console.error('Failed to load places:', err);
+      if (this.store) {
+        this.store.ui.loadError = 'Failed to load places. Please refresh the page.';
+      }
     }
   }
 

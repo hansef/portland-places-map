@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generated": "2026-01-10T02:00:14.111Z",
+  "generated": "2026-01-10T02:53:19.750Z",
   "features": [
     {
       "type": "Feature",
@@ -600,6 +600,80 @@
           "Sunday: 11:00 AM – 10:00 PM"
         ],
         "notes": "Decent sandwiches though used to better — better in-person than delivery"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.62933810000001,
+          45.504641
+        ]
+      },
+      "properties": {
+        "name": "Lauretta Jean's",
+        "category": "Food & Drink",
+        "primary": "restaurant",
+        "type": [
+          "brunch"
+        ],
+        "neighborhood": "Division",
+        "address": "3402 SE Division St, Portland, OR 97202",
+        "status": "haunts",
+        "goodFor": [
+          "breakfast",
+          "lunch"
+        ],
+        "cuisine": [
+          "american",
+          "bakery"
+        ],
+        "hours": [
+          "Monday: 11:00 AM – 9:00 PM",
+          "Tuesday: Closed",
+          "Wednesday: 11:00 AM – 9:00 PM",
+          "Thursday: 11:00 AM – 9:00 PM",
+          "Friday: 9:00 AM – 10:00 PM",
+          "Saturday: 9:00 AM – 10:00 PM",
+          "Sunday: 9:00 AM – 9:00 PM"
+        ],
+        "notes": "Incredible pie — often a scene (and a wait)"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.6292228,
+          45.504538
+        ]
+      },
+      "properties": {
+        "name": "Little Beast Brewing",
+        "category": "Food & Drink",
+        "primary": "bar",
+        "type": [
+          "brewery"
+        ],
+        "neighborhood": "Division",
+        "address": "3412 SE Division St, Portland, OR 97202",
+        "status": "haunts",
+        "goodFor": [
+          "patio"
+        ],
+        "cuisine": [],
+        "hours": [
+          "Monday: 2:00 – 9:00 PM",
+          "Tuesday: 2:00 – 9:00 PM",
+          "Wednesday: 2:00 – 9:00 PM",
+          "Thursday: 2:00 – 9:00 PM",
+          "Friday: 2:00 – 10:00 PM",
+          "Saturday: 12:00 – 10:00 PM",
+          "Sunday: 12:00 – 9:00 PM"
+        ],
+        "notes": "Beer garden on the Division strip — sour and farmhouse ales"
       }
     },
     {
@@ -1548,6 +1622,43 @@
           "Sunday: 10:00 AM – 7:00 PM"
         ],
         "notes": "Fancy grocery experience — bakery, florist, specialty goods"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.629446,
+          45.504622499999996
+        ]
+      },
+      "properties": {
+        "name": "Wellspent Market",
+        "category": "Provisions",
+        "primary": null,
+        "type": [
+          "grocery",
+          "specialty"
+        ],
+        "neighborhood": "Division",
+        "address": "3402 SE Division St, Portland, OR 97202",
+        "status": "haunts",
+        "goodFor": [
+          "lunch",
+          "specialty"
+        ],
+        "cuisine": [],
+        "hours": [
+          "Monday: 10:00 AM – 8:00 PM",
+          "Tuesday: 10:00 AM – 8:00 PM",
+          "Wednesday: 10:00 AM – 8:00 PM",
+          "Thursday: 10:00 AM – 8:00 PM",
+          "Friday: 10:00 AM – 8:00 PM",
+          "Saturday: 10:00 AM – 8:00 PM",
+          "Sunday: 10:00 AM – 8:00 PM"
+        ],
+        "notes": "Delightful bougie neighborhood market with good sandwiches"
       }
     },
     {

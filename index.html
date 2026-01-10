@@ -1621,9 +1621,6 @@
       const feature = allPlaces[placeIndex];
       if (!feature) return;
 
-      const coords = feature.geometry.coordinates;
-      const latLng = [coords[1], coords[0]];
-
       // Reset all filters to show all places
       filterState.status = 'all';
       filterState.category = 'all';
@@ -1635,17 +1632,21 @@
       toggleListSidebar(false);
       toggleFilterPanel(false);
 
-      // Pan to the marker and zoom in
-      map.setView(latLng, 16, { animate: true });
-
-      // Open popup when map animation completes
-      map.once('moveend', () => {
-        markers.eachLayer(marker => {
-          if (marker.placeIndex === placeIndex) {
-            marker.openPopup();
-          }
-        });
+      // Find the marker for this place
+      let targetMarker = null;
+      markers.eachLayer(marker => {
+        if (marker.placeIndex === placeIndex) {
+          targetMarker = marker;
+        }
       });
+
+      if (targetMarker) {
+        // Use markercluster's zoomToShowLayer to handle clustered markers
+        // This will zoom/spiderfy as needed, then call our callback
+        markers.zoomToShowLayer(targetMarker, () => {
+          targetMarker.openPopup();
+        });
+      }
     }
 
     // Update URL hash when popup opens

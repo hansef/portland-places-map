@@ -43,6 +43,32 @@ body {
   right: 0;
 }
 
+/* Hide elements until Alpine initializes */
+[x-cloak] { display: none !important; }
+
+/* ===== LOAD ERROR ===== */
+.load-error {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  background: var(--color-paper);
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  padding: 20px 28px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 15px;
+  color: var(--color-ink);
+}
+
+.load-error i {
+  color: #d97706;
+  font-size: 18px;
+}
+
 /* ===== LEAFLET CONTROL OVERRIDES ===== */
 .leaflet-control-zoom {
   border: none !important;

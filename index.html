@@ -15,10 +15,17 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.14.3/dist/cdn.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.3/dist/cdn.min.js"></script>
 </head>
 <body x-data="$store.app">
   <div id="map"></div>
+
+  <!-- Error message -->
+  <div class="load-error" x-show="ui.loadError" x-cloak>
+    <i class="fa-solid fa-triangle-exclamation"></i>
+    <span x-text="ui.loadError"></span>
+  </div>
 
   <!-- Overlay for panels -->
   <div class="filter-overlay"
@@ -192,7 +199,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
   <script type="module">
-    import { init, categoryIcons, primaryIcons, groupPlacesByCategory, getPlaceIcon } from './app.js';
+    import { init, categoryIcons, primaryIcons, groupPlacesByCategory, getPlaceIcon, encodeFilterHash } from './app.js';
 
     // Register Alpine store before Alpine initializes
     document.addEventListener('alpine:init', () => {
@@ -213,7 +220,8 @@
           filterPanelOpen: false,
           listSidebarOpen: false,
           locating: false,
-          placeCount: 0
+          placeCount: 0,
+          loadError: null
         },
 
         // Computed
@@ -320,27 +328,7 @@
         },
 
         updateHash() {
-          const parts = [];
-          const hasCategory = this.filter.category !== 'all';
-          const hasPrimary = this.filter.primary !== 'all' && this.filter.category === 'Food & Drink';
-
-          if (this.filter.status !== 'all') {
-            parts.push(this.filter.status);
-          } else if (hasCategory || hasPrimary) {
-            parts.push('all');
-          }
-
-          if (hasCategory) {
-            parts.push(this.filter.category.toLowerCase().replace(/[^a-z0-9]+/g, '-'));
-          } else if (hasPrimary) {
-            parts.push('food-drink');
-          }
-
-          if (hasPrimary) {
-            parts.push(this.filter.primary);
-          }
-
-          const hash = parts.length > 0 ? '#' + parts.join('/') : '';
+          const hash = encodeFilterHash(this.filter);
           history.replaceState(null, '', window.location.pathname + window.location.search + hash);
         },
 

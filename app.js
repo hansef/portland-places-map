@@ -164,12 +164,15 @@ function createPopupElement(props) {
     store.currentPlace = processedProps;
   }
 
-  // Clone template and initialize Alpine
+  // Clone template and initialize Alpine once
   const clone = template.content.cloneNode(true);
   const popupElement = clone.querySelector('.popup-content') || clone.firstElementChild;
 
   if (window.Alpine && popupElement) {
+    // Initialize Alpine to render content before Leaflet measures popup width
     Alpine.initTree(popupElement);
+    // Prevent Alpine's mutation observer from re-initializing when Leaflet adds to DOM
+    popupElement.setAttribute('x-ignore', '');
   }
 
   return popupElement;

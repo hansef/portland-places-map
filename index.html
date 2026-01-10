@@ -64,44 +64,23 @@
         },
 
         get filterChips() {
+          const capitalize = s => s.charAt(0).toUpperCase() + s.slice(1);
           const chips = [];
+
           if (this.filter.openNow) {
-            chips.push({
-              type: 'openNow',
-              value: true,
-              label: 'Open Now',
-              icon: 'fa-clock',
-              class: 'open-now-chip',
-              hasDot: true
-            });
+            chips.push({ type: 'openNow', value: true, label: 'Open Now', icon: 'fa-clock', class: 'open-now-chip', hasDot: true });
           }
           if (this.filter.status !== 'all') {
-            chips.push({
-              type: 'status',
-              value: this.filter.status,
-              label: this.filter.status.charAt(0).toUpperCase() + this.filter.status.slice(1),
-              icon: this.filter.status === 'haunts' ? 'fa-heart' : 'fa-bookmark',
-              class: `status-${this.filter.status}`
-            });
+            const status = this.filter.status;
+            chips.push({ type: 'status', value: status, label: capitalize(status), icon: status === 'haunts' ? 'fa-heart' : 'fa-bookmark', class: `status-${status}` });
           }
           if (this.filter.category !== 'all') {
-            chips.push({
-              type: 'category',
-              value: this.filter.category,
-              label: this.filter.category,
-              icon: categoryIcons[this.filter.category] || 'fa-location-dot',
-              class: ''
-            });
+            chips.push({ type: 'category', value: this.filter.category, label: this.filter.category, icon: categoryIcons[this.filter.category] || 'fa-location-dot', class: '' });
           }
           if (this.filter.primary !== 'all' && this.filter.category === 'Food & Drink') {
-            chips.push({
-              type: 'primary',
-              value: this.filter.primary,
-              label: this.filter.primary.charAt(0).toUpperCase() + this.filter.primary.slice(1),
-              icon: primaryIcons[this.filter.primary] || 'fa-utensils',
-              class: ''
-            });
+            chips.push({ type: 'primary', value: this.filter.primary, label: capitalize(this.filter.primary), icon: primaryIcons[this.filter.primary] || 'fa-utensils', class: '' });
           }
+
           return chips;
         },
 

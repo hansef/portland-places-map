@@ -10,7 +10,8 @@ const {
   getPlaceIcon,
   formatWebsiteDisplay,
   encodeFilterHash,
-  getOpenStatus
+  getOpenStatus,
+  DAY_NAMES
 } = globalThis.PlacesConfig || window.PlacesConfig;
 
 // Re-export for backwards compatibility (tests import from app.js)
@@ -122,34 +123,33 @@ function createMarkerIcon(status, category, primary) {
   });
 }
 
-const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
 /**
  * Process hours array into display-ready format, including open status
  */
 function processHours(hours) {
   if (!Array.isArray(hours) || hours.length === 0) return null;
 
-  const today = DAY_NAMES[new Date().getDay()];
-  const todayIndex = DAY_NAMES.indexOf(today);
+  const todayIndex = new Date().getDay();
+  const today = DAY_NAMES[todayIndex];
+
+  // Reorder days starting from today
   const orderedDays = [...DAY_NAMES.slice(todayIndex), ...DAY_NAMES.slice(0, todayIndex)];
 
-  const findHoursForDay = (day) => {
+  // Extract time for a given day from hours array
+  const getTimeForDay = (day) => {
     const entry = hours.find(h => h.startsWith(day));
     return entry ? entry.replace(`${day}: `, '') : '';
   };
 
-  // Get open status
   const openStatus = getOpenStatus(hours);
 
   return {
     todayName: today,
-    todayHours: findHoursForDay(today) || 'Hours not listed',
+    todayHours: getTimeForDay(today) || 'Hours not listed',
     orderedHours: orderedDays
-      .map(day => ({ name: day, time: findHoursForDay(day), isToday: day === today }))
+      .map(day => ({ name: day, time: getTimeForDay(day), isToday: day === today }))
       .filter(d => d.time),
-    // Open status fields
-    openStatus: openStatus.status, // 'open' | 'closing-soon' | 'closed' | 'unknown'
+    openStatus: openStatus.status,
     isOpen: openStatus.isOpen,
     isClosingSoon: openStatus.isClosingSoon,
     minutesUntilClose: openStatus.minutesUntilClose,
@@ -283,22 +283,15 @@ class MapApp {
     if (!this.store) return;
 
     markers.clearLayers();
-    const filter = this.store.filter;
 
-    this.store.places.forEach((feature, index) => {
+    // Use shared filterPlaces function instead of duplicating filter logic
+    const visiblePlaces = filterPlaces(this.store.places, this.store.filter);
+
+    visiblePlaces.forEach(feature => {
       const props = feature.properties;
-
-      // Apply filters
-      if (filter.status !== 'all' && props.status !== filter.status) return;
-      if (filter.category !== 'all' && props.category !== filter.category) return;
-      if (filter.primary !== 'all' && props.category === 'Food & Drink' && props.primary !== filter.primary) return;
-      // Open Now filter
-      if (filter.openNow) {
-        const openStatus = getOpenStatus(props.hours);
-        if (!openStatus.isOpen) return;
-      }
-
+      const index = this.store.places.indexOf(feature);
       const coords = feature.geometry.coordinates;
+
       const marker = L.marker([coords[1], coords[0]], {
         icon: createMarkerIcon(props.status, props.category, props.primary)
       });

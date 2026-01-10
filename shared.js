@@ -139,40 +139,49 @@
   function parseTime(timeStr, isEndTime = false, startMinutes = null) {
     if (!timeStr) return null;
 
-    const cleaned = timeStr.trim();
-    const match = cleaned.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)?$/i);
+    const match = timeStr.trim().match(/^(\d{1,2}):(\d{2})\s*(AM|PM)?$/i);
     if (!match) return null;
 
     let hours = parseInt(match[1], 10);
     const minutes = parseInt(match[2], 10);
     const period = match[3]?.toUpperCase();
 
+    // Convert to 24-hour format based on AM/PM
     if (period === 'PM' && hours !== 12) {
       hours += 12;
     } else if (period === 'AM' && hours === 12) {
       hours = 0;
     } else if (!period) {
-      // No AM/PM specified - infer from context
-      // If this is an end time and we have a start time, assume same half of day or later
-      if (isEndTime && startMinutes !== null) {
-        const startHour = Math.floor(startMinutes / 60);
-        // If hours < 12 and start was PM, this is probably PM too
-        if (hours < 12 && startHour >= 12) {
-          hours += 12;
-        }
-        // If result would be before start, assume PM
-        if (hours * 60 + minutes < startMinutes && hours < 12) {
-          hours += 12;
-        }
-      } else {
-        // For start times without AM/PM, assume PM if hour is 1-6 (likely afternoon)
-        if (hours >= 1 && hours <= 6) {
-          hours += 12;
-        }
-      }
+      hours = inferHour(hours, minutes, isEndTime, startMinutes);
     }
 
     return hours * 60 + minutes;
+  }
+
+  /**
+   * Infer whether an hour without AM/PM should be treated as PM.
+   * For end times: must be after start time.
+   * For start times: hours 1-6 are assumed PM (afternoon openings).
+   */
+  function inferHour(hours, minutes, isEndTime, startMinutes) {
+    if (!isEndTime || startMinutes === null) {
+      // Start times: assume PM for typical afternoon hours (1-6)
+      return (hours >= 1 && hours <= 6) ? hours + 12 : hours;
+    }
+
+    // End times: ensure result is after start time
+    const startHour = Math.floor(startMinutes / 60);
+    const currentMinutes = hours * 60 + minutes;
+
+    // If start was PM and this hour < 12, assume PM
+    if (hours < 12 && startHour >= 12) {
+      return hours + 12;
+    }
+    // If result would be before start, assume PM
+    if (currentMinutes < startMinutes && hours < 12) {
+      return hours + 12;
+    }
+    return hours;
   }
 
   /**
@@ -234,59 +243,55 @@
     const currentMinutes = date.getHours() * 60 + date.getMinutes();
 
     for (const range of todayData.ranges) {
-      let { start, end, is24h } = range;
-
-      // Handle midnight wraparound (e.g., 3:00 PM – 1:00 AM)
-      const wrapsToNextDay = end < start;
-
-      if (is24h) {
-        return {
-          isOpen: true,
-          isClosingSoon: false,
-          status: 'open',
-          todayHours: todayData.timeStr
-        };
+      if (range.is24h) {
+        return { isOpen: true, isClosingSoon: false, status: 'open', todayHours: todayData.timeStr };
       }
 
-      let isInRange = false;
-      let minutesUntilClose = 0;
-
-      if (wrapsToNextDay) {
-        // Open if current time is after start OR before end (next day)
-        isInRange = currentMinutes >= start || currentMinutes < end;
-        if (currentMinutes >= start) {
-          // After start, closes at end tomorrow = (1440 - current) + end
-          minutesUntilClose = (1440 - currentMinutes) + end;
-        } else {
-          // Before end (early morning), closes at end
-          minutesUntilClose = end - currentMinutes;
-        }
-      } else {
-        isInRange = currentMinutes >= start && currentMinutes < end;
-        minutesUntilClose = end - currentMinutes;
-      }
-
-      if (isInRange) {
-        const isClosingSoon = minutesUntilClose <= CLOSING_SOON_MINUTES && minutesUntilClose > 0;
-        return {
-          isOpen: true,
-          isClosingSoon,
-          minutesUntilClose,
-          closesAt: formatMinutesAsTime(end > 1440 ? end - 1440 : end),
-          status: isClosingSoon ? 'closing-soon' : 'open',
-          todayHours: todayData.timeStr
-        };
-      }
+      const openResult = checkTimeRange(range, currentMinutes, todayData.timeStr);
+      if (openResult) return openResult;
     }
 
     // Closed - find next opening time
-    const nextOpen = findNextOpenTime(hours, date);
     return {
       isOpen: false,
       isClosingSoon: false,
       status: 'closed',
-      opensAt: nextOpen,
+      opensAt: findNextOpenTime(hours, date),
       todayHours: todayData.timeStr
+    };
+  }
+
+  /**
+   * Check if current time falls within a time range.
+   * Returns open status object if in range, null if not.
+   */
+  function checkTimeRange(range, currentMinutes, todayHours) {
+    const { start, end } = range;
+    const wrapsToNextDay = end < start;
+
+    let isInRange, minutesUntilClose;
+
+    if (wrapsToNextDay) {
+      // Open if after start OR before end (next day)
+      isInRange = currentMinutes >= start || currentMinutes < end;
+      minutesUntilClose = currentMinutes >= start
+        ? (1440 - currentMinutes) + end  // After start, wraps to tomorrow
+        : end - currentMinutes;           // Early morning, before end
+    } else {
+      isInRange = currentMinutes >= start && currentMinutes < end;
+      minutesUntilClose = end - currentMinutes;
+    }
+
+    if (!isInRange) return null;
+
+    const isClosingSoon = minutesUntilClose <= CLOSING_SOON_MINUTES && minutesUntilClose > 0;
+    return {
+      isOpen: true,
+      isClosingSoon,
+      minutesUntilClose,
+      closesAt: formatMinutesAsTime(end % 1440),
+      status: isClosingSoon ? 'closing-soon' : 'open',
+      todayHours
     };
   }
 

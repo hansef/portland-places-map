@@ -3,7 +3,23 @@
  * Run with: node tests/app.test.js
  */
 
-import {
+// Set up global PlacesConfig before importing app.js
+// (In browser, shared.js sets window.PlacesConfig; in Node, we mock it)
+import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+import vm from 'vm';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+// Execute shared.js in a context with a mock window object
+const sharedCode = readFileSync(join(__dirname, '..', 'shared.js'), 'utf-8');
+const mockWindow = {};
+vm.runInNewContext(sharedCode, { window: mockWindow });
+globalThis.PlacesConfig = mockWindow.PlacesConfig;
+
+// Now import app.js (which reads from globalThis.PlacesConfig)
+const {
   slugify,
   findCategoryBySlug,
   decodeFilterHash,
@@ -12,7 +28,7 @@ import {
   groupPlacesByCategory,
   formatWebsiteDisplay,
   getPlaceIcon
-} from '../app.js';
+} = await import('../app.js');
 
 // Simple test runner
 let passed = 0;

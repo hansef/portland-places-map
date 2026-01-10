@@ -1,44 +1,19 @@
-// ===== CONFIGURATION =====
+// ===== SHARED CONFIG ACCESS =====
+// shared.js is loaded as a classic script before this module, setting window.PlacesConfig.
+// We use globalThis to work in both browser (window) and Node.js (for tests).
 
-export const statusColors = {
-  'haunts': '#4a7c59',
-  'queue': '#6b8cae',
-  'unknown': '#9ca3a3'
-};
+const {
+  statusColors,
+  categoryIcons,
+  primaryIcons,
+  slugify,
+  getPlaceIcon,
+  formatWebsiteDisplay,
+  encodeFilterHash
+} = globalThis.PlacesConfig || window.PlacesConfig;
 
-export const categoryIcons = {
-  'Food & Drink': 'fa-utensils',
-  'Record Shop': 'fa-record-vinyl',
-  'Record Shops': 'fa-record-vinyl',
-  'Bookstore': 'fa-book',
-  'Bookstores': 'fa-book',
-  'Movie Theaters': 'fa-film',
-  'Movie Theater': 'fa-film',
-  'Provisions': 'fa-cheese',
-  'Supplies': 'fa-screwdriver-wrench',
-  'Arts & Culture': 'fa-palette',
-  'Music Venues': 'fa-music',
-  'Clothing': 'fa-shirt'
-};
-
-export const primaryIcons = {
-  'coffee': 'fa-mug-hot',
-  'bar': 'fa-martini-glass',
-  'restaurant': 'fa-utensils'
-};
-
-// ===== PURE FUNCTIONS (testable) =====
-
-/**
- * Convert a place name to URL-safe slug
- */
-export function slugify(name) {
-  return name
-    .toLowerCase()
-    .replace(/['']/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-}
+// Re-export for backwards compatibility (tests import from app.js)
+export { statusColors, categoryIcons, primaryIcons, slugify, getPlaceIcon, formatWebsiteDisplay, encodeFilterHash };
 
 /**
  * Find category name from slug, given list of places
@@ -88,34 +63,6 @@ export function decodeFilterHash(hash, places = []) {
 }
 
 /**
- * Encode filter state to URL hash
- */
-export function encodeFilterHash(filterState) {
-  const parts = [];
-
-  const hasCategory = filterState.category !== 'all';
-  const hasPrimary = filterState.primary !== 'all' && filterState.category === 'Food & Drink';
-
-  if (filterState.status !== 'all') {
-    parts.push(filterState.status);
-  } else if (hasCategory || hasPrimary) {
-    parts.push('all');
-  }
-
-  if (hasCategory) {
-    parts.push(slugify(filterState.category));
-  } else if (hasPrimary) {
-    parts.push(slugify('Food & Drink'));
-  }
-
-  if (hasPrimary) {
-    parts.push(filterState.primary);
-  }
-
-  return parts.length > 0 ? '#' + parts.join('/') : '';
-}
-
-/**
  * Filter places based on filter state
  */
 export function filterPlaces(places, filterState) {
@@ -145,44 +92,6 @@ export function groupPlacesByCategory(places) {
   return byCategory;
 }
 
-/**
- * Format website URL for display
- */
-export function formatWebsiteDisplay(url) {
-  if (!url) return null;
-
-  const igMatch = url.match(/instagram\.com\/([^\/\?]+)/);
-  if (igMatch && igMatch[1] !== 'p' && igMatch[1] !== 'explore') {
-    return '@' + igMatch[1];
-  }
-
-  if (url.includes('facebook.com/')) {
-    const fbMatch = url.match(/facebook\.com\/([^\/\?]+)/);
-    if (fbMatch) {
-      return '@' + fbMatch[1];
-    }
-  }
-
-  if (url.match(/twitter\.com|^https?:\/\/(www\.)?x\.com/)) {
-    const twMatch = url.match(/(?:twitter|x)\.com\/([^\/\?]+)/);
-    if (twMatch) {
-      return '@' + twMatch[1];
-    }
-  }
-
-  return url.replace(/^https?:\/\//, '').replace(/\/$/, '').split('/')[0];
-}
-
-/**
- * Get icon class for a place
- */
-export function getPlaceIcon(category, primary) {
-  if (category === 'Food & Drink' && primary && primaryIcons[primary]) {
-    return primaryIcons[primary];
-  }
-  return categoryIcons[category] || 'fa-location-dot';
-}
-
 // ===== MAP LOGIC =====
 
 let map, markers;
@@ -200,93 +109,80 @@ function createMarkerIcon(status, category, primary) {
   });
 }
 
-function formatPopup(props) {
-  const statusClass = `status-${props.status}`;
-  const statusLabels = { 'haunts': 'Haunt', 'queue': 'Queue' };
-  const statusLabel = statusLabels[props.status] || '';
-
-  let html = `
-    <div class="popup-name">
-      ${props.name}
-      ${statusLabel ? `<span class="status-badge ${statusClass}">${statusLabel}</span>` : ''}
-    </div>
-    <div class="popup-meta">${props.category}</div>
-  `;
-
-  if (props.neighborhood) {
-    html += `<div class="popup-meta">${props.neighborhood}</div>`;
+/**
+ * Create popup element using Alpine template.
+ * Clones #popup-template, sets up data in Alpine store, and initializes Alpine on the element.
+ *
+ * @param {Object} props - Place properties from GeoJSON feature
+ * @returns {HTMLElement} - Popup element ready for Leaflet
+ */
+function createPopupElement(props) {
+  const template = document.getElementById('popup-template');
+  if (!template) {
+    console.error('Popup template not found');
+    const fallback = document.createElement('div');
+    fallback.textContent = props.name;
+    return fallback;
   }
 
-  if (props.address) {
-    html += `<div class="popup-address">${props.address}</div>`;
-  }
+  // Pre-process data for Alpine template
+  const processedProps = { ...props };
 
-  if (props.website) {
-    const displayText = formatWebsiteDisplay(props.website);
-    html += `<div class="popup-website"><a href="${props.website}" target="_blank" rel="noopener">${displayText}</a></div>`;
-  }
-
+  // Process hours data
   if (props.hours && Array.isArray(props.hours) && props.hours.length > 0) {
     const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     const today = dayNames[new Date().getDay()];
-    const popupId = `hours-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
 
     const todayHours = props.hours.find(h => h.startsWith(today));
-    const todayTime = todayHours ? todayHours.replace(`${today}: `, '') : 'Hours not listed';
+    processedProps.todayName = today;
+    processedProps.todayHours = todayHours ? todayHours.replace(`${today}: `, '') : 'Hours not listed';
 
-    html += `
-      <div class="popup-hours">
-        <div class="popup-hours-header">
-          <i class="fa-regular fa-clock"></i>
-          <span>${today}</span>
-        </div>
-        <div class="popup-hours-today">${todayTime}</div>
-        <div class="popup-hours-list" id="${popupId}">
-    `;
-
+    // Create ordered hours array starting from today
     const todayIndex = dayNames.indexOf(today);
     const orderedDays = [...dayNames.slice(todayIndex), ...dayNames.slice(0, todayIndex)];
 
-    orderedDays.forEach(day => {
+    processedProps.orderedHours = orderedDays.map(day => {
       const dayHours = props.hours.find(h => h.startsWith(day));
-      if (dayHours) {
-        const time = dayHours.replace(`${day}: `, '');
-        const isToday = day === today;
-        html += `
-          <div class="popup-hours-row ${isToday ? 'today' : ''}">
-            <span class="popup-hours-day">${day.slice(0, 3)}</span>
-            <span>${time}</span>
-          </div>
-        `;
-      }
-    });
-
-    html += `
-        </div>
-        <button class="popup-hours-toggle" onclick="document.getElementById('${popupId}').classList.toggle('expanded'); this.textContent = this.textContent === 'Show all hours' ? 'Hide hours' : 'Show all hours';">Show all hours</button>
-      </div>
-    `;
+      return {
+        name: day,
+        time: dayHours ? dayHours.replace(`${day}: `, '') : '',
+        isToday: day === today
+      };
+    }).filter(d => d.time);
   }
 
-  const tags = [
+  // Process website display
+  if (props.website) {
+    processedProps.websiteDisplay = formatWebsiteDisplay(props.website);
+  }
+
+  // Combine tags
+  processedProps.tags = [
     ...(props.type || []),
     ...(props.cuisine || []),
     ...(props.goodFor || [])
   ].filter(Boolean);
 
-  if (tags.length > 0) {
-    html += '<div class="popup-tags">';
-    tags.forEach(tag => {
-      html += `<span class="popup-tag">${tag}</span>`;
-    });
-    html += '</div>';
+  // Clean up notes
+  processedProps.notes = (props.notes && typeof props.notes === 'string' && props.notes.trim())
+    ? props.notes
+    : null;
+
+  // Update Alpine store with current place data
+  const store = window.Alpine?.store('app');
+  if (store) {
+    store.currentPlace = processedProps;
   }
 
-  if (props.notes && typeof props.notes === 'string' && props.notes.trim()) {
-    html += `<div class="popup-notes">${props.notes}</div>`;
+  // Clone template and initialize Alpine
+  const clone = template.content.cloneNode(true);
+  const popupElement = clone.querySelector('.popup-content') || clone.firstElementChild;
+
+  if (window.Alpine && popupElement) {
+    Alpine.initTree(popupElement);
   }
 
-  return html;
+  return popupElement;
 }
 
 // ===== MAP APP CLASS =====
@@ -388,7 +284,7 @@ class MapApp {
         icon: createMarkerIcon(props.status, props.category, props.primary)
       });
       marker.placeIndex = index;
-      marker.bindPopup(formatPopup(props), { maxWidth: 280 });
+      marker.bindPopup(() => createPopupElement(props), { maxWidth: 280 });
       markers.addLayer(marker);
       count++;
     });

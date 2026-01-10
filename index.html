@@ -20,59 +20,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <!-- Load shared config before Alpine (makes window.PlacesConfig available) -->
+  <script src="shared.js"></script>
   <script>
-    // Import config objects - must be duplicated here since this runs before modules
-    const categoryIcons = {
-      'Food & Drink': 'fa-utensils',
-      'Record Shop': 'fa-record-vinyl',
-      'Record Shops': 'fa-record-vinyl',
-      'Bookstore': 'fa-book',
-      'Bookstores': 'fa-book',
-      'Movie Theaters': 'fa-film',
-      'Movie Theater': 'fa-film',
-      'Provisions': 'fa-cheese',
-      'Supplies': 'fa-screwdriver-wrench',
-      'Arts & Culture': 'fa-palette',
-      'Music Venues': 'fa-music',
-      'Clothing': 'fa-shirt'
-    };
-
-    const primaryIcons = {
-      'coffee': 'fa-mug-hot',
-      'bar': 'fa-martini-glass',
-      'restaurant': 'fa-utensils'
-    };
-
-    function getPlaceIcon(category, primary) {
-      if (category === 'Food & Drink' && primary && primaryIcons[primary]) {
-        return primaryIcons[primary];
-      }
-      return categoryIcons[category] || 'fa-location-dot';
-    }
-
-    function slugify(name) {
-      return name.toLowerCase().replace(/['']/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-    }
-
-    function encodeFilterHash(filterState) {
-      const parts = [];
-      const hasCategory = filterState.category !== 'all';
-      const hasPrimary = filterState.primary !== 'all' && filterState.category === 'Food & Drink';
-      if (filterState.status !== 'all') {
-        parts.push(filterState.status);
-      } else if (hasCategory || hasPrimary) {
-        parts.push('all');
-      }
-      if (hasCategory) {
-        parts.push(slugify(filterState.category));
-      } else if (hasPrimary) {
-        parts.push(slugify('Food & Drink'));
-      }
-      if (hasPrimary) {
-        parts.push(filterState.primary);
-      }
-      return parts.length > 0 ? '#' + parts.join('/') : '';
-    }
+    // Access shared config from window.PlacesConfig (loaded by shared.js)
+    const { categoryIcons, primaryIcons, getPlaceIcon, slugify, encodeFilterHash, formatWebsiteDisplay } = window.PlacesConfig;
 
     // Register Alpine store BEFORE Alpine initializes
     document.addEventListener('alpine:init', () => {
@@ -80,6 +32,7 @@
         // Data
         places: [],
         categories: [],
+        currentPlace: null, // Currently displayed popup place (set by app.js)
 
         // Filter state
         filter: {
@@ -423,6 +376,69 @@
       </div>
     </div>
   </div>
+
+  <!-- Popup Template (cloned by app.js for Leaflet marker popups) -->
+  <template id="popup-template">
+    <div class="popup-content" x-data="{ hoursExpanded: false }">
+      <div class="popup-name">
+        <span x-text="$store.app.currentPlace?.name"></span>
+        <span x-show="$store.app.currentPlace?.status === 'haunts' || $store.app.currentPlace?.status === 'queue'"
+              class="status-badge"
+              :class="'status-' + $store.app.currentPlace?.status"
+              x-text="$store.app.currentPlace?.status === 'haunts' ? 'Haunt' : 'Queue'"></span>
+      </div>
+      <div class="popup-meta" x-text="$store.app.currentPlace?.category"></div>
+      <div class="popup-meta"
+           x-show="$store.app.currentPlace?.neighborhood"
+           x-text="$store.app.currentPlace?.neighborhood"></div>
+      <div class="popup-address"
+           x-show="$store.app.currentPlace?.address"
+           x-text="$store.app.currentPlace?.address"></div>
+
+      <!-- Website link -->
+      <div class="popup-website" x-show="$store.app.currentPlace?.website">
+        <a :href="$store.app.currentPlace?.website"
+           target="_blank"
+           rel="noopener"
+           x-text="$store.app.currentPlace?.websiteDisplay"></a>
+      </div>
+
+      <!-- Hours section -->
+      <div class="popup-hours" x-show="$store.app.currentPlace?.hours?.length > 0">
+        <div class="popup-hours-header">
+          <i class="fa-regular fa-clock"></i>
+          <span x-text="$store.app.currentPlace?.todayName"></span>
+        </div>
+        <div class="popup-hours-today" x-text="$store.app.currentPlace?.todayHours"></div>
+
+        <!-- All hours (collapsible) -->
+        <div class="popup-hours-list" :class="{ 'expanded': hoursExpanded }">
+          <template x-for="day in ($store.app.currentPlace?.orderedHours || [])" :key="day.name">
+            <div class="popup-hours-row" :class="{ 'today': day.isToday }">
+              <span class="popup-hours-day" x-text="day.name.slice(0, 3)"></span>
+              <span x-text="day.time"></span>
+            </div>
+          </template>
+        </div>
+
+        <button class="popup-hours-toggle"
+                @click="hoursExpanded = !hoursExpanded"
+                x-text="hoursExpanded ? 'Hide hours' : 'Show all hours'"></button>
+      </div>
+
+      <!-- Tags -->
+      <div class="popup-tags" x-show="$store.app.currentPlace?.tags?.length > 0">
+        <template x-for="tag in ($store.app.currentPlace?.tags || [])" :key="tag">
+          <span class="popup-tag" x-text="tag"></span>
+        </template>
+      </div>
+
+      <!-- Notes -->
+      <div class="popup-notes"
+           x-show="$store.app.currentPlace?.notes"
+           x-text="$store.app.currentPlace?.notes"></div>
+    </div>
+  </template>
 
   <!-- Locate button -->
   <button class="locate-btn"

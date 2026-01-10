@@ -57,6 +57,9 @@ function skip(reason) {
 const html = readFileSync(join(rootDir, 'index.html'), 'utf-8');
 const css = readFileSync(join(rootDir, 'styles.css'), 'utf-8');
 const appJs = readFileSync(join(rootDir, 'app.js'), 'utf-8');
+const sharedJs = existsSync(join(rootDir, 'shared.js'))
+  ? readFileSync(join(rootDir, 'shared.js'), 'utf-8')
+  : '';
 
 // ============================================
 // HTML Structure Tests
@@ -168,6 +171,35 @@ describe('Assets & Dependencies', () => {
 // ============================================
 
 describe('Alpine.js Integration', () => {
+  test('shared.js loads before inline Alpine script', () => {
+    const sharedPos = html.indexOf('src="shared.js"');
+    const alpineInitPos = html.indexOf('alpine:init');
+
+    assert(
+      sharedPos !== -1,
+      'shared.js should be loaded in index.html'
+    );
+    assert(
+      sharedPos < alpineInitPos,
+      'shared.js must load BEFORE alpine:init registration'
+    );
+  });
+
+  test('popup template exists with required structure', () => {
+    assert(
+      html.includes('id="popup-template"'),
+      'Missing popup template (#popup-template)'
+    );
+    assert(
+      html.includes('<template id="popup-template">'),
+      'Popup template should be a <template> element'
+    );
+    assert(
+      html.includes('$store.app.currentPlace'),
+      'Popup template should reference $store.app.currentPlace'
+    );
+  });
+
   test('Alpine plugins load before core Alpine', () => {
     const collapsePos = html.indexOf('alpinejs/collapse') !== -1
       ? html.indexOf('alpinejs/collapse')
@@ -271,9 +303,10 @@ describe('CSS/Alpine Compatibility', () => {
 // ============================================
 
 describe('JavaScript Quality', () => {
-  test('no console.log in production code', () => {
+  test('no console.log in production code (console.error allowed)', () => {
     // Allow console.error and console.warn for legitimate error handling
-    const consoleLogs = appJs.match(/console\.log\(/g) || [];
+    const allJs = appJs + '\n' + sharedJs;
+    const consoleLogs = allJs.match(/console\.log\(/g) || [];
     assert(
       consoleLogs.length === 0,
       `Found ${consoleLogs.length} console.log() calls - remove for production`

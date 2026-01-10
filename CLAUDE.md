@@ -34,18 +34,24 @@ npm run generate
 5. Web app loads GeoJSON and renders with Leaflet.js + Alpine.js
 
 ### Frontend Architecture
+- **shared.js** - Single source of truth for config objects and utility functions
+  - Loaded as classic `<script>` before Alpine (sets `window.PlacesConfig`)
+  - Config objects: `categoryIcons`, `primaryIcons`, `statusColors`
+  - Utility functions: `slugify`, `getPlaceIcon`, `formatWebsiteDisplay`, `encodeFilterHash`
 - **Alpine.js Store** (`index.html`) - Centralized reactive state for filters, UI, and places data
+  - Includes `<template id="popup-template">` for Leaflet popup content with Alpine directives
 - **app.js** - ES module containing:
-  - Pure, exported functions (testable): `slugify`, `filterPlaces`, `encodeFilterHash`, `decodeFilterHash`, etc.
+  - Pure, exported functions (testable): `filterPlaces`, `decodeFilterHash`, `groupPlacesByCategory`, etc.
   - `MapApp` class for Leaflet map initialization and marker management
-  - Configuration objects: `categoryIcons`, `primaryIcons`, `statusColors`
+  - `createPopupElement()` - Clones popup template and initializes Alpine for reactive popups
 - **styles.css** - All CSS with CSS custom properties for theming
 
 ### Key Files
 | File | Purpose |
 |------|---------|
-| `index.html` | HTML structure + Alpine.js store definition |
-| `app.js` | Map logic, pure utility functions, MapApp class |
+| `index.html` | HTML structure + Alpine.js store + popup template |
+| `shared.js` | Shared config & utilities (single source of truth) |
+| `app.js` | Map logic, popup creation, MapApp class |
 | `styles.css` | All styles with CSS variables |
 | `places.geojson` | Generated GeoJSON FeatureCollection |
 | `generate-geojson.mjs` | Node.js data pipeline |

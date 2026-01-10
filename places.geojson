@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generated": "2026-01-10T01:03:07.204Z",
+  "generated": "2026-01-10T01:26:17.726Z",
   "features": [
     {
       "type": "Feature",
@@ -600,6 +600,41 @@
           "Sunday: 11:00 AM – 10:00 PM"
         ],
         "notes": "Decent sandwiches though used to better — better in-person than delivery"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.6398419,
+          45.503526
+        ]
+      },
+      "properties": {
+        "name": "Magna Kusina",
+        "category": "Food & Drink",
+        "primary": "restaurant",
+        "type": [],
+        "neighborhood": "Richmond",
+        "address": "2525 SE Clinton St, Portland, OR 97202, USA",
+        "status": "haunts",
+        "goodFor": [
+          "dinner"
+        ],
+        "cuisine": [
+          "filipino"
+        ],
+        "hours": [
+          "Monday: Closed",
+          "Tuesday: Closed",
+          "Wednesday: 5:00 – 9:00 PM",
+          "Thursday: 5:00 – 9:00 PM",
+          "Friday: 5:00 – 9:00 PM",
+          "Saturday: 5:00 – 9:00 PM",
+          "Sunday: Closed"
+        ],
+        "notes": "Amazing Filipino food — rich and filling, bring your appetite"
       }
     },
     {

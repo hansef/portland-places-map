@@ -1,7 +1,40 @@
 {
   "type": "FeatureCollection",
-  "generated": "2026-01-10T03:00:16.852Z",
+  "generated": "2026-01-10T03:02:19.527Z",
   "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.6534459,
+          45.5156509
+        ]
+      },
+      "properties": {
+        "name": "A Roadside Attraction",
+        "category": "Food & Drink",
+        "primary": "bar",
+        "type": [],
+        "neighborhood": "Buckman",
+        "address": "1000 SE 12th Ave, Portland, OR 97214",
+        "status": "queue",
+        "goodFor": [
+          "late-night"
+        ],
+        "cuisine": [],
+        "hours": [
+          "Monday: 3:00 PM – 1:00 AM",
+          "Tuesday: 3:00 PM – 1:00 AM",
+          "Wednesday: 3:00 PM – 1:00 AM",
+          "Thursday: 3:00 PM – 1:00 AM",
+          "Friday: 3:00 PM – 1:00 AM",
+          "Saturday: 3:00 PM – 1:00 AM",
+          "Sunday: 3:00 PM – 1:00 AM"
+        ],
+        "notes": "Divey neighborhood bar with quirky decor and a patio"
+      }
+    },
     {
       "type": "Feature",
       "geometry": {

@@ -109,12 +109,35 @@ function createMarkerIcon(status, category, primary) {
   });
 }
 
+const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+/**
+ * Process hours array into display-ready format
+ */
+function processHours(hours) {
+  if (!Array.isArray(hours) || hours.length === 0) return null;
+
+  const today = DAY_NAMES[new Date().getDay()];
+  const todayIndex = DAY_NAMES.indexOf(today);
+  const orderedDays = [...DAY_NAMES.slice(todayIndex), ...DAY_NAMES.slice(0, todayIndex)];
+
+  const findHoursForDay = (day) => {
+    const entry = hours.find(h => h.startsWith(day));
+    return entry ? entry.replace(`${day}: `, '') : '';
+  };
+
+  return {
+    todayName: today,
+    todayHours: findHoursForDay(today) || 'Hours not listed',
+    orderedHours: orderedDays
+      .map(day => ({ name: day, time: findHoursForDay(day), isToday: day === today }))
+      .filter(d => d.time)
+  };
+}
+
 /**
  * Create popup element using Alpine template.
  * Clones #popup-template, sets up data in Alpine store, and initializes Alpine on the element.
- *
- * @param {Object} props - Place properties from GeoJSON feature
- * @returns {HTMLElement} - Popup element ready for Leaflet
  */
 function createPopupElement(props) {
   const template = document.getElementById('popup-template');
@@ -126,47 +149,14 @@ function createPopupElement(props) {
   }
 
   // Pre-process data for Alpine template
-  const processedProps = { ...props };
-
-  // Process hours data
-  if (props.hours && Array.isArray(props.hours) && props.hours.length > 0) {
-    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const today = dayNames[new Date().getDay()];
-
-    const todayHours = props.hours.find(h => h.startsWith(today));
-    processedProps.todayName = today;
-    processedProps.todayHours = todayHours ? todayHours.replace(`${today}: `, '') : 'Hours not listed';
-
-    // Create ordered hours array starting from today
-    const todayIndex = dayNames.indexOf(today);
-    const orderedDays = [...dayNames.slice(todayIndex), ...dayNames.slice(0, todayIndex)];
-
-    processedProps.orderedHours = orderedDays.map(day => {
-      const dayHours = props.hours.find(h => h.startsWith(day));
-      return {
-        name: day,
-        time: dayHours ? dayHours.replace(`${day}: `, '') : '',
-        isToday: day === today
-      };
-    }).filter(d => d.time);
-  }
-
-  // Process website display
-  if (props.website) {
-    processedProps.websiteDisplay = formatWebsiteDisplay(props.website);
-  }
-
-  // Combine tags
-  processedProps.tags = [
-    ...(props.type || []),
-    ...(props.cuisine || []),
-    ...(props.goodFor || [])
-  ].filter(Boolean);
-
-  // Clean up notes
-  processedProps.notes = (props.notes && typeof props.notes === 'string' && props.notes.trim())
-    ? props.notes
-    : null;
+  const hoursData = processHours(props.hours);
+  const processedProps = {
+    ...props,
+    ...(hoursData || {}),
+    websiteDisplay: props.website ? formatWebsiteDisplay(props.website) : null,
+    tags: [...(props.type || []), ...(props.cuisine || []), ...(props.goodFor || [])].filter(Boolean),
+    notes: (props.notes && typeof props.notes === 'string' && props.notes.trim()) ? props.notes : null
+  };
 
   // Update Alpine store with current place data
   const store = window.Alpine?.store('app');
@@ -268,28 +258,26 @@ class MapApp {
     if (!this.store) return;
 
     markers.clearLayers();
-    let count = 0;
+    const filter = this.store.filter;
 
     this.store.places.forEach((feature, index) => {
       const props = feature.properties;
+
+      // Apply filters
+      if (filter.status !== 'all' && props.status !== filter.status) return;
+      if (filter.category !== 'all' && props.category !== filter.category) return;
+      if (filter.primary !== 'all' && props.category === 'Food & Drink' && props.primary !== filter.primary) return;
+
       const coords = feature.geometry.coordinates;
-
-      if (this.store.filter.status !== 'all' && props.status !== this.store.filter.status) return;
-      if (this.store.filter.category !== 'all' && props.category !== this.store.filter.category) return;
-      if (this.store.filter.primary !== 'all' && props.category === 'Food & Drink') {
-        if (props.primary !== this.store.filter.primary) return;
-      }
-
       const marker = L.marker([coords[1], coords[0]], {
         icon: createMarkerIcon(props.status, props.category, props.primary)
       });
       marker.placeIndex = index;
       marker.bindPopup(() => createPopupElement(props), { maxWidth: 280 });
       markers.addLayer(marker);
-      count++;
     });
 
-    this.store.ui.placeCount = count;
+    this.store.ui.placeCount = markers.getLayers().length;
   }
 
   jumpToPlace(placeIndex) {
@@ -374,37 +362,46 @@ class MapApp {
     });
   }
 
+  findPlaceIndexBySlug(slug) {
+    return this.store.places.findIndex(f => slugify(f.properties.name) === slug);
+  }
+
+  applyFilterFromHash(hash) {
+    const decoded = decodeFilterHash(hash, this.store.places);
+    this.store.filter.status = decoded.status;
+    this.store.filter.category = decoded.category;
+    this.store.filter.primary = decoded.primary;
+    this.renderMarkers();
+  }
+
+  fitBoundsToVisiblePlaces() {
+    const visiblePlaces = filterPlaces(this.store.places, this.store.filter);
+    if (visiblePlaces.length === 0) return;
+
+    const bounds = L.latLngBounds(visiblePlaces.map(f => [
+      f.geometry.coordinates[1],
+      f.geometry.coordinates[0]
+    ]));
+    map.fitBounds(bounds, {
+      paddingTopLeft: [80, 70],
+      paddingBottomRight: [60, 80]
+    });
+  }
+
   handleInitialHash() {
     const hash = window.location.hash;
     if (!hash || hash === '#' || !this.store) return;
 
     if (hash.startsWith('#place/')) {
       const slug = decodeURIComponent(hash.replace('#place/', ''));
-      const placeIndex = this.store.places.findIndex(f =>
-        slugify(f.properties.name) === slug
-      );
+      const placeIndex = this.findPlaceIndexBySlug(slug);
       if (placeIndex >= 0) {
         this.jumpToPlace(placeIndex);
       }
     } else {
-      const decoded = decodeFilterHash(hash, this.store.places);
-      this.store.filter.status = decoded.status;
-      this.store.filter.category = decoded.category;
-      this.store.filter.primary = decoded.primary;
-      this.renderMarkers();
-
+      this.applyFilterFromHash(hash);
       if (this.store.hasActiveFilters) {
-        const visiblePlaces = filterPlaces(this.store.places, this.store.filter);
-        if (visiblePlaces.length > 0) {
-          const bounds = L.latLngBounds(visiblePlaces.map(f => [
-            f.geometry.coordinates[1],
-            f.geometry.coordinates[0]
-          ]));
-          map.fitBounds(bounds, {
-            paddingTopLeft: [80, 70],
-            paddingBottomRight: [60, 80]
-          });
-        }
+        this.fitBoundsToVisiblePlaces();
       }
     }
   }
@@ -415,26 +412,16 @@ class MapApp {
 
     if (hash.startsWith('#place/')) {
       const slug = decodeURIComponent(hash.replace('#place/', ''));
-      const placeIndex = this.store.places.findIndex(f =>
-        slugify(f.properties.name) === slug
-      );
+      const placeIndex = this.findPlaceIndexBySlug(slug);
       if (placeIndex >= 0) {
         this.store.closeAllPanels();
-        this.store.filter.status = 'all';
-        this.store.filter.category = 'all';
-        this.store.filter.primary = 'all';
+        this.store.resetFilters();
         this.jumpToPlace(placeIndex);
       }
     } else if (hash && hash !== '#') {
-      const decoded = decodeFilterHash(hash, this.store.places);
-      this.store.filter.status = decoded.status;
-      this.store.filter.category = decoded.category;
-      this.store.filter.primary = decoded.primary;
-      this.renderMarkers();
+      this.applyFilterFromHash(hash);
     } else {
-      this.store.filter.status = 'all';
-      this.store.filter.category = 'all';
-      this.store.filter.primary = 'all';
+      this.store.resetFilters();
       this.renderMarkers();
     }
   }

@@ -103,24 +103,23 @@
         },
 
         getPlacesInCategory(category) {
-          const result = [];
-          this.places.forEach((feature, index) => {
-            if (feature.properties.category === category) {
-              result.push({ feature, index });
-            }
-          });
-          return result.sort((a, b) =>
-            a.feature.properties.name.localeCompare(b.feature.properties.name)
-          );
+          return this.places
+            .map((feature, index) => ({ feature, index }))
+            .filter(item => item.feature.properties.category === category)
+            .sort((a, b) => a.feature.properties.name.localeCompare(b.feature.properties.name));
         },
 
         // Actions
-        setStatus(status) {
-          this.filter.status = status;
+        applyFilter() {
           if (window._mapApp) {
             window._mapApp.renderMarkers();
           }
           this.updateHash();
+        },
+
+        setStatus(status) {
+          this.filter.status = status;
+          this.applyFilter();
         },
 
         setCategory(category) {
@@ -128,24 +127,22 @@
           if (category !== 'Food & Drink') {
             this.filter.primary = 'all';
           }
-          if (window._mapApp) {
-            window._mapApp.renderMarkers();
-          }
-          this.updateHash();
+          this.applyFilter();
         },
 
         setPrimary(primary) {
           this.filter.primary = primary;
-          if (window._mapApp) {
-            window._mapApp.renderMarkers();
-          }
-          this.updateHash();
+          this.applyFilter();
         },
 
-        clearFilters() {
+        resetFilters() {
           this.filter.status = 'all';
           this.filter.category = 'all';
           this.filter.primary = 'all';
+        },
+
+        clearFilters() {
+          this.resetFilters();
           if (window._mapApp) {
             window._mapApp.renderMarkers();
           }
@@ -186,10 +183,7 @@
 
         jumpToPlace(index) {
           this.closeAllPanels();
-          // Reset filters
-          this.filter.status = 'all';
-          this.filter.category = 'all';
-          this.filter.primary = 'all';
+          this.resetFilters();
           if (window._mapApp) {
             window._mapApp.jumpToPlace(index);
           }

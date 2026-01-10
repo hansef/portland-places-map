@@ -481,6 +481,20 @@
       color: var(--color-ink-muted);
     }
 
+    .popup-website {
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .popup-website a {
+      color: var(--color-queue);
+      text-decoration: none;
+    }
+
+    .popup-website a:hover {
+      text-decoration: underline;
+    }
+
     .popup-hours {
       margin-top: 10px;
       padding-top: 10px;
@@ -1238,6 +1252,12 @@
 
       if (props.address) {
         html += `<div class="popup-address">${props.address}</div>`;
+      }
+
+      if (props.website) {
+        // Extract domain for display
+        const domain = props.website.replace(/^https?:\/\//, '').replace(/\/$/, '').split('/')[0];
+        html += `<div class="popup-website"><a href="${props.website}" target="_blank" rel="noopener">${domain}</a></div>`;
       }
 
       // Hours section

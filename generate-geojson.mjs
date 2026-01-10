@@ -195,6 +195,7 @@ async function main() {
         type: Array.isArray(place.type) ? place.type : [place.type].filter(Boolean),
         neighborhood: place.neighborhood || null,
         address: place.address || null,
+        website: place.website || null,
         status: place.status || 'unknown',
         goodFor: place['good-for'] || [],
         cuisine: place.cuisine || [],

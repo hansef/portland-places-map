@@ -32,7 +32,6 @@
         // Data
         places: [],
         categories: [],
-        currentPlace: null, // Currently displayed popup place (set by app.js)
 
         // Filter state
         filter: {
@@ -386,63 +385,64 @@
   </div>
 
   <!-- Popup Template (cloned by app.js for Leaflet marker popups) -->
+  <!-- Each popup gets its own 'place' data via x-data, set by createPopupElement() -->
   <template id="popup-template">
-    <div class="popup-content" x-data="{ hoursExpanded: false }">
-      <div class="popup-name" x-text="$store.app.currentPlace?.name"></div>
+    <div class="popup-content" x-data="{ hoursExpanded: false, place: {} }">
+      <div class="popup-name" x-text="place.name"></div>
 
       <!-- Badge row: Haunt/Queue + Open Status -->
       <div class="popup-badges">
-        <span x-show="$store.app.currentPlace?.status === 'haunts' || $store.app.currentPlace?.status === 'queue'"
+        <span x-show="place.status === 'haunts' || place.status === 'queue'"
               class="status-badge"
-              :class="'status-' + $store.app.currentPlace?.status"
-              x-text="$store.app.currentPlace?.status === 'haunts' ? 'Haunt' : 'Queue'"></span>
-        <span x-show="$store.app.currentPlace?.openStatus === 'open'"
+              :class="'status-' + place.status"
+              x-text="place.status === 'haunts' ? 'Haunt' : 'Queue'"></span>
+        <span x-show="place.openStatus === 'open'"
               class="open-status is-open">
           <span class="status-dot"></span>
           Open
         </span>
-        <span x-show="$store.app.currentPlace?.openStatus === 'closing-soon'"
+        <span x-show="place.openStatus === 'closing-soon'"
               class="open-status closing-soon">
           <span class="status-dot"></span>
           Closing Soon
         </span>
-        <span x-show="$store.app.currentPlace?.openStatus === 'closed'"
+        <span x-show="place.openStatus === 'closed'"
               class="open-status is-closed">
           Closed
         </span>
       </div>
 
       <div class="popup-meta"
-           x-text="[$store.app.currentPlace?.category, $store.app.currentPlace?.neighborhood].filter(Boolean).join(' · ')"></div>
+           x-text="[place.category, place.neighborhood].filter(Boolean).join(' · ')"></div>
       <div class="popup-address"
-           x-show="$store.app.currentPlace?.address"
-           x-text="$store.app.currentPlace?.address"></div>
+           x-show="place.address"
+           x-text="place.address"></div>
 
       <!-- Website link -->
-      <div class="popup-website" x-show="$store.app.currentPlace?.website">
-        <a :href="$store.app.currentPlace?.website"
+      <div class="popup-website" x-show="place.website">
+        <a :href="place.website"
            target="_blank"
            rel="noopener"
-           x-text="$store.app.currentPlace?.websiteDisplay"></a>
+           x-text="place.websiteDisplay"></a>
       </div>
 
       <!-- Hours section -->
-      <div class="popup-hours" x-show="$store.app.currentPlace?.hours?.length > 0">
+      <div class="popup-hours" x-show="place.hours?.length > 0">
         <div class="popup-hours-row">
-          <span class="popup-hours-day" x-text="$store.app.currentPlace?.todayName"></span>
-          <span class="popup-hours-time" x-text="$store.app.currentPlace?.todayHours"></span>
+          <span class="popup-hours-day" x-text="place.todayName"></span>
+          <span class="popup-hours-time" x-text="place.todayHours"></span>
         </div>
         <!-- Closing soon / Opens at note -->
         <div class="popup-hours-note"
-             x-show="$store.app.currentPlace?.isClosingSoon"
-             x-text="'Closes in ' + $store.app.currentPlace?.minutesUntilClose + ' min'"></div>
+             x-show="place.isClosingSoon"
+             x-text="'Closes in ' + place.minutesUntilClose + ' min'"></div>
         <div class="popup-hours-note"
-             x-show="$store.app.currentPlace?.openStatus === 'closed' && $store.app.currentPlace?.opensAt"
-             x-text="'Opens ' + $store.app.currentPlace?.opensAt"></div>
+             x-show="place.openStatus === 'closed' && place.opensAt"
+             x-text="'Opens ' + place.opensAt"></div>
 
         <!-- All hours (collapsible) -->
         <div class="popup-hours-list" :class="{ 'expanded': hoursExpanded }">
-          <template x-for="day in ($store.app.currentPlace?.orderedHours || [])" :key="day.name">
+          <template x-for="day in (place.orderedHours || [])" :key="day.name">
             <div class="popup-hours-row" :class="{ 'today': day.isToday }">
               <span class="popup-hours-day" x-text="day.name.slice(0, 3)"></span>
               <span x-text="day.time"></span>
@@ -456,16 +456,16 @@
       </div>
 
       <!-- Tags -->
-      <div class="popup-tags" x-show="$store.app.currentPlace?.tags?.length > 0">
-        <template x-for="tag in ($store.app.currentPlace?.tags || [])" :key="tag">
+      <div class="popup-tags" x-show="place.tags?.length > 0">
+        <template x-for="tag in (place.tags || [])" :key="tag">
           <span class="popup-tag" x-text="tag"></span>
         </template>
       </div>
 
       <!-- Notes -->
       <div class="popup-notes"
-           x-show="$store.app.currentPlace?.notes"
-           x-text="$store.app.currentPlace?.notes"></div>
+           x-show="place.notes"
+           x-text="place.notes"></div>
     </div>
   </template>
 

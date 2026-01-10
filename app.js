@@ -159,7 +159,8 @@ function processHours(hours) {
 
 /**
  * Create popup element using Alpine template.
- * Clones #popup-template, sets up data in Alpine store, and initializes Alpine on the element.
+ * Clones #popup-template and injects place data into its local x-data scope.
+ * Each popup has isolated data, preventing flicker when clicking between markers.
  */
 function createPopupElement(props) {
   const template = document.getElementById('popup-template');
@@ -172,7 +173,7 @@ function createPopupElement(props) {
 
   // Pre-process data for Alpine template
   const hoursData = processHours(props.hours);
-  const processedProps = {
+  const placeData = {
     ...props,
     ...(hoursData || {}),
     websiteDisplay: props.website ? formatWebsiteDisplay(props.website) : null,
@@ -180,17 +181,15 @@ function createPopupElement(props) {
     notes: (props.notes && typeof props.notes === 'string' && props.notes.trim()) ? props.notes : null
   };
 
-  // Update Alpine store with current place data
-  const store = window.Alpine?.store('app');
-  if (store) {
-    store.currentPlace = processedProps;
-  }
-
-  // Clone template and initialize Alpine once
+  // Clone template
   const clone = template.content.cloneNode(true);
   const popupElement = clone.querySelector('.popup-content') || clone.firstElementChild;
 
   if (window.Alpine && popupElement) {
+    // Inject place data into local x-data scope (each popup is isolated)
+    const xDataExpr = JSON.stringify({ hoursExpanded: false, place: placeData });
+    popupElement.setAttribute('x-data', xDataExpr);
+
     // Initialize Alpine to render content before Leaflet measures popup width
     Alpine.initTree(popupElement);
     // Prevent Alpine's mutation observer from re-initializing when Leaflet adds to DOM

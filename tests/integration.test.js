@@ -195,8 +195,8 @@ describe('Alpine.js Integration', () => {
       'Popup template should be a <template> element'
     );
     assert(
-      html.includes('$store.app.currentPlace'),
-      'Popup template should reference $store.app.currentPlace'
+      html.includes('x-text="place.name"'),
+      'Popup template should use local place data (x-text="place.name")'
     );
   });
 

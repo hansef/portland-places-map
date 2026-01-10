@@ -1255,9 +1255,35 @@
       }
 
       if (props.website) {
-        // Extract domain for display
-        const domain = props.website.replace(/^https?:\/\//, '').replace(/\/$/, '').split('/')[0];
-        html += `<div class="popup-website"><a href="${props.website}" target="_blank" rel="noopener">${domain}</a></div>`;
+        // Format display text - show @username for social media
+        let displayText;
+        const url = props.website;
+        
+        // Instagram: extract @username
+        const igMatch = url.match(/instagram\.com\/([^\/\?]+)/);
+        if (igMatch && igMatch[1] !== 'p' && igMatch[1] !== 'explore') {
+          displayText = '@' + igMatch[1];
+        }
+        // Facebook: extract page name
+        else if (url.includes('facebook.com/')) {
+          const fbMatch = url.match(/facebook\.com\/([^\/\?]+)/);
+          if (fbMatch) {
+            displayText = '@' + fbMatch[1];
+          }
+        }
+        // Twitter/X: extract @username
+        else if (url.match(/twitter\.com|^https?:\/\/(www\.)?x\.com/)) {
+          const twMatch = url.match(/(?:twitter|x)\.com\/([^\/\?]+)/);
+          if (twMatch) {
+            displayText = '@' + twMatch[1];
+          }
+        }
+        // Default: show domain
+        else {
+          displayText = url.replace(/^https?:\/\//, '').replace(/\/$/, '').split('/')[0];
+        }
+        
+        html += `<div class="popup-website"><a href="${props.website}" target="_blank" rel="noopener">${displayText}</a></div>`;
       }
 
       // Hours section

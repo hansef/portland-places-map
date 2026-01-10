@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generated": "2026-01-10T02:53:19.750Z",
+  "generated": "2026-01-10T02:55:59.150Z",
   "features": [
     {
       "type": "Feature",
@@ -35,6 +35,45 @@
         "notes": [
           ""
         ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.6549444,
+          45.5066692
+        ]
+      },
+      "properties": {
+        "name": "Baerlic Brewing",
+        "category": "Food & Drink",
+        "primary": "bar",
+        "type": [
+          "brewery"
+        ],
+        "neighborhood": "Buckman",
+        "address": "2239 SE 11th Ave, Portland, OR 97214",
+        "status": "haunts",
+        "goodFor": [
+          "lunch",
+          "dinner",
+          "groups"
+        ],
+        "cuisine": [
+          "pizza"
+        ],
+        "hours": [
+          "Monday: 11:00 AM – 10:00 PM",
+          "Tuesday: 11:00 AM – 10:00 PM",
+          "Wednesday: 11:00 AM – 10:00 PM",
+          "Thursday: 11:00 AM – 10:00 PM",
+          "Friday: 11:00 AM – 10:00 PM",
+          "Saturday: 11:00 AM – 10:00 PM",
+          "Sunday: 11:00 AM – 10:00 PM"
+        ],
+        "notes": "One of Hans's favorite breweries in town — flagship taproom with pizza"
       }
     },
     {

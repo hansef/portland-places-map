@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generated": "2026-01-10T06:00:15.269Z",
+  "generated": "2026-01-10T06:35:50.807Z",
   "features": [
     {
       "type": "Feature",
@@ -824,6 +824,41 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          -122.6328854,
+          45.5049916
+        ]
+      },
+      "properties": {
+        "name": "Oma's Hideaway",
+        "category": "Food & Drink",
+        "primary": "restaurant",
+        "type": [],
+        "neighborhood": "Richmond",
+        "address": "3131 SE Division St, Portland, OR 97202, USA",
+        "status": "haunts",
+        "goodFor": [
+          "dinner"
+        ],
+        "cuisine": [
+          "malaysian"
+        ],
+        "hours": [
+          "Monday: 5:00 – 9:30 PM",
+          "Tuesday: 5:00 – 9:30 PM",
+          "Wednesday: 5:00 – 9:30 PM",
+          "Thursday: 5:00 – 9:30 PM",
+          "Friday: 5:00 – 9:30 PM",
+          "Saturday: 5:00 – 9:30 PM",
+          "Sunday: 5:00 – 9:30 PM"
+        ],
+        "notes": "Malaysian-stoner fusion — sambal egg yolk fries are worth the trip alone"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           -122.6448454,
           45.503708599999996
         ]
@@ -957,6 +992,42 @@
         "notes": [
           ""
         ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.6113644,
+          45.5064253
+        ]
+      },
+      "properties": {
+        "name": "Rangoon Bistro",
+        "category": "Food & Drink",
+        "primary": "restaurant",
+        "type": [],
+        "neighborhood": "Mt. Tabor",
+        "address": "2311 SE 50th Ave, Portland, OR 97215, USA",
+        "status": "haunts",
+        "goodFor": [
+          "lunch",
+          "dinner"
+        ],
+        "cuisine": [
+          "burmese"
+        ],
+        "hours": [
+          "Monday: 5:00 – 9:00 PM",
+          "Tuesday: 5:00 – 9:00 PM",
+          "Wednesday: 5:00 – 9:00 PM",
+          "Thursday: 5:00 – 9:00 PM",
+          "Friday: 12:00 – 10:00 PM",
+          "Saturday: 12:00 – 10:00 PM",
+          "Sunday: 12:00 – 9:00 PM"
+        ],
+        "notes": "Burmese thokes and curries — the pork noodles are dangerously reorderable"
       }
     },
     {

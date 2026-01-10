@@ -15,6 +15,237 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script>
+    // Import config objects - must be duplicated here since this runs before modules
+    const categoryIcons = {
+      'Food & Drink': 'fa-utensils',
+      'Record Shop': 'fa-record-vinyl',
+      'Record Shops': 'fa-record-vinyl',
+      'Bookstore': 'fa-book',
+      'Bookstores': 'fa-book',
+      'Movie Theaters': 'fa-film',
+      'Movie Theater': 'fa-film',
+      'Provisions': 'fa-cheese',
+      'Supplies': 'fa-screwdriver-wrench',
+      'Arts & Culture': 'fa-palette',
+      'Music Venues': 'fa-music',
+      'Clothing': 'fa-shirt'
+    };
+
+    const primaryIcons = {
+      'coffee': 'fa-mug-hot',
+      'bar': 'fa-martini-glass',
+      'restaurant': 'fa-utensils'
+    };
+
+    function getPlaceIcon(category, primary) {
+      if (category === 'Food & Drink' && primary && primaryIcons[primary]) {
+        return primaryIcons[primary];
+      }
+      return categoryIcons[category] || 'fa-location-dot';
+    }
+
+    function slugify(name) {
+      return name.toLowerCase().replace(/['']/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    }
+
+    function encodeFilterHash(filterState) {
+      const parts = [];
+      const hasCategory = filterState.category !== 'all';
+      const hasPrimary = filterState.primary !== 'all' && filterState.category === 'Food & Drink';
+      if (filterState.status !== 'all') {
+        parts.push(filterState.status);
+      } else if (hasCategory || hasPrimary) {
+        parts.push('all');
+      }
+      if (hasCategory) {
+        parts.push(slugify(filterState.category));
+      } else if (hasPrimary) {
+        parts.push(slugify('Food & Drink'));
+      }
+      if (hasPrimary) {
+        parts.push(filterState.primary);
+      }
+      return parts.length > 0 ? '#' + parts.join('/') : '';
+    }
+
+    // Register Alpine store BEFORE Alpine initializes
+    document.addEventListener('alpine:init', () => {
+      Alpine.store('app', {
+        // Data
+        places: [],
+        categories: [],
+
+        // Filter state
+        filter: {
+          status: 'all',
+          category: 'all',
+          primary: 'all'
+        },
+
+        // UI state
+        ui: {
+          filterPanelOpen: false,
+          listSidebarOpen: false,
+          locating: false,
+          placeCount: 0,
+          loadError: null
+        },
+
+        // Computed
+        get hasActiveFilters() {
+          return this.filter.status !== 'all' ||
+                 this.filter.category !== 'all' ||
+                 this.filter.primary !== 'all';
+        },
+
+        get showPrimaryFilter() {
+          return this.filter.category === 'Food & Drink';
+        },
+
+        get filterChips() {
+          const chips = [];
+          if (this.filter.status !== 'all') {
+            chips.push({
+              type: 'status',
+              value: this.filter.status,
+              label: this.filter.status.charAt(0).toUpperCase() + this.filter.status.slice(1),
+              icon: this.filter.status === 'haunts' ? 'fa-heart' : 'fa-bookmark',
+              class: `status-${this.filter.status}`
+            });
+          }
+          if (this.filter.category !== 'all') {
+            chips.push({
+              type: 'category',
+              value: this.filter.category,
+              label: this.filter.category,
+              icon: categoryIcons[this.filter.category] || 'fa-location-dot',
+              class: ''
+            });
+          }
+          if (this.filter.primary !== 'all' && this.filter.category === 'Food & Drink') {
+            chips.push({
+              type: 'primary',
+              value: this.filter.primary,
+              label: this.filter.primary.charAt(0).toUpperCase() + this.filter.primary.slice(1),
+              icon: primaryIcons[this.filter.primary] || 'fa-utensils',
+              class: ''
+            });
+          }
+          return chips;
+        },
+
+        // Helper methods
+        getCategoryIcon(category) {
+          return categoryIcons[category] || 'fa-location-dot';
+        },
+
+        getPlaceIconClass(props) {
+          return getPlaceIcon(props.category, props.primary);
+        },
+
+        getPlacesInCategory(category) {
+          const result = [];
+          this.places.forEach((feature, index) => {
+            if (feature.properties.category === category) {
+              result.push({ feature, index });
+            }
+          });
+          return result.sort((a, b) =>
+            a.feature.properties.name.localeCompare(b.feature.properties.name)
+          );
+        },
+
+        // Actions
+        setStatus(status) {
+          this.filter.status = status;
+          if (window._mapApp) {
+            window._mapApp.renderMarkers();
+          }
+          this.updateHash();
+        },
+
+        setCategory(category) {
+          this.filter.category = category;
+          if (category !== 'Food & Drink') {
+            this.filter.primary = 'all';
+          }
+          if (window._mapApp) {
+            window._mapApp.renderMarkers();
+          }
+          this.updateHash();
+        },
+
+        setPrimary(primary) {
+          this.filter.primary = primary;
+          if (window._mapApp) {
+            window._mapApp.renderMarkers();
+          }
+          this.updateHash();
+        },
+
+        clearFilters() {
+          this.filter.status = 'all';
+          this.filter.category = 'all';
+          this.filter.primary = 'all';
+          if (window._mapApp) {
+            window._mapApp.renderMarkers();
+          }
+          history.replaceState(null, '', window.location.pathname + window.location.search);
+        },
+
+        updateHash() {
+          const hash = encodeFilterHash(this.filter);
+          history.replaceState(null, '', window.location.pathname + window.location.search + hash);
+        },
+
+        toggleFilterPanel() {
+          if (this.ui.listSidebarOpen) {
+            this.ui.listSidebarOpen = false;
+          }
+          this.ui.filterPanelOpen = !this.ui.filterPanelOpen;
+        },
+
+        closeFilterPanel() {
+          this.ui.filterPanelOpen = false;
+        },
+
+        toggleListSidebar() {
+          if (this.ui.filterPanelOpen) {
+            this.ui.filterPanelOpen = false;
+          }
+          this.ui.listSidebarOpen = !this.ui.listSidebarOpen;
+        },
+
+        closeListSidebar() {
+          this.ui.listSidebarOpen = false;
+        },
+
+        closeAllPanels() {
+          this.ui.filterPanelOpen = false;
+          this.ui.listSidebarOpen = false;
+        },
+
+        jumpToPlace(index) {
+          this.closeAllPanels();
+          // Reset filters
+          this.filter.status = 'all';
+          this.filter.category = 'all';
+          this.filter.primary = 'all';
+          if (window._mapApp) {
+            window._mapApp.jumpToPlace(index);
+          }
+        },
+
+        locateUser() {
+          this.ui.locating = true;
+          if (window._mapApp) {
+            window._mapApp.locateUser();
+          }
+        }
+      });
+    });
+  </script>
   <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.14.3/dist/cdn.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.3/dist/cdn.min.js"></script>
 </head>
@@ -199,187 +430,8 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
   <script type="module">
-    import { init, categoryIcons, primaryIcons, groupPlacesByCategory, getPlaceIcon, encodeFilterHash } from './app.js';
-
-    // Register Alpine store before Alpine initializes
-    document.addEventListener('alpine:init', () => {
-      Alpine.store('app', {
-        // Data
-        places: [],
-        categories: [],
-
-        // Filter state
-        filter: {
-          status: 'all',
-          category: 'all',
-          primary: 'all'
-        },
-
-        // UI state
-        ui: {
-          filterPanelOpen: false,
-          listSidebarOpen: false,
-          locating: false,
-          placeCount: 0,
-          loadError: null
-        },
-
-        // Computed
-        get hasActiveFilters() {
-          return this.filter.status !== 'all' ||
-                 this.filter.category !== 'all' ||
-                 this.filter.primary !== 'all';
-        },
-
-        get showPrimaryFilter() {
-          return this.filter.category === 'Food & Drink';
-        },
-
-        get filterChips() {
-          const chips = [];
-          if (this.filter.status !== 'all') {
-            chips.push({
-              type: 'status',
-              value: this.filter.status,
-              label: this.filter.status.charAt(0).toUpperCase() + this.filter.status.slice(1),
-              icon: this.filter.status === 'haunts' ? 'fa-heart' : 'fa-bookmark',
-              class: `status-${this.filter.status}`
-            });
-          }
-          if (this.filter.category !== 'all') {
-            chips.push({
-              type: 'category',
-              value: this.filter.category,
-              label: this.filter.category,
-              icon: categoryIcons[this.filter.category] || 'fa-location-dot',
-              class: ''
-            });
-          }
-          if (this.filter.primary !== 'all' && this.filter.category === 'Food & Drink') {
-            chips.push({
-              type: 'primary',
-              value: this.filter.primary,
-              label: this.filter.primary.charAt(0).toUpperCase() + this.filter.primary.slice(1),
-              icon: primaryIcons[this.filter.primary] || 'fa-utensils',
-              class: ''
-            });
-          }
-          return chips;
-        },
-
-        // Helper methods
-        getCategoryIcon(category) {
-          return categoryIcons[category] || 'fa-location-dot';
-        },
-
-        getPlaceIconClass(props) {
-          return getPlaceIcon(props.category, props.primary);
-        },
-
-        getPlacesInCategory(category) {
-          const result = [];
-          this.places.forEach((feature, index) => {
-            if (feature.properties.category === category) {
-              result.push({ feature, index });
-            }
-          });
-          return result.sort((a, b) =>
-            a.feature.properties.name.localeCompare(b.feature.properties.name)
-          );
-        },
-
-        // Actions
-        setStatus(status) {
-          this.filter.status = status;
-          if (window._mapApp) {
-            window._mapApp.renderMarkers();
-            window._mapApp.store = this;
-          }
-          this.updateHash();
-        },
-
-        setCategory(category) {
-          this.filter.category = category;
-          if (category !== 'Food & Drink') {
-            this.filter.primary = 'all';
-          }
-          if (window._mapApp) {
-            window._mapApp.renderMarkers();
-          }
-          this.updateHash();
-        },
-
-        setPrimary(primary) {
-          this.filter.primary = primary;
-          if (window._mapApp) {
-            window._mapApp.renderMarkers();
-          }
-          this.updateHash();
-        },
-
-        clearFilters() {
-          this.filter.status = 'all';
-          this.filter.category = 'all';
-          this.filter.primary = 'all';
-          if (window._mapApp) {
-            window._mapApp.renderMarkers();
-          }
-          history.replaceState(null, '', window.location.pathname + window.location.search);
-        },
-
-        updateHash() {
-          const hash = encodeFilterHash(this.filter);
-          history.replaceState(null, '', window.location.pathname + window.location.search + hash);
-        },
-
-        toggleFilterPanel() {
-          if (this.ui.listSidebarOpen) {
-            this.ui.listSidebarOpen = false;
-          }
-          this.ui.filterPanelOpen = !this.ui.filterPanelOpen;
-        },
-
-        closeFilterPanel() {
-          this.ui.filterPanelOpen = false;
-        },
-
-        toggleListSidebar() {
-          if (this.ui.filterPanelOpen) {
-            this.ui.filterPanelOpen = false;
-          }
-          this.ui.listSidebarOpen = !this.ui.listSidebarOpen;
-        },
-
-        closeListSidebar() {
-          this.ui.listSidebarOpen = false;
-        },
-
-        closeAllPanels() {
-          this.ui.filterPanelOpen = false;
-          this.ui.listSidebarOpen = false;
-        },
-
-        jumpToPlace(index) {
-          this.closeAllPanels();
-          // Reset filters
-          this.filter.status = 'all';
-          this.filter.category = 'all';
-          this.filter.primary = 'all';
-          if (window._mapApp) {
-            window._mapApp.jumpToPlace(index);
-          }
-        },
-
-        locateUser() {
-          this.ui.locating = true;
-          if (window._mapApp) {
-            window._mapApp.locateUser();
-          }
-        }
-      });
-    });
-
-    // Initialize app after Alpine is ready
+    import { init } from './app.js';
+    // Initialize the map app (Alpine store is already registered in head)
     init();
   </script>
 </body>

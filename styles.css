@@ -797,12 +797,9 @@ body {
 }
 
 .list-category-items {
-  display: none;
-  flex-direction: column;
-}
-
-.list-category.expanded .list-category-items {
   display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 /* ===== PLACE LIST ITEMS ===== */

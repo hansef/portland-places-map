@@ -229,7 +229,7 @@ function formatPopup(props) {
   if (props.hours && Array.isArray(props.hours) && props.hours.length > 0) {
     const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     const today = dayNames[new Date().getDay()];
-    const popupId = `hours-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const popupId = `hours-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
 
     const todayHours = props.hours.find(h => h.startsWith(today));
     const todayTime = todayHours ? todayHours.replace(`${today}: `, '') : 'Hours not listed';
@@ -547,6 +547,11 @@ class MapApp {
 // ===== INITIALIZATION =====
 
 export function init() {
+  // Prevent double initialization
+  if (window._mapApp) {
+    return;
+  }
+
   const mapApp = new MapApp();
   window._mapApp = mapApp;
 
@@ -561,13 +566,4 @@ export function init() {
       Alpine.store('app').closeAllPanels();
     }
   });
-}
-
-// Auto-initialize when DOM is ready
-if (typeof document !== 'undefined') {
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    setTimeout(init, 0);
-  }
 }

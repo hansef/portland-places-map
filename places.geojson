@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generated": "2026-01-10T19:00:10.548Z",
+  "generated": "2026-01-10T19:45:14.261Z",
   "features": [
     {
       "type": "Feature",
@@ -2016,6 +2016,126 @@
         "cuisine": [],
         "hours": [],
         "notes": "Portland Art Museum's cinema on Division"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.6554476,
+          45.5173397
+        ]
+      },
+      "properties": {
+        "name": "Holocene",
+        "category": "Music Venues",
+        "primary": null,
+        "type": [],
+        "neighborhood": "Buckman",
+        "address": "1001 SE Morrison St, Portland, OR 97214, USA",
+        "website": "http://www.holocene.org/",
+        "status": "haunts",
+        "goodFor": [],
+        "cuisine": [],
+        "hours": [
+          "Monday: 7:00 PM – 1:00 AM",
+          "Tuesday: 7:00 PM – 1:00 AM",
+          "Wednesday: 7:00 PM – 1:00 AM",
+          "Thursday: 7:00 PM – 2:00 AM",
+          "Friday: 7:00 PM – 2:30 AM",
+          "Saturday: 7:00 PM – 2:30 AM",
+          "Sunday: 7:00 PM – 1:00 AM"
+        ],
+        "notes": "Intimate club space — electronic and indie crossover, good for dancing, tight sightlines."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.64973739999999,
+          45.4863755
+        ]
+      },
+      "properties": {
+        "name": "Process",
+        "category": "Music Venues",
+        "primary": null,
+        "type": [],
+        "neighborhood": "Brooklyn",
+        "address": "5040 SE Milwaukie Ave, Portland, OR 97202, USA",
+        "website": "http://www.processpdx.club/",
+        "status": "haunts",
+        "goodFor": [],
+        "cuisine": [],
+        "hours": [],
+        "notes": "Tiny club, the only place I can go dancing and not feel like the oldest person there."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.65191770000001,
+          45.5192045
+        ]
+      },
+      "properties": {
+        "name": "Revolution Hall",
+        "category": "Music Venues",
+        "primary": null,
+        "type": [],
+        "neighborhood": "Buckman",
+        "address": "1300 SE Stark St #203, Portland, OR 97214, USA",
+        "website": "https://www.revolutionhall.com/",
+        "status": "haunts",
+        "goodFor": [],
+        "cuisine": [],
+        "hours": [
+          "Monday: 7:30 AM – 11:00 PM",
+          "Tuesday: 7:30 AM – 11:00 PM",
+          "Wednesday: 7:30 AM – 11:00 PM",
+          "Thursday: 7:30 AM – 11:00 PM",
+          "Friday: 7:30 AM – 12:00 AM",
+          "Saturday: 7:30 AM – 12:00 AM",
+          "Sunday: 7:30 AM – 11:00 PM"
+        ],
+        "notes": "Former high school auditorium with excellent acoustics and a rooftop bar. Mid-size acts, seated or standing depending on the show."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.66347940000001,
+          45.540783499999996
+        ]
+      },
+      "properties": {
+        "name": "Wonder Ballroom",
+        "category": "Music Venues",
+        "primary": null,
+        "type": [],
+        "neighborhood": "Eliot",
+        "address": "128 NE Russell St, Portland, OR 97212, USA",
+        "website": "http://www.wonderballroom.com/",
+        "status": "haunts",
+        "goodFor": [],
+        "cuisine": [],
+        "hours": [
+          "Monday: Open 24 hours",
+          "Tuesday: Open 24 hours",
+          "Wednesday: Open 24 hours",
+          "Thursday: Open 24 hours",
+          "Friday: Open 24 hours",
+          "Saturday: Open 24 hours",
+          "Sunday: Open 24 hours"
+        ],
+        "notes": "Historic 1914 lodge turned concert venue — ornate details, balcony seating, and reliably good sound for a room this size."
       }
     },
     {

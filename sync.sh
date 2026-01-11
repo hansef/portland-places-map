@@ -12,8 +12,13 @@ git pull --rebase --autostash || {
 echo "$(date): Regenerating GeoJSON..."
 node generate-geojson.mjs
 
-if git diff --quiet places.geojson; then
-  echo "$(date): No changes to places.geojson"
+# Check for meaningful changes (ignore the "generated" timestamp line)
+# Get lines that changed (+/-), exclude diff headers (+++/---), exclude the generated timestamp
+MEANINGFUL_CHANGES=$(git diff places.geojson | grep -E '^[+-]' | grep -v '^[+-]{3}' | grep -v '"generated":' || true)
+
+if [ -z "$MEANINGFUL_CHANGES" ]; then
+  echo "$(date): No meaningful changes (only timestamp updated), reverting"
+  git checkout places.geojson
   exit 0
 fi
 

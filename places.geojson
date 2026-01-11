@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generated": "2026-01-11T15:00:13.278Z",
+  "generated": "2026-01-11T16:00:52.988Z",
   "features": [
     {
       "type": "Feature",
@@ -25,13 +25,13 @@
         ],
         "cuisine": [],
         "hours": [
-          "Monday: 3:00 PM – 1:00 AM",
-          "Tuesday: 3:00 PM – 1:00 AM",
-          "Wednesday: 3:00 PM – 1:00 AM",
-          "Thursday: 3:00 PM – 1:00 AM",
-          "Friday: 3:00 PM – 1:00 AM",
-          "Saturday: 3:00 PM – 1:00 AM",
-          "Sunday: 3:00 PM – 1:00 AM"
+          "Monday: 3:00 PM – 1:00 AM",
+          "Tuesday: 3:00 PM – 1:00 AM",
+          "Wednesday: 3:00 PM – 1:00 AM",
+          "Thursday: 3:00 PM – 1:00 AM",
+          "Friday: 3:00 PM – 1:00 AM",
+          "Saturday: 3:00 PM – 1:00 AM",
+          "Sunday: 3:00 PM – 1:00 AM"
         ],
         "notes": "Divey neighborhood bar with quirky decor and a patio"
       }
@@ -101,13 +101,13 @@
           "pizza"
         ],
         "hours": [
-          "Monday: 11:00 AM – 10:00 PM",
-          "Tuesday: 11:00 AM – 10:00 PM",
-          "Wednesday: 11:00 AM – 10:00 PM",
-          "Thursday: 11:00 AM – 10:00 PM",
-          "Friday: 11:00 AM – 10:00 PM",
-          "Saturday: 11:00 AM – 10:00 PM",
-          "Sunday: 11:00 AM – 10:00 PM"
+          "Monday: 11:00 AM – 10:00 PM",
+          "Tuesday: 11:00 AM – 10:00 PM",
+          "Wednesday: 11:00 AM – 10:00 PM",
+          "Thursday: 11:00 AM – 10:00 PM",
+          "Friday: 11:00 AM – 10:00 PM",
+          "Saturday: 11:00 AM – 10:00 PM",
+          "Sunday: 11:00 AM – 10:00 PM"
         ],
         "notes": "One of Hans's favorite breweries in town — flagship taproom with pizza"
       }
@@ -648,13 +648,13 @@
           "american"
         ],
         "hours": [
-          "Monday: 8:00 AM – 2:00 PM",
-          "Tuesday: 8:00 AM – 2:00 PM",
-          "Wednesday: 8:00 AM – 2:00 PM",
-          "Thursday: 8:00 AM – 2:00 PM",
-          "Friday: 8:00 AM – 2:00 PM",
-          "Saturday: 8:00 AM – 2:00 PM",
-          "Sunday: 8:00 AM – 2:00 PM"
+          "Monday: 8:00 AM – 2:00 PM",
+          "Tuesday: 8:00 AM – 2:00 PM",
+          "Wednesday: 8:00 AM – 2:00 PM",
+          "Thursday: 8:00 AM – 2:00 PM",
+          "Friday: 8:00 AM – 2:00 PM",
+          "Saturday: 8:00 AM – 2:00 PM",
+          "Sunday: 8:00 AM – 2:00 PM"
         ],
         "notes": "Old-Portland feel, elevated diner"
       }
@@ -761,13 +761,13 @@
           "bakery"
         ],
         "hours": [
-          "Monday: 11:00 AM – 9:00 PM",
+          "Monday: 11:00 AM – 9:00 PM",
           "Tuesday: Closed",
-          "Wednesday: 11:00 AM – 9:00 PM",
-          "Thursday: 11:00 AM – 9:00 PM",
-          "Friday: 9:00 AM – 10:00 PM",
-          "Saturday: 9:00 AM – 10:00 PM",
-          "Sunday: 9:00 AM – 9:00 PM"
+          "Wednesday: 11:00 AM – 9:00 PM",
+          "Thursday: 11:00 AM – 9:00 PM",
+          "Friday: 9:00 AM – 10:00 PM",
+          "Saturday: 9:00 AM – 10:00 PM",
+          "Sunday: 9:00 AM – 9:00 PM"
         ],
         "notes": "Incredible pie — often a scene (and a wait)"
       }
@@ -797,13 +797,13 @@
         ],
         "cuisine": [],
         "hours": [
-          "Monday: 2:00 – 9:00 PM",
-          "Tuesday: 2:00 – 9:00 PM",
-          "Wednesday: 2:00 – 9:00 PM",
-          "Thursday: 2:00 – 9:00 PM",
-          "Friday: 2:00 – 10:00 PM",
-          "Saturday: 12:00 – 10:00 PM",
-          "Sunday: 12:00 – 9:00 PM"
+          "Monday: 2:00 – 9:00 PM",
+          "Tuesday: 2:00 – 9:00 PM",
+          "Wednesday: 2:00 – 9:00 PM",
+          "Thursday: 2:00 – 9:00 PM",
+          "Friday: 2:00 – 10:00 PM",
+          "Saturday: 12:00 – 10:00 PM",
+          "Sunday: 12:00 – 9:00 PM"
         ],
         "notes": "Beer garden on the Division strip — sour and farmhouse ales"
       }
@@ -835,10 +835,10 @@
         "hours": [
           "Monday: Closed",
           "Tuesday: Closed",
-          "Wednesday: 5:00 – 9:00 PM",
-          "Thursday: 5:00 – 9:00 PM",
-          "Friday: 5:00 – 9:00 PM",
-          "Saturday: 5:00 – 9:00 PM",
+          "Wednesday: 5:00 – 9:00 PM",
+          "Thursday: 5:00 – 9:00 PM",
+          "Friday: 5:00 – 9:00 PM",
+          "Saturday: 5:00 – 9:00 PM",
           "Sunday: Closed"
         ],
         "notes": "Amazing Filipino food — rich and filling, bring your appetite"
@@ -906,13 +906,13 @@
           "malaysian"
         ],
         "hours": [
-          "Monday: 5:00 – 9:30 PM",
-          "Tuesday: 5:00 – 9:30 PM",
-          "Wednesday: 5:00 – 9:30 PM",
-          "Thursday: 5:00 – 9:30 PM",
-          "Friday: 5:00 – 9:30 PM",
-          "Saturday: 5:00 – 9:30 PM",
-          "Sunday: 5:00 – 9:30 PM"
+          "Monday: 5:00 – 9:30 PM",
+          "Tuesday: 5:00 – 9:30 PM",
+          "Wednesday: 5:00 – 9:30 PM",
+          "Thursday: 5:00 – 9:30 PM",
+          "Friday: 5:00 – 9:30 PM",
+          "Saturday: 5:00 – 9:30 PM",
+          "Sunday: 5:00 – 9:30 PM"
         ],
         "notes": "Malaysian-stoner fusion — sambal egg yolk fries are worth the trip alone"
       }
@@ -1087,13 +1087,13 @@
           "burmese"
         ],
         "hours": [
-          "Monday: 5:00 – 9:00 PM",
-          "Tuesday: 5:00 – 9:00 PM",
-          "Wednesday: 5:00 – 9:00 PM",
-          "Thursday: 5:00 – 9:00 PM",
-          "Friday: 12:00 – 10:00 PM",
-          "Saturday: 12:00 – 10:00 PM",
-          "Sunday: 12:00 – 9:00 PM"
+          "Monday: 5:00 – 9:00 PM",
+          "Tuesday: 5:00 – 9:00 PM",
+          "Wednesday: 5:00 – 9:00 PM",
+          "Thursday: 5:00 – 9:00 PM",
+          "Friday: 12:00 – 10:00 PM",
+          "Saturday: 12:00 – 10:00 PM",
+          "Sunday: 12:00 – 9:00 PM"
         ],
         "notes": "Burmese thokes and curries — the pork noodles are dangerously reorderable"
       }
@@ -1265,13 +1265,13 @@
           "ramen"
         ],
         "hours": [
-          "Monday: 5:00 – 9:30 PM",
-          "Tuesday: 5:00 – 9:30 PM",
-          "Wednesday: 5:00 – 9:30 PM",
-          "Thursday: 5:00 – 9:30 PM",
-          "Friday: 11:00 AM – 3:00 PM, 4:30 PM – 12:00 AM",
-          "Saturday: 11:00 AM – 3:00 PM, 4:30 PM – 12:00 AM",
-          "Sunday: 11:00 AM – 3:00 PM, 4:30 – 9:30 PM"
+          "Monday: 5:00 – 9:30 PM",
+          "Tuesday: 5:00 – 9:30 PM",
+          "Wednesday: 5:00 – 9:30 PM",
+          "Thursday: 5:00 – 9:30 PM",
+          "Friday: 11:00 AM – 3:00 PM, 4:30 PM – 12:00 AM",
+          "Saturday: 11:00 AM – 3:00 PM, 4:30 PM – 12:00 AM",
+          "Sunday: 11:00 AM – 3:00 PM, 4:30 – 9:30 PM"
         ],
         "notes": "Outstanding spicy miso ramen"
       }
@@ -1801,13 +1801,13 @@
         ],
         "cuisine": [],
         "hours": [
-          "Monday: 11:00 AM – 9:00 PM",
-          "Tuesday: 11:00 AM – 9:00 PM",
-          "Wednesday: 11:00 AM – 9:00 PM",
-          "Thursday: 11:00 AM – 9:00 PM",
-          "Friday: 11:00 AM – 9:00 PM",
-          "Saturday: 11:00 AM – 9:00 PM",
-          "Sunday: 11:00 AM – 9:00 PM"
+          "Monday: 11:00 AM – 9:00 PM",
+          "Tuesday: 11:00 AM – 9:00 PM",
+          "Wednesday: 11:00 AM – 9:00 PM",
+          "Thursday: 11:00 AM – 9:00 PM",
+          "Friday: 11:00 AM – 9:00 PM",
+          "Saturday: 11:00 AM – 9:00 PM",
+          "Sunday: 11:00 AM – 9:00 PM"
         ],
         "notes": "Massive beer selection — Portland institution"
       }
@@ -1919,13 +1919,13 @@
         ],
         "cuisine": [],
         "hours": [
-          "Monday: 10:00 AM – 8:00 PM",
-          "Tuesday: 10:00 AM – 8:00 PM",
-          "Wednesday: 10:00 AM – 8:00 PM",
-          "Thursday: 10:00 AM – 8:00 PM",
-          "Friday: 10:00 AM – 8:00 PM",
-          "Saturday: 10:00 AM – 8:00 PM",
-          "Sunday: 10:00 AM – 8:00 PM"
+          "Monday: 10:00 AM – 8:00 PM",
+          "Tuesday: 10:00 AM – 8:00 PM",
+          "Wednesday: 10:00 AM – 8:00 PM",
+          "Thursday: 10:00 AM – 8:00 PM",
+          "Friday: 10:00 AM – 8:00 PM",
+          "Saturday: 10:00 AM – 8:00 PM",
+          "Sunday: 10:00 AM – 8:00 PM"
         ],
         "notes": "Delightful bougie neighborhood market with good sandwiches"
       }
@@ -2078,13 +2078,13 @@
         "goodFor": [],
         "cuisine": [],
         "hours": [
-          "Monday: 7:00 PM – 1:00 AM",
-          "Tuesday: 7:00 PM – 1:00 AM",
-          "Wednesday: 7:00 PM – 1:00 AM",
-          "Thursday: 7:00 PM – 2:00 AM",
-          "Friday: 7:00 PM – 2:30 AM",
-          "Saturday: 7:00 PM – 2:30 AM",
-          "Sunday: 7:00 PM – 1:00 AM"
+          "Monday: 7:00 PM – 1:00 AM",
+          "Tuesday: 7:00 PM – 1:00 AM",
+          "Wednesday: 7:00 PM – 1:00 AM",
+          "Thursday: 7:00 PM – 2:00 AM",
+          "Friday: 7:00 PM – 2:30 AM",
+          "Saturday: 7:00 PM – 2:30 AM",
+          "Sunday: 7:00 PM – 1:00 AM"
         ],
         "notes": "Intimate club space — electronic and indie crossover, good for dancing, tight sightlines."
       }
@@ -2134,13 +2134,13 @@
         "goodFor": [],
         "cuisine": [],
         "hours": [
-          "Monday: 7:30 AM – 11:00 PM",
-          "Tuesday: 7:30 AM – 11:00 PM",
-          "Wednesday: 7:30 AM – 11:00 PM",
-          "Thursday: 7:30 AM – 11:00 PM",
-          "Friday: 7:30 AM – 12:00 AM",
-          "Saturday: 7:30 AM – 12:00 AM",
-          "Sunday: 7:30 AM – 11:00 PM"
+          "Monday: 7:30 AM – 11:00 PM",
+          "Tuesday: 7:30 AM – 11:00 PM",
+          "Wednesday: 7:30 AM – 11:00 PM",
+          "Thursday: 7:30 AM – 11:00 PM",
+          "Friday: 7:30 AM – 12:00 AM",
+          "Saturday: 7:30 AM – 12:00 AM",
+          "Sunday: 7:30 AM – 11:00 PM"
         ],
         "notes": "Former high school auditorium with excellent acoustics and a rooftop bar. Mid-size acts, seated or standing depending on the show."
       }
@@ -2200,10 +2200,10 @@
         "hours": [
           "Monday: Closed",
           "Tuesday: Closed",
-          "Wednesday: 12:00 – 5:00 PM",
-          "Thursday: 12:00 – 5:00 PM",
-          "Friday: 12:00 – 5:00 PM",
-          "Saturday: 12:00 – 5:00 PM",
+          "Wednesday: 12:00 – 5:00 PM",
+          "Thursday: 12:00 – 5:00 PM",
+          "Friday: 12:00 – 5:00 PM",
+          "Saturday: 12:00 – 5:00 PM",
           "Sunday: Closed"
         ],
         "notes": "Nonprofit photography gallery — rotating exhibitions, darkroom-adjacent interest."
@@ -2233,13 +2233,13 @@
         ],
         "cuisine": [],
         "hours": [
-          "Monday: 9:00 AM – 4:00 PM",
-          "Tuesday: 9:00 AM – 4:00 PM",
-          "Wednesday: 1:00 – 4:00 PM",
-          "Thursday: 9:00 AM – 4:00 PM",
-          "Friday: 9:00 AM – 4:00 PM",
-          "Saturday: 9:00 AM – 4:00 PM",
-          "Sunday: 9:00 AM – 4:00 PM"
+          "Monday: 9:00 AM – 4:00 PM",
+          "Tuesday: 9:00 AM – 4:00 PM",
+          "Wednesday: 1:00 – 4:00 PM",
+          "Thursday: 9:00 AM – 4:00 PM",
+          "Friday: 9:00 AM – 4:00 PM",
+          "Saturday: 9:00 AM – 4:00 PM",
+          "Sunday: 9:00 AM – 4:00 PM"
         ],
         "notes": "Peaceful garden close to home — free most of the year, best in spring bloom."
       }
@@ -2300,13 +2300,13 @@
         ],
         "cuisine": [],
         "hours": [
-          "Monday: 8:00 AM – 3:30 PM",
+          "Monday: 10:00 AM – 3:30 PM",
           "Tuesday: Closed",
-          "Wednesday: 8:00 AM – 3:30 PM",
-          "Thursday: 8:00 AM – 3:30 PM",
-          "Friday: 8:00 AM – 3:30 PM",
-          "Saturday: 8:00 AM – 3:30 PM",
-          "Sunday: 8:00 AM – 3:30 PM"
+          "Wednesday: 10:00 AM – 3:30 PM",
+          "Thursday: 10:00 AM – 3:30 PM",
+          "Friday: 10:00 AM – 3:30 PM",
+          "Saturday: 10:00 AM – 3:30 PM",
+          "Sunday: 10:00 AM – 3:30 PM"
         ],
         "notes": "One of the most authentic Japanese gardens outside Japan — stunning year-round"
       }

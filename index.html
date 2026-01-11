@@ -304,9 +304,9 @@
         </button>
       </div>
 
-      <!-- Active filter chips (removable) -->
-      <div class="list-filter-chips" x-show="filterChips.length > 0">
-        <template x-for="chip in filterChips" :key="chip.type + chip.value">
+      <!-- Active filter chips (removable) - exclude search since it's in the input above -->
+      <div class="list-filter-chips" x-show="filterChips.filter(c => c.type !== 'search').length > 0">
+        <template x-for="chip in filterChips.filter(c => c.type !== 'search')" :key="chip.type + chip.value">
           <button class="list-filter-chip"
                   :class="chip.class"
                   @click="removeFilterChip(chip)"

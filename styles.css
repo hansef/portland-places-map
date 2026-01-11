@@ -497,7 +497,7 @@ body {
   border: 1.5px solid transparent;
   border-radius: 10px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 16px; /* 16px minimum prevents iOS Safari zoom on focus */
   color: var(--color-ink);
   outline: none;
   transition: var(--transition-fast);
@@ -1348,7 +1348,7 @@ body {
   .filter-search-input,
   .list-search-input {
     padding: 8px 32px;
-    font-size: 13px;
+    /* Keep 16px on mobile to prevent iOS Safari zoom on focus */
   }
 
   .filter-search-input {

@@ -38,7 +38,8 @@
           status: 'all',
           category: 'all',
           primary: 'all',
-          openNow: false
+          openNow: false,
+          search: ''
         },
 
         // UI state
@@ -55,7 +56,8 @@
           return this.filter.status !== 'all' ||
                  this.filter.category !== 'all' ||
                  this.filter.primary !== 'all' ||
-                 this.filter.openNow;
+                 this.filter.openNow ||
+                 this.filter.search !== '';
         },
 
         get showPrimaryFilter() {
@@ -66,6 +68,13 @@
           const capitalize = s => s.charAt(0).toUpperCase() + s.slice(1);
           const chips = [];
 
+          // Search chip first (if active)
+          if (this.filter.search) {
+            const truncated = this.filter.search.length > 15
+              ? this.filter.search.slice(0, 15) + '…'
+              : this.filter.search;
+            chips.push({ type: 'search', value: this.filter.search, label: `"${truncated}"`, icon: 'fa-magnifying-glass', class: 'search-chip' });
+          }
           if (this.filter.openNow) {
             chips.push({ type: 'openNow', value: true, label: 'Open Now', icon: 'fa-clock', class: 'open-now-chip', hasDot: true });
           }
@@ -93,10 +102,28 @@
         },
 
         getPlacesInCategory(category) {
-          return this.places
-            .map((feature, index) => ({ feature, index }))
-            .filter(item => item.feature.properties.category === category)
+          // Filter places by category first
+          let filtered = this.places.filter(f => f.properties.category === category);
+
+          // Apply current filters (status, primary, openNow) - uses window._filterPlaces set by app.js
+          if (window._filterPlaces) {
+            filtered = window._filterPlaces(filtered, this.filter);
+          }
+
+          // Apply search if present
+          if (this.filter.search && window._searchPlaces) {
+            filtered = window._searchPlaces(filtered, this.filter.search);
+          }
+
+          // Map to objects with original index (for jumpToPlace) and sort
+          return filtered
+            .map(feature => ({ feature, index: this.places.indexOf(feature) }))
             .sort((a, b) => a.feature.properties.name.localeCompare(b.feature.properties.name));
+        },
+
+        // Get categories that have places after filtering
+        get filteredCategories() {
+          return this.categories.filter(cat => this.getPlacesInCategory(cat).length > 0);
         },
 
         // Actions
@@ -135,6 +162,7 @@
           this.filter.category = 'all';
           this.filter.primary = 'all';
           this.filter.openNow = false;
+          this.filter.search = '';
         },
 
         clearFilters() {
@@ -143,6 +171,36 @@
             window._mapApp.renderMarkers();
           }
           history.replaceState(null, '', window.location.pathname + window.location.search);
+        },
+
+        setSearch(query) {
+          this.filter.search = query;
+          this.applyFilter();
+        },
+
+        clearSearch() {
+          this.filter.search = '';
+          this.applyFilter();
+        },
+
+        removeFilterChip(chip) {
+          switch (chip.type) {
+            case 'search':
+              this.clearSearch();
+              break;
+            case 'openNow':
+              this.toggleOpenNow();
+              break;
+            case 'status':
+              this.setStatus('all');
+              break;
+            case 'category':
+              this.setCategory('all');
+              break;
+            case 'primary':
+              this.setPrimary('all');
+              break;
+          }
         },
 
         updateHash() {
@@ -179,7 +237,7 @@
 
         jumpToPlace(index) {
           this.closeAllPanels();
-          this.resetFilters();
+          // Don't reset filters - keep search/filter state when clicking from filtered list
           if (window._mapApp) {
             window._mapApp.jumpToPlace(index);
           }
@@ -222,15 +280,58 @@
   <!-- List sidebar -->
   <div class="list-sidebar" :class="{ 'expanded': ui.listSidebarOpen }">
     <div class="list-sidebar-header">
-      <h2 class="list-sidebar-title">All Places</h2>
-      <button class="list-sidebar-close" @click="closeListSidebar()">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
+      <div class="list-sidebar-title-row">
+        <h2 class="list-sidebar-title" x-text="ui.placeCount + ' Places'"></h2>
+        <button class="list-sidebar-close" @click="closeListSidebar()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Search input -->
+      <div class="list-search-container">
+        <i class="fa-solid fa-magnifying-glass list-search-icon"></i>
+        <input type="search"
+               x-model="filter.search"
+               @input.debounce.150ms="applyFilter()"
+               placeholder="Search places..."
+               class="list-search-input"
+               aria-label="Search places">
+        <button class="list-search-clear"
+                x-show="filter.search"
+                @click="clearSearch()"
+                title="Clear search">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Active filter chips (removable) -->
+      <div class="list-filter-chips" x-show="filterChips.length > 0">
+        <template x-for="chip in filterChips" :key="chip.type + chip.value">
+          <button class="list-filter-chip"
+                  :class="chip.class"
+                  @click="removeFilterChip(chip)"
+                  :title="'Remove ' + chip.label + ' filter'">
+            <span x-show="chip.hasDot" class="chip-dot"></span>
+            <i x-show="!chip.hasDot" class="fa-solid" :class="chip.icon"></i>
+            <span x-text="chip.label"></span>
+            <i class="fa-solid fa-xmark chip-remove"></i>
+          </button>
+        </template>
+      </div>
     </div>
+
     <div class="list-sidebar-content" id="list-sidebar-content">
-      <!-- Categories rendered by Alpine -->
-      <template x-for="category in categories" :key="category">
-        <div class="list-category" x-data="{ expanded: false }">
+      <!-- Empty state -->
+      <div class="list-empty-state" x-show="filteredCategories.length === 0">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <p>No places match your search</p>
+        <button class="list-empty-clear" @click="clearFilters()">Clear filters</button>
+      </div>
+
+      <!-- Categories rendered by Alpine (only show categories with results) -->
+      <!-- Auto-expand categories when searching, collapse when search is cleared -->
+      <template x-for="category in filteredCategories" :key="category">
+        <div class="list-category" x-data="{ expanded: false }" x-effect="expanded = $store.app.filter.search !== ''">
           <button class="list-category-header" @click="expanded = !expanded">
             <i class="fa-solid" :class="getCategoryIcon(category)"></i>
             <span class="list-category-title" x-text="category"></span>
@@ -269,11 +370,8 @@
       </div>
       <span class="filter-bar-title">Filters</span>
 
-      <!-- Collapsed state: show chips -->
-      <div class="filter-bar-chips" x-show="!ui.filterPanelOpen">
-        <template x-if="filterChips.length === 0">
-          <span class="filter-bar-chip">All Places</span>
-        </template>
+      <!-- Collapsed state: show chips when filters active (search chip included in filterChips) -->
+      <div class="filter-bar-chips" x-show="!ui.filterPanelOpen && filterChips.length > 0">
         <template x-for="chip in filterChips" :key="chip.type + chip.value">
           <span class="filter-bar-chip" :class="chip.class">
             <span x-show="chip.hasDot" class="chip-dot"></span>
@@ -309,6 +407,23 @@
           </div>
         </div>
         <div class="open-toggle" :class="{ 'active': filter.openNow }"></div>
+      </div>
+
+      <!-- Search input -->
+      <div class="filter-search-container">
+        <i class="fa-solid fa-magnifying-glass filter-search-icon"></i>
+        <input type="search"
+               x-model="filter.search"
+               @input.debounce.150ms="applyFilter()"
+               placeholder="Search places..."
+               class="filter-search-input"
+               aria-label="Search places">
+        <button class="filter-search-clear"
+                x-show="filter.search"
+                @click="clearSearch()"
+                title="Clear search">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
       </div>
 
       <!-- Status filter -->
@@ -479,6 +594,7 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/minisearch@7.1.1/dist/umd/index.min.js"></script>
   <script type="module">
     import { init } from './app.js';
     // Initialize the map app (Alpine store is already registered in head)

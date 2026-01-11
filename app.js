@@ -92,6 +92,113 @@ export function filterPlaces(places, filterState) {
 }
 
 /**
+ * MiniSearch configuration for full-text search
+ * Searches: name, neighborhood, notes, type[], cuisine[], goodFor[]
+ */
+
+// MiniSearch instance cache
+let searchIndex = null;
+let searchSourcePlaces = null;
+
+/**
+ * Build MiniSearch index for the given places
+ */
+function buildSearchIndex(places) {
+  const MiniSearchLib = globalThis.MiniSearch;
+  if (!MiniSearchLib) return null;
+
+  // Reuse cached index if places haven't changed
+  if (searchIndex && searchSourcePlaces === places) {
+    return searchIndex;
+  }
+
+  // Custom tokenizer: split on whitespace/punctuation but keep apostrophes attached
+  // This makes "Powell's" tokenize as "powells" instead of "powell" + "s"
+  const tokenize = (text) => {
+    return text
+      .toLowerCase()
+      .replace(/['']/g, '')  // Remove apostrophes: "powell's" → "powells"
+      .split(/[\s,.\-—:;!?()[\]{}]+/)  // Split on whitespace and punctuation
+      .filter(t => t.length > 0);
+  };
+
+  // Create index with configuration
+  // prefix: true allows "viet" to match "vietnamese"
+  // fuzzy: false prevents "thai" from matching "than/that"
+  searchIndex = new MiniSearchLib({
+    fields: ['name', 'neighborhood', 'notes', 'tags'],
+    storeFields: ['id'],
+    tokenize: tokenize,
+    searchOptions: {
+      boost: { name: 3, notes: 1.5, neighborhood: 1, tags: 1 },
+      prefix: true,
+      fuzzy: false,
+      tokenize: tokenize
+    }
+  });
+
+  // Flatten places into searchable documents
+  const documents = places.map((feature, index) => {
+    const props = feature.properties;
+    // Combine arrays into single searchable string
+    const tags = [
+      ...(props.type || []),
+      ...(props.cuisine || []),
+      ...(props.goodFor || [])
+    ].filter(Boolean).join(' ');
+
+    return {
+      id: index,
+      name: props.name || '',
+      neighborhood: props.neighborhood || '',
+      notes: props.notes || '',
+      tags: tags
+    };
+  });
+
+  searchIndex.addAll(documents);
+  searchSourcePlaces = places;
+  return searchIndex;
+}
+
+/**
+ * Search places by query string using MiniSearch
+ * Searches: name, neighborhood, notes, type[], cuisine[], goodFor[]
+ * Returns results sorted by relevance
+ */
+export function searchPlaces(places, query) {
+  if (!query || query.trim() === '') return places;
+
+  const index = buildSearchIndex(places);
+  if (!index) {
+    // Fallback to simple search if MiniSearch not available
+    return simpleFallbackSearch(places, query);
+  }
+
+  const results = index.search(query.trim());
+  // Map results back to original places
+  return results.map(r => places[r.id]);
+}
+
+/**
+ * Simple fallback search when MiniSearch is not available
+ */
+function simpleFallbackSearch(places, query) {
+  const searchTerm = query.toLowerCase().trim();
+
+  return places.filter(feature => {
+    const props = feature.properties;
+    if (props.name?.toLowerCase().includes(searchTerm)) return true;
+    if (props.neighborhood?.toLowerCase().includes(searchTerm)) return true;
+    if (props.notes?.toLowerCase().includes(searchTerm)) return true;
+    if (Array.isArray(props.type) && props.type.some(t => t?.toLowerCase().includes(searchTerm))) return true;
+    if (Array.isArray(props.cuisine) && props.cuisine.some(c => c?.toLowerCase().includes(searchTerm))) return true;
+    if (Array.isArray(props.goodFor) && props.goodFor.some(g => g?.toLowerCase().includes(searchTerm))) return true;
+    return false;
+  });
+}
+
+/**
  * Group places by category
  */
 export function groupPlacesByCategory(places) {
@@ -283,8 +390,11 @@ class MapApp {
 
     markers.clearLayers();
 
-    // Use shared filterPlaces function instead of duplicating filter logic
-    const visiblePlaces = filterPlaces(this.store.places, this.store.filter);
+    // Apply filters then search
+    let visiblePlaces = filterPlaces(this.store.places, this.store.filter);
+    if (this.store.filter.search) {
+      visiblePlaces = searchPlaces(visiblePlaces, this.store.filter.search);
+    }
 
     visiblePlaces.forEach(feature => {
       const props = feature.properties;
@@ -457,6 +567,10 @@ export function init() {
   if (window._mapApp) {
     return;
   }
+
+  // Expose pure functions for Alpine store to use
+  window._filterPlaces = filterPlaces;
+  window._searchPlaces = searchPlaces;
 
   const mapApp = new MapApp();
   window._mapApp = mapApp;

@@ -10,5 +10,8 @@
     "serve": "node serve.mjs",
     "generate": "node generate-geojson.mjs"
   },
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "minisearch": "^7.2.0"
+  }
 }

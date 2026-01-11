@@ -18,13 +18,18 @@ const mockWindow = {};
 vm.runInNewContext(sharedCode, { window: mockWindow });
 globalThis.PlacesConfig = mockWindow.PlacesConfig;
 
-// Now import app.js (which reads from globalThis.PlacesConfig)
+// Set up MiniSearch globally (in browser it's loaded via script tag)
+const MiniSearch = (await import('minisearch')).default;
+globalThis.MiniSearch = MiniSearch;
+
+// Now import app.js (which reads from globalThis.PlacesConfig and globalThis.MiniSearch)
 const {
   slugify,
   findCategoryBySlug,
   decodeFilterHash,
   encodeFilterHash,
   filterPlaces,
+  searchPlaces,
   groupPlacesByCategory,
   formatWebsiteDisplay,
   getPlaceIcon,
@@ -446,6 +451,193 @@ test('returns unknown for null hours', () => {
   const result = getOpenStatus(null);
   assertEqual(result.status, 'unknown');
   assertEqual(result.isOpen, false);
+});
+
+// ===== SEARCH PLACES TESTS =====
+
+// Extended mock data with searchable fields (including notes for Fuse.js)
+const searchMockPlaces = [
+  {
+    properties: {
+      name: "Powell's Books",
+      category: 'Bookstores',
+      status: 'haunts',
+      neighborhood: 'Pearl District',
+      type: ['independent'],
+      cuisine: [],
+      goodFor: ['browsing', 'rainy days'],
+      notes: 'The largest independent bookstore in the world. Multiple floors of amazing selection.'
+    }
+  },
+  {
+    properties: {
+      name: 'Heart Coffee',
+      category: 'Food & Drink',
+      status: 'haunts',
+      primary: 'coffee',
+      neighborhood: 'Kerns',
+      type: ['cafe'],
+      cuisine: [],
+      goodFor: ['work', 'dates'],
+      notes: 'Quality espresso with great latte art. Minimalist Scandinavian vibes.'
+    }
+  },
+  {
+    properties: {
+      name: 'Pok Pok',
+      category: 'Food & Drink',
+      status: 'queue',
+      primary: 'restaurant',
+      neighborhood: 'Division',
+      type: [],
+      cuisine: ['thai', 'vietnamese'],
+      goodFor: ['dinner', 'groups'],
+      notes: 'Famous for their fish sauce wings. Funky outdoor seating.'
+    }
+  },
+  {
+    properties: {
+      name: 'Mississippi Records',
+      category: 'Record Shops',
+      status: 'haunts',
+      neighborhood: 'Mississippi',
+      type: ['vinyl'],
+      cuisine: [],
+      goodFor: ['browsing'],
+      notes: 'Tiny shop packed with rare finds. The owners have incredible taste.'
+    }
+  },
+  {
+    properties: {
+      name: 'Breakside Brewery',
+      category: 'Food & Drink',
+      status: 'haunts',
+      primary: 'bar',
+      neighborhood: 'Dekum',
+      type: ['brewery'],
+      cuisine: [],
+      goodFor: ['groups', 'late-night'],
+      notes: 'Award-winning IPAs. Their flagship taproom has great pizza too.'
+    }
+  }
+];
+
+console.log('\n--- searchPlaces ---');
+
+test('returns all places for empty query', () => {
+  const result = searchPlaces(searchMockPlaces, '');
+  assertEqual(result.length, searchMockPlaces.length);
+});
+
+test('returns all places for whitespace query', () => {
+  const result = searchPlaces(searchMockPlaces, '   ');
+  assertEqual(result.length, searchMockPlaces.length);
+});
+
+test('returns all places for null query', () => {
+  const result = searchPlaces(searchMockPlaces, null);
+  assertEqual(result.length, searchMockPlaces.length);
+});
+
+test('searches by name (case insensitive)', () => {
+  const result = searchPlaces(searchMockPlaces, 'POWELL');
+  assertEqual(result.length, 1);
+  assertEqual(result[0].properties.name, "Powell's Books");
+});
+
+test('searches by partial name', () => {
+  const result = searchPlaces(searchMockPlaces, 'coffee');
+  assertEqual(result.length, 1);
+  assertEqual(result[0].properties.name, 'Heart Coffee');
+});
+
+test('searches by neighborhood', () => {
+  const result = searchPlaces(searchMockPlaces, 'Pearl');
+  assertEqual(result.length >= 1, true);
+  // Powell's Books (Pearl District) should be in results
+  const hasPowell = result.some(r => r.properties.name === "Powell's Books");
+  assertEqual(hasPowell, true);
+});
+
+test('searches by type array', () => {
+  const result = searchPlaces(searchMockPlaces, 'brewery');
+  assertEqual(result.length, 1);
+  assertEqual(result[0].properties.name, 'Breakside Brewery');
+});
+
+test('searches by cuisine array', () => {
+  const result = searchPlaces(searchMockPlaces, 'thai');
+  assertEqual(result.length >= 1, true);
+  // First result should be the exact match
+  assertEqual(result[0].properties.name, 'Pok Pok');
+});
+
+test('searches by goodFor array', () => {
+  const result = searchPlaces(searchMockPlaces, 'late-night');
+  assertEqual(result.length >= 1, true);
+  // First result should be the best match
+  assertEqual(result[0].properties.name, 'Breakside Brewery');
+});
+
+test('returns multiple matches', () => {
+  const result = searchPlaces(searchMockPlaces, 'groups');
+  assertEqual(result.length, 2); // Pok Pok and Breakside
+});
+
+test('returns multiple matches across different fields', () => {
+  const result = searchPlaces(searchMockPlaces, 'mississippi');
+  assertEqual(result.length, 1); // Mississippi Records (matches both name and neighborhood)
+});
+
+test('handles places with missing arrays gracefully', () => {
+  const placesWithMissing = [
+    { properties: { name: 'Test Place', neighborhood: 'Test' } }
+  ];
+  const result = searchPlaces(placesWithMissing, 'test');
+  assertEqual(result.length, 1);
+});
+
+test('composes with filterPlaces correctly', () => {
+  // First filter by status, then search
+  const filtered = filterPlaces(searchMockPlaces, { status: 'haunts', category: 'all', primary: 'all', openNow: false });
+  const searched = searchPlaces(filtered, 'brewery');
+  assertEqual(searched.length, 1);
+  assertEqual(searched[0].properties.name, 'Breakside Brewery');
+});
+
+test('searches by notes field', () => {
+  const result = searchPlaces(searchMockPlaces, 'espresso');
+  assertEqual(result.length, 1);
+  assertEqual(result[0].properties.name, 'Heart Coffee');
+});
+
+test('searches notes for unique phrases', () => {
+  const result = searchPlaces(searchMockPlaces, 'fish sauce wings');
+  assertEqual(result.length >= 1, true);
+  // Pok Pok (has "fish sauce wings" in notes) should be first
+  assertEqual(result[0].properties.name, 'Pok Pok');
+});
+
+test('fuzzy matches with typos in name', () => {
+  // "Powells" without apostrophe should still match "Powell's Books"
+  const result = searchPlaces(searchMockPlaces, 'powells');
+  assertEqual(result.length >= 1, true);
+  assertEqual(result[0].properties.name, "Powell's Books");
+});
+
+test('prefix matches partial words', () => {
+  // "brew" should match "brewery" via prefix matching
+  const result = searchPlaces(searchMockPlaces, 'brew');
+  assertEqual(result.length >= 1, true);
+  assertEqual(result[0].properties.name, 'Breakside Brewery');
+});
+
+test('returns results sorted by relevance (name matches first)', () => {
+  // "Mississippi" should return Mississippi Records first (name match)
+  // even though it also matches the neighborhood
+  const result = searchPlaces(searchMockPlaces, 'Mississippi');
+  assertEqual(result.length >= 1, true);
+  assertEqual(result[0].properties.name, 'Mississippi Records');
 });
 
 // ===== SUMMARY =====

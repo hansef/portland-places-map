@@ -14,7 +14,7 @@ node generate-geojson.mjs
 
 # Check for meaningful changes (ignore the "generated" timestamp line)
 # Get lines that changed (+/-), exclude diff headers (+++/---), exclude the generated timestamp
-MEANINGFUL_CHANGES=$(git diff places.geojson | grep -E '^[+-]' | grep -v '^[+-]{3}' | grep -v '"generated":' || true)
+MEANINGFUL_CHANGES=$(git diff places.geojson | grep -E '^[+-]' | grep -v '^+++' | grep -v '^---' | grep -v '"generated":' || true)
 
 if [ -z "$MEANINGFUL_CHANGES" ]; then
   echo "$(date): No meaningful changes (only timestamp updated), reverting"

@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generated": "2026-01-18T16:00:51.086Z",
+  "generated": "2026-02-01T16:00:48.461Z",
   "features": [
     {
       "type": "Feature",
@@ -178,8 +178,8 @@
           "Wednesday: 8:00 AM – 4:00 PM",
           "Thursday: 8:00 AM – 4:00 PM",
           "Friday: 8:00 AM – 4:00 PM",
-          "Saturday: 9:00 AM – 5:00 PM",
-          "Sunday: 9:00 AM – 5:00 PM"
+          "Saturday: 9:00 AM – 4:00 PM",
+          "Sunday: 9:00 AM – 4:00 PM"
         ],
         "notes": "Local neighborhood coffee spot"
       }
@@ -1265,10 +1265,10 @@
           "ramen"
         ],
         "hours": [
-          "Monday: 5:00 – 9:30 PM",
-          "Tuesday: 5:00 – 9:30 PM",
-          "Wednesday: 5:00 – 9:30 PM",
-          "Thursday: 5:00 – 9:30 PM",
+          "Monday: 11:00 AM – 3:00 PM, 4:30 – 9:30 PM",
+          "Tuesday: 11:00 AM – 3:00 PM, 4:30 – 9:30 PM",
+          "Wednesday: 11:00 AM – 3:00 PM, 4:30 – 9:30 PM",
+          "Thursday: 11:00 AM – 9:30 PM",
           "Friday: 11:00 AM – 3:00 PM, 4:30 PM – 12:00 AM",
           "Saturday: 11:00 AM – 3:00 PM, 4:30 PM – 12:00 AM",
           "Sunday: 11:00 AM – 3:00 PM, 4:30 – 9:30 PM"
@@ -1303,7 +1303,7 @@
           "Tuesday: 7:30 AM – 4:00 PM",
           "Wednesday: 7:30 AM – 4:00 PM",
           "Thursday: 7:30 AM – 4:00 PM",
-          "Friday: 7:30 AM – 4:00 PM",
+          "Friday: Closed",
           "Saturday: 8:00 AM – 4:00 PM",
           "Sunday: 8:00 AM – 4:00 PM"
         ],
@@ -1487,8 +1487,8 @@
           "Tuesday: 10:00 AM – 10:00 PM",
           "Wednesday: 10:00 AM – 10:00 PM",
           "Thursday: 10:00 AM – 10:00 PM",
-          "Friday: 10:00 AM – 11:00 PM",
-          "Saturday: 10:00 AM – 11:00 PM",
+          "Friday: 10:00 AM – 10:00 PM",
+          "Saturday: 10:00 AM – 10:00 PM",
           "Sunday: 11:00 AM – 9:00 PM"
         ],
         "notes": "Portland institution — huge selection"

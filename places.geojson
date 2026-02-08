@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generated": "2026-02-01T16:00:48.461Z",
+  "generated": "2026-02-08T16:00:56.503Z",
   "features": [
     {
       "type": "Feature",
@@ -1268,7 +1268,7 @@
           "Monday: 11:00 AM – 3:00 PM, 4:30 – 9:30 PM",
           "Tuesday: 11:00 AM – 3:00 PM, 4:30 – 9:30 PM",
           "Wednesday: 11:00 AM – 3:00 PM, 4:30 – 9:30 PM",
-          "Thursday: 11:00 AM – 9:30 PM",
+          "Thursday: 11:00 AM – 3:00 PM, 4:30 – 9:30 PM",
           "Friday: 11:00 AM – 3:00 PM, 4:30 PM – 12:00 AM",
           "Saturday: 11:00 AM – 3:00 PM, 4:30 PM – 12:00 AM",
           "Sunday: 11:00 AM – 3:00 PM, 4:30 – 9:30 PM"
@@ -1303,7 +1303,7 @@
           "Tuesday: 7:30 AM – 4:00 PM",
           "Wednesday: 7:30 AM – 4:00 PM",
           "Thursday: 7:30 AM – 4:00 PM",
-          "Friday: Closed",
+          "Friday: 7:30 AM – 4:00 PM",
           "Saturday: 8:00 AM – 4:00 PM",
           "Sunday: 8:00 AM – 4:00 PM"
         ],

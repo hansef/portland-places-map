@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generated": "2026-02-08T16:00:56.503Z",
+  "generated": "2026-02-20T04:39:38.287Z",
   "features": [
     {
       "type": "Feature",
@@ -842,6 +842,42 @@
           "Sunday: Closed"
         ],
         "notes": "Amazing Filipino food — rich and filling, bring your appetite"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.66524319999999,
+          45.5160112
+        ]
+      },
+      "properties": {
+        "name": "Malpractice",
+        "category": "Food & Drink",
+        "primary": "bar",
+        "type": [
+          "cocktails"
+        ],
+        "neighborhood": "Central Eastside",
+        "address": "77 SE Yamhill St, Portland, OR 97214",
+        "website": "https://malpracticepdx.com/",
+        "status": "haunts",
+        "goodFor": [
+          "date-night"
+        ],
+        "cuisine": [],
+        "hours": [
+          "Monday: Closed",
+          "Tuesday: Closed",
+          "Wednesday: 4:00 – 11:00 PM",
+          "Thursday: 4:00 – 11:00 PM",
+          "Friday: 4:00 PM – 12:00 AM",
+          "Saturday: 2:00 PM – 12:00 AM",
+          "Sunday: Closed"
+        ],
+        "notes": "Serious cocktail craft — ask for a shot of Opal, an Icelandic licorice spirit"
       }
     },
     {

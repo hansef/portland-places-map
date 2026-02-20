@@ -258,7 +258,7 @@ body {
 }
 
 .filter-bar.expanded .filter-panel {
-  max-height: 400px;
+  max-height: 600px;
   opacity: 1;
   padding: 14px;
   border-top-color: var(--color-paper-dark);
@@ -1318,6 +1318,8 @@ body {
 
   .filter-bar.expanded {
     max-width: none;
+    overflow-y: auto;
+    max-height: calc(100vh - 16px - env(safe-area-inset-top, 0px));
   }
 
   .filter-bar-header {

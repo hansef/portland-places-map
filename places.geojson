@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generated": "2026-02-20T04:39:38.287Z",
+  "generated": "2026-02-22T16:00:56.416Z",
   "features": [
     {
       "type": "Feature",
@@ -213,7 +213,7 @@
         ],
         "hours": [
           "Monday: 9:00 AM – 3:00 PM",
-          "Tuesday: Closed",
+          "Tuesday: 9:00 AM – 3:00 PM",
           "Wednesday: 9:00 AM – 3:00 PM",
           "Thursday: 9:00 AM – 3:00 PM",
           "Friday: 9:00 AM – 3:00 PM",
@@ -871,10 +871,10 @@
         "hours": [
           "Monday: Closed",
           "Tuesday: Closed",
-          "Wednesday: 4:00 – 11:00 PM",
-          "Thursday: 4:00 – 11:00 PM",
-          "Friday: 4:00 PM – 12:00 AM",
-          "Saturday: 2:00 PM – 12:00 AM",
+          "Wednesday: 4:00 – 11:00 PM",
+          "Thursday: 4:00 – 11:00 PM",
+          "Friday: 4:00 PM – 12:00 AM",
+          "Saturday: 2:00 PM – 12:00 AM",
           "Sunday: Closed"
         ],
         "notes": "Serious cocktail craft — ask for a shot of Opal, an Icelandic licorice spirit"
@@ -980,7 +980,7 @@
         ],
         "hours": [
           "Monday: Closed",
-          "Tuesday: 10:00 AM – 9:30 PM",
+          "Tuesday: Closed",
           "Wednesday: 10:00 AM – 9:30 PM",
           "Thursday: 9:00 AM – 9:30 PM",
           "Friday: 10:00 AM – 9:30 PM",

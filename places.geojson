@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generated": "2026-02-22T16:00:56.416Z",
+  "generated": "2026-03-01T16:00:51.695Z",
   "features": [
     {
       "type": "Feature",
@@ -980,7 +980,7 @@
         ],
         "hours": [
           "Monday: Closed",
-          "Tuesday: Closed",
+          "Tuesday: 10:00 AM – 9:30 PM",
           "Wednesday: 10:00 AM – 9:30 PM",
           "Thursday: 9:00 AM – 9:30 PM",
           "Friday: 10:00 AM – 9:30 PM",
@@ -1375,8 +1375,8 @@
           "german"
         ],
         "hours": [
-          "Monday: Closed",
-          "Tuesday: Closed",
+          "Monday: 12:00 – 9:00 PM",
+          "Tuesday: 12:00 – 9:00 PM",
           "Wednesday: 12:00 – 9:00 PM",
           "Thursday: 12:00 – 9:00 PM",
           "Friday: 12:00 – 10:00 PM",
@@ -2336,13 +2336,13 @@
         ],
         "cuisine": [],
         "hours": [
-          "Monday: 10:00 AM – 3:30 PM",
+          "Monday: 10:00 AM – 5:30 PM",
           "Tuesday: Closed",
-          "Wednesday: 10:00 AM – 3:30 PM",
-          "Thursday: 10:00 AM – 3:30 PM",
-          "Friday: 10:00 AM – 3:30 PM",
-          "Saturday: 10:00 AM – 3:30 PM",
-          "Sunday: 10:00 AM – 3:30 PM"
+          "Wednesday: 10:00 AM – 5:30 PM",
+          "Thursday: 10:00 AM – 5:30 PM",
+          "Friday: 10:00 AM – 5:30 PM",
+          "Saturday: 10:00 AM – 5:30 PM",
+          "Sunday: 10:00 AM – 5:30 PM"
         ],
         "notes": "One of the most authentic Japanese gardens outside Japan — stunning year-round"
       }

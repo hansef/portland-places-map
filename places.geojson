@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generated": "2026-03-01T16:00:51.695Z",
+  "generated": "2026-03-08T15:00:53.634Z",
   "features": [
     {
       "type": "Feature",
@@ -64,7 +64,7 @@
           "Wednesday: 10:00 AM – 10:00 PM",
           "Thursday: 10:00 AM – 1:00 AM",
           "Friday: 10:00 AM – 2:00 AM",
-          "Saturday: 10:00 AM – 2:00 AM",
+          "Saturday: 10:00 AM – 3:00 AM",
           "Sunday: 10:00 AM – 10:00 PM"
         ],
         "notes": [
@@ -251,7 +251,7 @@
           "Wednesday: 2:00 PM – 2:00 AM",
           "Thursday: 2:00 PM – 2:00 AM",
           "Friday: 12:00 PM – 2:00 AM",
-          "Saturday: 12:00 PM – 2:00 AM",
+          "Saturday: 12:00 PM – 3:00 AM",
           "Sunday: 2:00 PM – 2:00 AM"
         ],
         "notes": "My neighborhood local, big back patio (but smoky)"
@@ -1164,7 +1164,7 @@
           "Wednesday: 3:00 PM – 2:00 AM",
           "Thursday: 3:00 PM – 2:00 AM",
           "Friday: 3:00 PM – 2:00 AM",
-          "Saturday: 3:00 PM – 2:00 AM",
+          "Saturday: 3:00 PM – 3:00 AM",
           "Sunday: 3:00 PM – 2:00 AM"
         ],
         "notes": "British pub with a cool patio"
@@ -2119,7 +2119,7 @@
           "Wednesday: 7:00 PM – 1:00 AM",
           "Thursday: 7:00 PM – 2:00 AM",
           "Friday: 7:00 PM – 2:30 AM",
-          "Saturday: 7:00 PM – 2:30 AM",
+          "Saturday: 7:00 PM – 3:00 AM",
           "Sunday: 7:00 PM – 1:00 AM"
         ],
         "notes": "Intimate club space — electronic and indie crossover, good for dancing, tight sightlines."

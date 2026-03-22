@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generated": "2026-03-15T15:00:52.830Z",
+  "generated": "2026-03-22T15:00:50.760Z",
   "features": [
     {
       "type": "Feature",
@@ -2337,7 +2337,7 @@
         "cuisine": [],
         "hours": [
           "Monday: 10:00 AM – 5:30 PM",
-          "Tuesday: Closed",
+          "Tuesday: 12:00 – 5:30 PM",
           "Wednesday: 10:00 AM – 5:30 PM",
           "Thursday: 10:00 AM – 5:30 PM",
           "Friday: 10:00 AM – 5:30 PM",
